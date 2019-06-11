@@ -278,7 +278,10 @@ class IModelComponents extends React.PureComponent<IModelComponentsProps> {
             <TreeWidget imodel={this.props.imodel} rulesetId={rulesetId} />
           </div>
           <div className="bottom">
+            <Button id="New iModel" title="Select new iModel" /*onClick = "" */>Select new iModel</Button>
+            <div className="sub">
             <PropertiesWidget imodel={this.props.imodel} rulesetId={rulesetId} />
+            </div>
           </div>
         </div>
         <div className="bottom">
