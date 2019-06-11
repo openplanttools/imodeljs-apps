@@ -21,7 +21,7 @@ export default function initRpc(rpcParams?: BentleyCloudRpcParams): RpcConfigura
   } else {
     // initialize RPC for web apps
     if (!rpcParams)
-      rpcParams = { info: { title: "simple-viewer-app", version: "v1.0" }, uriPrefix: "http://localhost:3001" };
+      rpcParams = { info: { title: "PlantView", version: "v1.0" }, uriPrefix: "http://localhost:3001" };
     config = BentleyCloudRpcManager.initializeClient(rpcParams, rpcInterfaces);
   }
   return config;

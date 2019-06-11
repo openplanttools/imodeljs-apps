@@ -15,7 +15,7 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
     width: 1280,
     height: 800,
     webPreferences: {
-      preload: path.join(__dirname, "./preload.js"),
+      preload: path.resolve('preload.js'),
       experimentalFeatures: true, // Needed for CSS Grid support
     },
     autoHideMenuBar: true,
@@ -24,6 +24,7 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
   // tell ElectronRpcManager which RPC interfaces to handle
   ElectronRpcManager.initializeImpl({}, rpcs);
   if (manager.mainWindow) {
+    manager.mainWindow.setTitle("PlantView");
     manager.mainWindow.show();
   }
   }) ();

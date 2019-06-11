@@ -178,7 +178,7 @@ export default class App extends React.Component<{}, AppState> {
     return (
       <div className="app">
         <div className="app-header">
-          <h2>{IModelApp.i18n.translate("SimpleViewer:welcome-message")}</h2>
+          <h2>{IModelApp.i18n.translate("Welcome to PlantView")}</h2>
         </div>
         {ui}
       </div>
