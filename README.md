@@ -5,7 +5,7 @@
 2. Display only relevant documents in tree. -Zach
 3. Automatically update on changes.
 4. Formatting/updating viewer relative to model that is chosen.
-5. Convert backend to be entirely electron/desktop based. - Nick
+5. Convert backend to be entirely electron/desktop based. - nick **Done**
 6. Be able to edit properties in the viewer.
 ## Git instructions
 
