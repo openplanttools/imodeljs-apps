@@ -10,6 +10,7 @@
 7. Resolve all warnings/errors.
 8. Fix initial button page
 9. Add scrolling to property.
+
 Convert backend to be entirely electron/desktop based. - Nick **Done**
 
 ## Development Setup
