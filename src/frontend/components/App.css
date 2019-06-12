@@ -45,6 +45,15 @@
   width: 70%;
 }
 
+.app-content .right .bottom .bottom-middle{
+  align-self: center;
+}
+
+/* .app-content .right .bottom .sub h3 {
+  position: initial;
+  left: 50%;
+} */
+
 .app-content .right {
   position: absolute;
   top: 0;
@@ -61,6 +70,10 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+}
+
+.app-content .right .top h3{
+  align-self: center;
 }
 
 .app-content .right .bottom {

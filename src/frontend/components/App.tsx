@@ -16,9 +16,15 @@ import TreeWidget from "./Tree";
 import ViewportContentControl from "./Viewport";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "./App.css";
+import GroupWidget from "./Group";
+import { request } from "https";
 
 // tslint:disable: no-console
 // cSpell:ignore imodels
+var requestContext: AuthorizedFrontendRequestContext | undefined;
+var connectClient: ConnectClient | undefined;
+var projectsList;
+
 
 /** React state of the App component */
 export interface AppState {
@@ -205,15 +211,16 @@ class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps, OpenIM
     const projectName = Config.App.get("imjs_test_project");
     const imodelName = Config.App.get("imjs_test_imodel");
 
-    const requestContext: AuthorizedFrontendRequestContext = await AuthorizedFrontendRequestContext.create();
-
-    const connectClient = new ConnectClient();
+    requestContext = await AuthorizedFrontendRequestContext.create();
+    connectClient = new ConnectClient();
+    projectsList = connectClient.getProjects(requestContext);
     let project: Project;
     try {
       project = await connectClient.getProject(requestContext, { $filter: `Name+eq+'${projectName}'` });
     } catch (e) {
       throw new Error(`Project with name "${projectName}" does not exist`);
     }
+    IModelApp.iModelClient.iModels.get(requestContext, project.wsgId);
 
     const imodelQuery = new IModelQuery();
     imodelQuery.byName(imodelName);
@@ -265,6 +272,9 @@ interface IModelComponentsProps {
 /** Renders a viewport, a tree, a property grid and a table */
 class IModelComponents extends React.PureComponent<IModelComponentsProps> {
   public render() {
+    /*
+     <Button id="New iModel" title="Select new iModel" onClick = "">Select new iModel</Button>
+    */
     // ID of the presentation ruleset used by all of the controls; the ruleset
     // can be found at `assets/presentation_rules/Default.PresentationRuleSet.xml`
     const rulesetId = "Default";
@@ -278,9 +288,11 @@ class IModelComponents extends React.PureComponent<IModelComponentsProps> {
             <TreeWidget imodel={this.props.imodel} rulesetId={rulesetId} />
           </div>
           <div className="bottom">
-            <Button id="New iModel" title="Select new iModel" /*onClick = "" */>Select new iModel</Button>
+            <div className="bottom-middle">
+              <GroupWidget />
+            </div>
             <div className="sub">
-            <PropertiesWidget imodel={this.props.imodel} rulesetId={rulesetId} />
+              <PropertiesWidget imodel={this.props.imodel} rulesetId={rulesetId} />
             </div>
           </div>
         </div>
