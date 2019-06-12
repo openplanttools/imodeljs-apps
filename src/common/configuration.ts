@@ -25,7 +25,7 @@ export const enum UseBackend {
  */
 export default function setupEnv() {
   Config.App.merge({
-    imjs_browser_test_redirect_uri : "electron://frontend/signin-callback",
+
     // -----------------------------------------------------------------------------------------------------------
     // Client registration (RECOMMENDED but OPTIONAL)
     // Must set these variables before deployment, but the supplied defaults can be used for testing on localhost.
@@ -33,20 +33,34 @@ export default function setupEnv() {
     // of running this sample on localhost, ensure your registration includes http://localhost:3000/signin-callback as a
     // valid redirect URI.
     // -----------------------------------------------------------------------------------------------------------
-    //imjs_browser_test_client_id: "spa-QtBqEiXs0Pj9lLoiTWhMnkvjz",
-    imjs_browser_test_client_id: "spa-8scTx3MHEhfdtAi0QhiVbTCGm",
-    imjs_test_project: "testing27", // Set this to the name of the sample project
-    imjs_test_imodel: "testing27",
-    //imjs_buddi_resolve_url_using_region: "102",
-    // Set this to the registered clientId
-    // Note: "imodeljs-spa-test-2686" is setup to work with the (default) localhost redirect URI below
+
+    // (1) UN-COMMENT ONE OF THE FOLLOWING FOUR BLOCKS
+
+    // use to view in BROWSER (PRODUCTION only)
+    // imjs_browser_test_redirect_uri: "http://localhost:3000/signin-callback",
+    // imjs_browser_test_client_id: "imodeljs-spa-test-2686",
+
+    // use to view in BROWSER (QA only)
+    // imjs_browser_test_redirect_uri: "http://localhost:3000/signin-callback",
+    // imjs_browser_test_client_id: "imodeljs-spa-test-2686",
+    // imjs_buddi_resolve_url_using_region: "102",
+
+    // use to view in ELECTRON (PRODUCTION only)
+    // imjs_browser_test_redirect_uri: "electron://frontend/signin-callback",
+    // imjs_browser_test_client_id: "spa-TndE76P2OLOLZMumh7nx5yHjR",
+
+    // use to view in ELECTRON (QA only)
+    imjs_browser_test_redirect_uri: "electron://frontend/signin-callback",
+    imjs_browser_test_client_id: "spa-r2eFZFCkkth19yr8R2Ei4oTk1",
+    imjs_buddi_resolve_url_using_region: "102",
 
 
-    // Set this to be the registered redirect URI
-    // Note: "http://localhost:3000/signin-callback" is setup to work with the (default) clientId above
+    // (2) SET THE PROJECT AND IMODEL NAMES
+    imjs_test_project: "simple-viewer", // Set this to the name of the project
+    imjs_test_imodel: "simple-viewer", // Set this to the name of the iModel
 
+
+    // default permissions that allow the application to function
     imjs_browser_test_scope: "openid email profile organization imodelhub context-registry-service reality-data:read imodeljs-router",
-    // Set this to be the scopes of services the application needs to access
-    // Note: The default value set above ensures the minimal working of the application
   });
 }
