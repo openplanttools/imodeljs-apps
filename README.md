@@ -13,10 +13,10 @@
 4. Be able to change the view definition in the viewer.
 5. Be able to edit properties in the viewer.
 6. Resolve all warnings/errors.
-7. Fix initial button page
+7. Fix initial button page.
 8. Add scrolling to property.
 9. Fix the sign-in button (lacking access to currently fix this).
-Convert backend to be entirely electron/desktop based. - Nick **Done**
+10. Convert backend to be entirely electron/desktop based. - Nick **Done**
 
 ## Development Setup
 
