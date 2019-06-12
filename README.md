@@ -1,5 +1,13 @@
 # In Development PlantView application
 
+## Current TODO
+1. Manually pick which project to view -Nick In Progress, dependant on 5
+2. Display only relevant documents in tree. - Zach in progress!!
+3. Automatically update on changes.
+4. Formatting/updating viewer relative to model that is chosen. - Zach in progress!!
+5. Convert backend to be entirely electron/desktop based. - nick **Done**
+6. Be able to edit properties in the viewer.
+
 ## Development Setup
 
 1.	If you do not have a ProjectWise Project, register a sample one. Otherwise, you can skip this step.
@@ -51,13 +59,6 @@
 14.	*To view other projects/models, repeat steps 6, 7, 8, 9, 11, 12, and 13.*
 	NOTE: Step 10 does not need to be repeated.
 
-## Current TODOi
-1. Manually pick which project to view -Nick In Progress, dependant on 5
-2. Display only relevant documents in tree. -Zach
-3. Automatically update on changes.
-4. Formatting/updating viewer relative to model that is chosen.
-5. Convert backend to be entirely electron/desktop based. - nick **Done**
-6. Be able to edit properties in the viewer.
 ## Git instructions
 
 ### To Clone:
