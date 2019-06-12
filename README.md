@@ -8,6 +8,8 @@
 5. Be able to change the view definition in the viewer.
 6. Be able to edit properties in the viewer.
 7. Resolve all warnings/errors.
+8. Fix initial button page
+9. Add scrolling to property.
 Convert backend to be entirely electron/desktop based. - Nick **Done**
 
 ## Development Setup
