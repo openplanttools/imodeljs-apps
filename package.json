@@ -6,10 +6,6 @@
     "name": "Bentley Systems, Inc.",
     "url": "http://www.bentley.com"
   },
-  "os": [
-    "win32",
-    "linux"
-  ],
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -20,6 +16,7 @@
     "start:makeconfig": "strip-json-comments --no-whitespace ./src/common/config.json > ./lib/webresources/config.json",
     "electron": "electron lib/backend/main.js",
     "clean": "rimraf lib",
+    "build:mobile-backend": "tsc 1>&2 && webpack --config ./node_modules/@bentley/webpack-tools/mobile/backend.config.js --env.outdir=./lib/mobile --env.entry=./lib/backend/main.js --env.bundlename=main ",
     "test": "npm run test:unit && npm run test:integration && npm run test:e2e",
     "test:unit": "mocha --opts ./test/unit/mocha.opts \"test/unit/**/*.test.ts*\"",
     "test:integration": "mocha --opts ./test/integration/mocha.opts \"test/integration/**/*.test.ts*\"",
@@ -65,7 +62,7 @@
     "@bentley/electron-manager": "1.0.0",
     "@bentley/express-server": "1.0.0",
     "@bentley/geometry-core": "1.0.0",
-    "@bentley/icons-generic-webfont": "^0.0.22",
+    "@bentley/icons-generic-webfont": "^0.0.9",
     "@bentley/imodeljs-backend": "1.0.0",
     "@bentley/imodeljs-clients": "1.0.0",
     "@bentley/imodeljs-clients-backend": "1.0.0",
@@ -83,8 +80,8 @@
     "@bentley/ui-core": "1.0.0",
     "body-parser": "^1.18",
     "bunyan": "^1.8.12",
-    "jquery": "latest",
     "chai-jest-snapshot": "^2.0.0",
+    "chroma-js": "^2.0.3",
     "express": "^4",
     "inspire-tree": "^5.0.1",
     "lodash": "^4.17.10",
@@ -93,7 +90,8 @@
     "react-dnd-html5-backend": "^5.0.1",
     "react-dom": "^16.4.2",
     "react-redux": "^5.0.7",
-    "redux": "^4.0.0"
+    "redux": "^4.0.0",
+    "distinct-colors": "^1.0.4"
   },
   "devDependencies": {
     "@bentley/build-tools": "1.0.0",
@@ -107,6 +105,7 @@
     "@types/puppeteer": "^1.10.0",
     "@types/react": "^16.4.14",
     "@types/react-dom": "16.0.7",
+    "@types/chroma-js": "^1.4.1",
     "chai": "^4.2.0",
     "chromedriver": "^2.34.1",
     "electron": "^4.0.1",

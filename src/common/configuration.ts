@@ -56,8 +56,8 @@ export default function setupEnv() {
 
 
     // (2) SET THE PROJECT AND IMODEL NAMES
-    imjs_test_project: "simple-viewer", // Set this to the name of the project
-    imjs_test_imodel: "simple-viewer", // Set this to the name of the iModel
+    imjs_test_project: "opbimdev01", // Set this to the name of the project
+    imjs_test_imodel: "Nick-May2019", // Set this to the name of the iModel
 
 
     // default permissions that allow the application to function

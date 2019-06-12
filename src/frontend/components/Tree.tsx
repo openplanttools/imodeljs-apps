@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
-import { Tree } from "@bentley/ui-components";
+import { Tree, TreeNodeItem } from "@bentley/ui-components";
 import {
   IPresentationTreeDataProvider,
   PresentationTreeDataProvider,
@@ -21,12 +21,14 @@ export interface IModelConnectionProps {
   imodel: IModelConnection;
   /** ID of the presentation rule set to use for creating the hierarchy in the tree */
   rulesetId: string;
+  onNodesSelected?: (nodes: TreeNodeItem[], replace: boolean) => boolean;
 }
 
 /** React properties for the tree component, that accepts a data provider */
 export interface DataProviderProps {
   /** Custom tree data provider. */
   dataProvider: IPresentationTreeDataProvider;
+  onNodesSelected?: (nodes: TreeNodeItem[], replace: boolean) => boolean;
 }
 
 /** React properties for the tree component */
@@ -49,7 +51,7 @@ export default class SimpleTreeComponent extends React.PureComponent<Props> {
       <>
         <h3 data-testid="tree-component-header">{IModelApp.i18n.translate("SimpleViewer:components.tree")}</h3>
         <div style={{ flex: "1" }}>
-          <SimpleTree dataProvider={this.getDataProvider(this.props)}/>
+        <SimpleTree dataProvider={this.getDataProvider(this.props)} onNodesSelected={this.props.onNodesSelected}/>
         </div>
       </>
     );

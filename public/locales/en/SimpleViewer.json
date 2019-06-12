@@ -1,12 +1,18 @@
 {
-  "welcome-message": "Welcome to Simple Viewer App",
+  "welcome-message": "Welcome to HATCH Viewer App",
   "signing-in": "Signing-in",
   "components": {
     "imodel-picker": {
-      "open-imodel": "Open Sample iModel"
+      "open-imodel": "P&ID's"
     },
     "properties": "Properties",
     "table": "Table",
     "tree": "Tree"
+  },
+  "tools": {
+    "select": "Select Element",
+    "rotate": "Rotate",
+    "pan": "Pan",
+    "zoom": "Zoom"
   }
 }
