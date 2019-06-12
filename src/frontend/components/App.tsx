@@ -160,15 +160,15 @@ export default class App extends React.Component<{}, AppState> {
   private async getFirstViewDefinitionId(imodel: IModelConnection): Promise<Id64String> {
     const viewSpecs = await imodel.views.queryProps({});
     const acceptedViewClasses = [
-      /** "BisCore:SpatialViewDefinition", */
       "BisCore:SheetViewDefinition",
       "BisCore:DrawingViewDefinition",
+      "BisCore:SpatialViewDefinition",
+      "BisCore:OrthographicViewDefinition",
     ];
     const acceptedViewSpecs = viewSpecs.filter((spec) => (-1 !== acceptedViewClasses.indexOf(spec.classFullName)));
     if (0 === acceptedViewSpecs.length)
       throw new Error("No valid view definitions in imodel");
 
-    // Prefer spatial view over drawing.
     const sheetViews = acceptedViewSpecs.filter((v) => {
       return v.classFullName === "BisCore:DrawingViewDefinition";
     });

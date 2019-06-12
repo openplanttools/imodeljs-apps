@@ -3,14 +3,12 @@
 ## Current TODO
 1. Manually pick which project to view - Nick *in progress*
 2. Fix the sign-in button. - Zach *in progress*
-3. Formatting/updating viewer relative to model that is chosen. - Zach *in progress*
-4. Display only relevant documents in tree. - Zach *in progress*
-5. Automatically update on changes.
+3. Display only relevant documents in tree. - Zach *in progress*
+4. Automatically update on changes.
+5. Be able to change the view definition in the viewer.
 6. Be able to edit properties in the viewer.
 7. Resolve all warnings/errors.
 Convert backend to be entirely electron/desktop based. - Nick **Done**
-
-Display only relevant documents in tree. - Zach *in progress*
 
 ## Development Setup
 
