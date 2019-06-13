@@ -1,12 +1,74 @@
 # In Development PlantView application
 
 ## Current TODO
-1. Manually pick which project to view -Nick In Progress, dependant on 5
-2. Display only relevant documents in tree. -Zach
+1. Manually pick which project to view - Nick *in progress*
+2. Display only relevant documents in tree. - Zach *in progress*
+	Level 1: iModelHub project name (e.g. opbimdev01)
+	Level 2: iModel name (e.g. Nick-May2019)
+	Level 3: P&ID name (e.g. LakeLand), under PlantDocumentModel>Drawing
+	Level 4: P&ID graphic (e.g. Pid Graphic-3-29 w/ tag value (e.g. EX-0005), heat exchanger), under Equipment
+		- keep directories (e.g. Equipment, Valve, etc.)
+		- group simila rones together (e.g. Equipment > Centrifugal Pump > PMP-0001, PMP-0002)
 3. Automatically update on changes.
-4. Formatting/updating viewer relative to model that is chosen.
-5. Convert backend to be entirely electron/desktop based. - nick **Done**
-6. Be able to edit properties in the viewer.
+4. Be able to change the view definition in the viewer.
+5. Be able to edit properties in the viewer.
+6. Resolve all warnings/errors.
+7. Fix initial button page.
+8. Add scrolling to property.
+9. Fix the sign-in button (lacking access to currently fix this).
+10. Convert backend to be entirely electron/desktop based. - Nick **Done**
+
+## Development Setup
+
+1.	If you do not have a ProjectWise Project, register a sample one. Otherwise, you can skip this step.
+	- For *Production*, go to https://imodeljs.github.io/iModelJs-docs-output/getting-started/registration-dashboard/.
+	- For *QA*, go to http://builds.bentley.com/prgbuilds/AzureBuilds/iModelJsDocs/public/getting-started/registration-dashboard/.
+	Go to [Registered Products], and select [+ New Project].
+	Under [iModel Source], use the sample [Bentley Example] with the [Retail Building Sample] selection.
+
+2.	Open the Command Prompt.
+
+3.	Clone the rpeository from GitHub on your local machine with the following command:
+	*	git clone https://github.com/OpenPlantDev/PlantViewer
+
+4.	Navigate to the cloned directory with the following command:
+	*	cd PlantViewer
+
+5.	Open the directory in Visual Studio Code with the following command:
+	*	code .
+
+6.	Complete step *(1)* in [src/common/configuration.json] by un-commenting one of the four blocks.
+	- The first block runs the viewer in the *browser* in *Production*.
+	- The second block runs the viewer in the *browser* in *QA*.
+	- The third block runs the viewer in *electron* in *Production*.
+	- The fourth block runs the viewer in *electron* in *QA*.
+	NOTE: Highlighting the block and using [Ctrl + /] will comment/un-comment that section of code.
+
+7.  Complete step *(2)* in [src/common/configuration.json] by setting the project and iModel names.
+
+8.	Save your changes.
+
+9.	Type [Ctrl + `] to open the terminal in Visual Studio Code.
+
+10.	If you have not done so already, type the following command in the terminal to install the dependencies:
+	*	npm install
+	NOTE: This only needs to be done one time even if you change the configuration settings.
+
+11.	Type the following command in the terminal to build the application:
+	*	npm run build
+	
+12.	Type one of the following commands in the terminal to run the applicaiton:
+	- To run in browser:
+		*	npm run start:servers
+	- To run in electron:
+		*	npm run electron
+
+13.	To run in browser, open [localhost:3000] in a web browser.
+	To run in electron, a window will open automatically.
+	
+14.	*To view other projects/models, repeat steps 6, 7, 8, 9, 11, 12, and 13.*
+	NOTE: Step 10 does not need to be repeated.
+
 ## Git instructions
 
 ### To Clone:

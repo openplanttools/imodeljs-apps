@@ -25,7 +25,7 @@ export const enum UseBackend {
  */
 export default function setupEnv() {
   Config.App.merge({
-    imjs_browser_test_redirect_uri : "electron://frontend/signin-callback",
+
     // -----------------------------------------------------------------------------------------------------------
     // Client registration (RECOMMENDED but OPTIONAL)
     // Must set these variables before deployment, but the supplied defaults can be used for testing on localhost.
@@ -34,6 +34,8 @@ export default function setupEnv() {
     // valid redirect URI.
     // -----------------------------------------------------------------------------------------------------------
     //imjs_browser_test_client_id: "spa-QtBqEiXs0Pj9lLoiTWhMnkvjz",
+
+    /* Nick's stuff */
     imjs_browser_test_client_id: "spa-MBQFbO5ABzMeXkahkOslOJhs7",
     imjs_test_project: "testing27", // Set this to the name of the sample project
     imjs_test_imodel: "testing27",
@@ -42,11 +44,39 @@ export default function setupEnv() {
     // Note: "imodeljs-spa-test-2686" is setup to work with the (default) localhost redirect URI below
 
 
-    // Set this to be the registered redirect URI
-    // Note: "http://localhost:3000/signin-callback" is setup to work with the (default) clientId above
+    // (1) UN-COMMENT ONE OF THE FOLLOWING FOUR BLOCKS
 
+    // use to view in BROWSER (PRODUCTION only)
+    // imjs_browser_test_redirect_uri: "http://localhost:3000/signin-callback",
+    // imjs_browser_test_client_id: "imodeljs-spa-test-2686",
+
+    // use to view in BROWSER (QA only)
+    // imjs_browser_test_redirect_uri: "http://localhost:3000/signin-callback",
+    // imjs_browser_test_client_id: "imodeljs-spa-test-2686",
+    // imjs_buddi_resolve_url_using_region: "102",
+
+    // use to view in ELECTRON (PRODUCTION only)
+    // imjs_browser_test_redirect_uri: "electron://frontend/signin-callback",
+    // imjs_browser_test_client_id: "spa-TndE76P2OLOLZMumh7nx5yHjR",
+
+    // use to view in ELECTRON (QA only)
+    // imjs_browser_test_redirect_uri: "electron://frontend/signin-callback",
+    // imjs_browser_test_client_id: "spa-r2eFZFCkkth19yr8R2Ei4oTk1",
+    // imjs_buddi_resolve_url_using_region: "102",
+
+
+    // (2) SET THE PROJECT AND IMODEL NAMES
+    imjs_test_project: "OP_CE_VIEW", // Set this to the name of the project
+    imjs_test_imodel: "MistyMountainTop", // Set this to the name of the iModel
+
+
+<<<<<<< HEAD
     imjs_browser_test_scope: "openid email profile organization imodelhub context-registry-service reality-data:read",
     // Set this to be the scopes of services the application needs to access
     // Note: The default value set above ensures the minimal working of the application
+=======
+    // default permissions that allow the application to function
+    imjs_browser_test_scope: "openid email profile organization imodelhub context-registry-service reality-data:read imodeljs-router",
+>>>>>>> 617b2e1c946febc4fee30e69ad21ce607f9281a7
   });
 }
