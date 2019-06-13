@@ -1,0 +1,12 @@
+{
+  "welcome-message": "Plant Viewer",
+  "signing-in": "Signing in",
+  "components": {
+    "imodel-picker": {
+      "open-imodel": "Open iModel"
+    },
+    "properties": "Properties",
+    "table": "Table",
+    "tree": "Tree"
+  }
+}

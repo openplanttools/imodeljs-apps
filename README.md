@@ -2,21 +2,20 @@
 
 ## Current TODO
 1. Manually pick which project to view - Nick *in progress*
-2. Display only relevant documents in tree. - Zach *in progress*
+2. Allow menu options to be expanded and closed. - Zach *in progress*
+3. Display only relevant documents in tree. - Zach *in progress*
 	Level 1: iModelHub project name (e.g. opbimdev01)
 	Level 2: iModel name (e.g. Nick-May2019)
 	Level 3: P&ID name (e.g. LakeLand), under PlantDocumentModel>Drawing
 	Level 4: P&ID graphic (e.g. Pid Graphic-3-29 w/ tag value (e.g. EX-0005), heat exchanger), under Equipment
 		- keep directories (e.g. Equipment, Valve, etc.)
 		- group simila rones together (e.g. Equipment > Centrifugal Pump > PMP-0001, PMP-0002)
-3. Automatically update on changes.
-4. Be able to change the view definition in the viewer.
-5. Be able to edit properties in the viewer.
-6. Resolve all warnings/errors.
-7. Fix initial button page.
-8. Add scrolling to property.
-9. Fix the sign-in button (lacking access to currently fix this).
-10. Convert backend to be entirely electron/desktop based. - Nick **Done**
+4. Automatically update on changes.
+5. Be able to change the view definition in the viewer.
+6. Be able to edit properties in the viewer.
+7. Resolve all warnings/errors.
+8. Fix initial button page.
+9. Add scrolling to property.
 
 ## Development Setup
 

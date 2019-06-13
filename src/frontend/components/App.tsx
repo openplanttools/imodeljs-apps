@@ -217,6 +217,10 @@ export default class App extends React.Component<{}, AppState> {
     return split[split.length - 1];
   }
 
+  private _menuClick = async () => {
+    $(".app-header").css("background-color", "white");
+  }
+
   /** The component's render method */
   public render() {
     let ui: React.ReactNode;
@@ -239,7 +243,14 @@ export default class App extends React.Component<{}, AppState> {
     return (
       <div className="app">
         <div className="app-header">
-          <h2>{IModelApp.i18n.translate("SimpleViewer:welcome-message")}</h2>
+          <div className="text">
+            <h2>Plant Viewer</h2>
+          </div>
+          <div className="menu">
+            <Button size={ButtonSize.Default} buttonType={ButtonType.Primary} className="expand-menu" onClick={this._menuClick}>
+              <span>Menu</span>
+            </Button>
+          </div>
         </div>
         {ui}
       </div>
@@ -326,6 +337,7 @@ interface IModelComponentsProps {
 }
 /** Renders a viewport, a tree, a property grid and a table */
 class IModelComponents extends React.PureComponent<IModelComponentsProps> {
+
   public render() {
     /*
      <Button id="New iModel" title="Select new iModel" onClick = "">Select new iModel</Button>

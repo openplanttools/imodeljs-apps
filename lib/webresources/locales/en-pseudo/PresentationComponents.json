@@ -1,0 +1,11 @@
+{
+  "categories": {
+    "favorite": {
+      "label": "Fàvórîtë",
+      "description": "Fàvórîtë pröpértîës"
+    }
+  },
+  "property-grid": {
+    "too-many-elements-selected": "Tòó mâñý élêmëñts sélêçtèd"
+  }
+}
