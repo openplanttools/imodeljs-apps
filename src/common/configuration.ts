@@ -56,7 +56,7 @@ export default function setupEnv() {
     // imjs_buddi_resolve_url_using_region: "102",
 
     // use to view in ELECTRON (PRODUCTION only)
-    // imjs_browser_test_redirect_uri: "electron://frontend/signin-callback",
+     imjs_browser_test_redirect_uri: "electron://frontend/signin-callback",
     // imjs_browser_test_client_id: "spa-TndE76P2OLOLZMumh7nx5yHjR",
 
     // use to view in ELECTRON (QA only)
