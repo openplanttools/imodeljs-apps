@@ -1,6 +1,6 @@
 {
-  "short_name": "simple-viewer-app",
-  "name": "HATCH Component Viewer App",
+  "short_name": "plant-viewer",
+  "name": "Plant Viewer",
   "icons": [
     {
       "src": "favicon.ico",
