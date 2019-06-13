@@ -4,10 +4,10 @@
 *--------------------------------------------------------------------------------------------*/
 
 import * as React from "react";
-import {
-  IModelApp, IModelConnection
-  ZoomViewTool, PanViewTool, RotateViewTool, SelectionTool, FitViewTool,
-} from "@bentley/imodeljs-frontend";
+// import {
+//   IModelApp, IModelConnection,
+//   ZoomViewTool, PanViewTool, RotateViewTool, SelectionTool, FitViewTool,
+// } from "@bentley/imodeljs-frontend";
 /*
 import {
   IModelApp,
@@ -16,8 +16,8 @@ import {
 */
 import "./Group.scss";
 import { Button, ButtonType } from "@bentley/ui-core";
-import { IModelJsElectronManager } from "@bentley/electron-manager";
-import { IModelHubClient } from "@bentley/imodeljs-clients";
+//import { IModelJsElectronManager } from "@bentley/electron-manager";
+//import { IModelHubClient } from "@bentley/imodeljs-clients";
 
 /** Toolbar containing simple navigation tools */
 const groupWidget = () => {
@@ -39,9 +39,9 @@ const groupWidget = () => {
       </div>
         );
       };
-      const select = () => {
-        let iModelList = IModelConnection.rootSubjectId
-      };
+      // const select = () => {
+      //   let iModelList = IModelConnection.rootSubjectId
+      // };
       /**
        * See the https://imodeljs.github.io/iModelJs-docs-output/learning/frontend/tools/
        * for more details and available tools.

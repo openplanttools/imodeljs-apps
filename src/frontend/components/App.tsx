@@ -30,7 +30,7 @@ import { ColorDef } from "@bentley/imodeljs-common";
 // cSpell:ignore imodels
 var requestContext: AuthorizedFrontendRequestContext | undefined;
 var connectClient: ConnectClient | undefined;
-var projectsList;
+//var projectsList;
 
 
 /** React state of the App component */
@@ -268,7 +268,7 @@ class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps, OpenIM
 
     requestContext = await AuthorizedFrontendRequestContext.create();
     connectClient = new ConnectClient();
-    projectsList = connectClient.getProjects(requestContext);
+    //projectsList = connectClient.getProjects(requestContext);
     let project: Project;
     try {
       project = await connectClient.getProject(requestContext, { $filter: `Name+eq+'${projectName}'` });

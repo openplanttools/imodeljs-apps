@@ -66,17 +66,17 @@ export default function setupEnv() {
 
 
     // (2) SET THE PROJECT AND IMODEL NAMES
-    imjs_test_project: "OP_CE_VIEW", // Set this to the name of the project
-    imjs_test_imodel: "MistyMountainTop", // Set this to the name of the iModel
+    //imjs_test_project: "OP_CE_VIEW", // Set this to the name of the project
+   // imjs_test_imodel: "MistyMountainTop", // Set this to the name of the iModel
 
 
-<<<<<<< HEAD
+    /*Nick's permissions */
     imjs_browser_test_scope: "openid email profile organization imodelhub context-registry-service reality-data:read",
     // Set this to be the scopes of services the application needs to access
     // Note: The default value set above ensures the minimal working of the application
-=======
+
     // default permissions that allow the application to function
-    imjs_browser_test_scope: "openid email profile organization imodelhub context-registry-service reality-data:read imodeljs-router",
->>>>>>> 617b2e1c946febc4fee30e69ad21ce607f9281a7
+    //imjs_browser_test_scope: "openid email profile organization imodelhub context-registry-service reality-data:read imodeljs-router",
+
   });
 }
