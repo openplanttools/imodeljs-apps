@@ -218,11 +218,13 @@ export default class App extends React.Component<{}, AppState> {
   }
 
   private _menuClick = async () => {
-    $(".app-header").css("background-color", "white");
+    this.render();
   }
 
   /** The component's render method */
   public render() {
+    console.log("test");
+
     let ui: React.ReactNode;
 
     if (this.state.user.isLoading || window.location.href.includes(this._signInRedirectUri)) {
