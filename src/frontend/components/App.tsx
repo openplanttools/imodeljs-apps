@@ -42,6 +42,7 @@ export interface AppState {
   imodel?: IModelConnection;
   viewDefinitionId?: Id64String;
   menuOpened: boolean;
+  title: string;
 }
 
 /** A component the renders the whole application UI */
@@ -58,6 +59,7 @@ export default class App extends React.Component<{}, AppState> {
       },
       offlineIModel: false,
       menuOpened: false,
+      title: "Plant Viewer:  <Project: " + Config.App.get("imjs_test_project") + ">  <iModel: " + Config.App.get("imjs_test_imodel") + ">",
     };
   }
 
@@ -238,7 +240,8 @@ export default class App extends React.Component<{}, AppState> {
       ui = (<OpenIModelButton accessToken={this.state.user.accessToken} offlineIModel={this.state.offlineIModel} onIModelSelected={this._onIModelSelected} />);
     } else {
       // if we do have an imodel and view definition id - render imodel components
-      ui = (<IModelComponents imodel={this.state.imodel} viewDefinitionId={this.state.viewDefinitionId} menuOpened={this.state.menuOpened} />);
+      const titleName: string = "Plant Viewer:  <Project: " + Config.App.get("imjs_test_project") + ">  <iModel: " + Config.App.get("imjs_test_imodel") + ">";
+      ui = (<IModelComponents imodel={this.state.imodel} viewDefinitionId={this.state.viewDefinitionId} menuOpened={this.state.menuOpened} title={titleName} />);
     }
 
     // render the app
@@ -246,7 +249,7 @@ export default class App extends React.Component<{}, AppState> {
       <div className="app">
         <div className="app-header">
           <div className="text">
-            <h2>Plant Viewer</h2>
+            <h2>{this.state.title}</h2>
           </div>
           <div className="menu">
             <Button size={ButtonSize.Default} buttonType={ButtonType.Primary} className="expand-menu" onClick={this._menuClick}>
@@ -337,6 +340,7 @@ interface IModelComponentsProps {
   imodel: IModelConnection;
   viewDefinitionId: Id64String;
   menuOpened: boolean;
+  title: string;
 }
 /** Renders a viewport, a tree, a property grid and a table */
 class IModelComponents extends React.PureComponent<IModelComponentsProps> {
@@ -349,7 +353,7 @@ class IModelComponents extends React.PureComponent<IModelComponentsProps> {
     // can be found at `assets/presentation_rules/Default.PresentationRuleSet.xml`
     const rulesetId = "Default";
 
-    // open with Menu closed
+    // open with Menu opened
     if (this.props.menuOpened) {
       return (
         <div className="app-content">
@@ -375,8 +379,7 @@ class IModelComponents extends React.PureComponent<IModelComponentsProps> {
         </div>
       );
     }
-
-    // open with Menu opened
+    // open with Menu closed
     else {
       return (
         <div className="app-content">
