@@ -5,7 +5,7 @@
 import * as React from "react";
 import { Id64String, OpenMode } from "@bentley/bentleyjs-core";
 import { Range3d } from "@bentley/geometry-core";
-import { AccessToken, ConnectClient, IModelQuery, Project, Config } from "@bentley/imodeljs-clients";
+import { AccessToken, ConnectClient, IModelQuery, Project, Config, HubIModel } from "@bentley/imodeljs-clients";
 import { IModelApp, IModelConnection, FrontendRequestContext, AuthorizedFrontendRequestContext, DrawingViewState, ScreenViewport, EmphasizeElements, FeatureOverrideType } from "@bentley/imodeljs-frontend";
 import { Presentation, SelectionChangeEventArgs, ISelectionProvider } from "@bentley/presentation-frontend";
 import { Button, ButtonSize, ButtonType, Spinner, SpinnerSize } from "@bentley/ui-core";
@@ -28,9 +28,29 @@ import { ColorDef } from "@bentley/imodeljs-common";
 
 // tslint:disable: no-console
 // cSpell:ignore imodels
+
 var requestContext: AuthorizedFrontendRequestContext | undefined;
 var connectClient: ConnectClient | undefined;
-//var projectsList;
+var project: Project;
+var resolvedIModelList: HubIModel[];
+var currentIModel: string;
+var projectsList: any;
+
+export function getIModelsList() {
+  return resolvedIModelList;
+}
+
+export function getProjectsList() {
+  return projectsList;
+}
+
+export function getCurrentProject() {
+  return project;
+}
+
+export function getCurrentIModel() {
+  return currentIModel;
+}
 
 /** React state of the App component */
 export interface AppState {
@@ -85,7 +105,7 @@ export default class App extends React.Component<{}, AppState> {
   }
 
   // change the viewport to display a new drawing, by drawing id
-  public async changeView(newDrawingId: string, vp: ScreenViewport, doFit?: boolean ) {
+  public async changeView(newDrawingId: string, vp: ScreenViewport, doFit?: boolean) {
     const view = vp.view;
     if (!(view instanceof DrawingViewState)) // this only works if the viewport is showing a DrawingView
       return;
@@ -99,7 +119,7 @@ export default class App extends React.Component<{}, AppState> {
 
     if (doFit) { // optionally, change the view to show the whole drawing
       const range = await vp.iModel.models.queryModelRanges([newDrawingId]); // get the drawing's range
-      vp.zoomToVolume(Range3d.fromJSON(range[0]), {animateFrustumChange: false}); // don't bother to animate since starting point is not relevant
+      vp.zoomToVolume(Range3d.fromJSON(range[0]), { animateFrustumChange: false }); // don't bother to animate since starting point is not relevant
     }
   }
 
@@ -117,12 +137,12 @@ export default class App extends React.Component<{}, AppState> {
 
     // Determine all distinct categories in the model
     const categoryIds = new Array<Id64String>();
-    for await (const categoryId of vp.iModel.query("SELECT DISTINCT Category.Id as id FROM bis.GeometricElement2d WHERE Model.Id=:modelId", {modelId})) {
+    for await (const categoryId of vp.iModel.query("SELECT DISTINCT Category.Id as id FROM bis.GeometricElement2d WHERE Model.Id=:modelId", { modelId })) {
       categoryIds.push(categoryId.id);
     }
 
     // Determine a palette of visually distinct colors for every category of elements in the model
-    const colorPalette: chroma.Color[] = distinctColors({count: categoryIds.length});
+    const colorPalette: chroma.Color[] = distinctColors({ count: categoryIds.length });
 
     // Setup the display for each distinct category in the selected model
     emphasize.clearOverriddenElements(vp);
@@ -131,7 +151,7 @@ export default class App extends React.Component<{}, AppState> {
       const elementIds = new Array<Id64String>();
       const categoryId = categoryIds[ii];
       const ecsql = "SELECT ECInstanceId as id FROM bis.GeometricElement2d WHERE Model.Id=:modelId AND Category.Id=:categoryId";
-      for await (const elementId of vp.iModel.query(ecsql, {modelId, categoryId})) {
+      for await (const elementId of vp.iModel.query(ecsql, { modelId, categoryId })) {
         elementIds.push(elementId.id);
       }
 
@@ -284,20 +304,20 @@ class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps, OpenIM
 
     requestContext = await AuthorizedFrontendRequestContext.create();
     connectClient = new ConnectClient();
-    //projectsList = connectClient.getProjects(requestContext);
-    let project: Project;
+    projectsList = connectClient.getProjects(requestContext);
     try {
       project = await connectClient.getProject(requestContext, { $filter: `Name+eq+'${projectName}'` });
     } catch (e) {
       throw new Error(`Project with name "${projectName}" does not exist`);
     }
-    IModelApp.iModelClient.iModels.get(requestContext, project.wsgId);
-
+    resolvedIModelList = await IModelApp.iModelClient.iModels.get(requestContext, project.wsgId);
     const imodelQuery = new IModelQuery();
+    ipcRenderer.send("iModelData", project, resolvedIModelList);
     imodelQuery.byName(imodelName);
     const imodels = await IModelApp.iModelClient.iModels.get(requestContext, project.wsgId, imodelQuery);
     if (imodels.length === 0)
       throw new Error(`iModel with name "${imodelName}" does not exist in project "${projectName}"`);
+    currentIModel = imodels[0].wsgId;
     return { projectId: project.wsgId, imodelId: imodels[0].wsgId };
   }
 
@@ -390,4 +410,46 @@ class IModelComponents extends React.PureComponent<IModelComponentsProps> {
       );
     }
   }
+}
+
+import * as frontend from "./App";
+import "./Group.scss";
+import { ipcRenderer } from "electron";
+
+interface IProps {
+  title: string;
+}
+/** Toolbar containing simple navigation tools */
+  export class IModelList extends React.Component <IProps, {}>  {
+  constructor(props: IProps) {
+    super(props);
+  }
+  public render() {
+  const topTitle = "Project: " + frontend.getCurrentProject + " , List of available iModel's";
+  // let iModelNames = [];
+  const listOfIModels = frontend.getIModelsList();
+  const nameList = document.createElement("ul");
+  if (frontend.getIModelsList)
+    for (let i = 0; i < listOfIModels.length; i++) {
+      let listItem = document.createElement("li");
+      listItem.appendChild(document.createTextNode(listOfIModels[i].wsgId));
+      nameList.appendChild(listItem);
+    }
+  const generatedList: HTMLElement | null = document.getElementById("List");
+  if (generatedList) {
+    generatedList.appendChild(nameList);
+  }
+  const title = document.getElementById("Title");
+  if (title) {
+  title.nodeValue = topTitle;
+  }
+  return (
+    <div>
+      <link rel="stylesheet" type="text/css" />
+      <h2 title={topTitle}> </h2>
+      <div className="List" id="List">
+      </div>
+    </div>
+  );
+}
 }

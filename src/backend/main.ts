@@ -25,7 +25,6 @@ Presentation.initialize({
   // May be omitted if application doesn't have any presentation rules.
   rulesetDirectories: [path.join("assets", "presentation_rules")],
 });
-
 // invoke platform-specific initialization
 // tslint:disable-next-line:no-floating-promises
 (async () => {

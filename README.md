@@ -1,16 +1,20 @@
 # In Development PlantView application
 
 ## Current TODO
-1. Manually pick which project to view - Nick *in progress*
+1. Manually view all projects **Done** - Nick
 2. Display only relevant documents in tree. - Zach *in progress*
 3. Automatically update on changes.
 4. Be able to change the view definition in the viewer.
 5. Be able to edit properties in the viewer.
-6. Fix initial button page.
-7. Add scrolling to property.
-8. Clean up code - Nick
-9. Comment code - Nick
-10. Fix spacing of widgets 
+6. Resolve all warnings/errors.
+7. Fix initial button page.
+8. Add scrolling to property.
+9. Fix the sign-in button (lacking access to currently fix this).
+10. Convert backend to be entirely electron/desktop based. - Nick **Done**
+11. Pick which project *in progress* - Nick
+12. Clean up code base *ongoing* - Nick
+13. Comment parts for explanations *ongoing* - Nick
+14. Fix CSS formatting
 
 ##### (2) Display only relevant documents in tree.
 1. iModelHub project name (e.g. opbimdev01)
@@ -58,7 +62,7 @@
 
 11.	Type the following command in the terminal to build the application:
 	*	npm run build
-	
+
 12.	Type one of the following commands in the terminal to run the applicaiton:
 	- To run in browser:
 		*	npm run start:servers
@@ -67,7 +71,7 @@
 
 13.	To run in browser, open [localhost:3000] in a web browser.
 	To run in electron, a window will open automatically.
-	
+
 14.	*To view other projects/models, repeat steps 6, 7, 8, 9, 11, 12, and 13.*
 	NOTE: Step 10 does not need to be repeated.
 
