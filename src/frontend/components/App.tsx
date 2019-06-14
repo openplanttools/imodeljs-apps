@@ -32,7 +32,6 @@ var requestContext: AuthorizedFrontendRequestContext | undefined;
 var connectClient: ConnectClient | undefined;
 //var projectsList;
 
-
 /** React state of the App component */
 export interface AppState {
   user: {
@@ -42,6 +41,7 @@ export interface AppState {
   offlineIModel: boolean;
   imodel?: IModelConnection;
   viewDefinitionId?: Id64String;
+  menuOpened: boolean;
 }
 
 /** A component the renders the whole application UI */
@@ -57,6 +57,7 @@ export default class App extends React.Component<{}, AppState> {
         accessToken: undefined,
       },
       offlineIModel: false,
+      menuOpened: false,
     };
   }
 
@@ -218,12 +219,11 @@ export default class App extends React.Component<{}, AppState> {
   }
 
   private _menuClick = async () => {
-    this.render();
+    this.setState({ menuOpened: !this.state.menuOpened });
   }
 
   /** The component's render method */
   public render() {
-    console.log("test");
 
     let ui: React.ReactNode;
 
@@ -238,7 +238,7 @@ export default class App extends React.Component<{}, AppState> {
       ui = (<OpenIModelButton accessToken={this.state.user.accessToken} offlineIModel={this.state.offlineIModel} onIModelSelected={this._onIModelSelected} />);
     } else {
       // if we do have an imodel and view definition id - render imodel components
-      ui = (<IModelComponents imodel={this.state.imodel} viewDefinitionId={this.state.viewDefinitionId} />);
+      ui = (<IModelComponents imodel={this.state.imodel} viewDefinitionId={this.state.viewDefinitionId} menuOpened={this.state.menuOpened} />);
     }
 
     // render the app
@@ -336,6 +336,7 @@ class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps, OpenIM
 interface IModelComponentsProps {
   imodel: IModelConnection;
   viewDefinitionId: Id64String;
+  menuOpened: boolean;
 }
 /** Renders a viewport, a tree, a property grid and a table */
 class IModelComponents extends React.PureComponent<IModelComponentsProps> {
@@ -347,28 +348,43 @@ class IModelComponents extends React.PureComponent<IModelComponentsProps> {
     // ID of the presentation ruleset used by all of the controls; the ruleset
     // can be found at `assets/presentation_rules/Default.PresentationRuleSet.xml`
     const rulesetId = "Default";
-    return (
-      <div className="app-content">
-        <div className="top-left" id="viewport1">
-          <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={this.props.viewDefinitionId} />
-        </div>
-        <div className="right">
-          <div className="top">
-            <TreeWidget imodel={this.props.imodel} rulesetId={rulesetId} />
+
+    // open with Menu closed
+    if (this.props.menuOpened) {
+      return (
+        <div className="app-content">
+          <div className="top-left" id="viewport1">
+            <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={this.props.viewDefinitionId} />
+          </div>
+          <div className="right">
+            <div className="top">
+              <TreeWidget imodel={this.props.imodel} rulesetId={rulesetId} />
+            </div>
+            <div className="bottom">
+              <div className="bottom-middle">
+                <GroupWidget />
+              </div>
+              <div className="sub">
+                <PropertiesWidget imodel={this.props.imodel} rulesetId={rulesetId} />
+              </div>
+            </div>
           </div>
           <div className="bottom">
-            <div className="bottom-middle">
-              <GroupWidget />
-            </div>
-            <div className="sub">
-              <PropertiesWidget imodel={this.props.imodel} rulesetId={rulesetId} />
-            </div>
+            <GridWidget imodel={this.props.imodel} rulesetId={rulesetId} />
           </div>
         </div>
-        <div className="bottom">
-          <GridWidget imodel={this.props.imodel} rulesetId={rulesetId} />
+      );
+    }
+
+    // open with Menu opened
+    else {
+      return (
+        <div className="app-content">
+          <div className="top-left-expanded" id="viewport1">
+            <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={this.props.viewDefinitionId} />
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
   }
 }
