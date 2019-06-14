@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
-import { Tree, TreeNodeItem } from "@bentley/ui-components";
+import { Tree, TreeNodeItem, DelayLoadedTreeNodeItem } from "@bentley/ui-components";
 import {
   IPresentationTreeDataProvider,
   PresentationTreeDataProvider,
@@ -42,11 +42,32 @@ export default class SimpleTreeComponent extends React.PureComponent<Props> {
       return providerProps.dataProvider;
     } else {
       const imodelProps = props as IModelConnectionProps;
-      return new PresentationTreeDataProvider(imodelProps.imodel, imodelProps.rulesetId);
+      const provider: PresentationTreeDataProvider = new PresentationTreeDataProvider(imodelProps.imodel, imodelProps.rulesetId);
+      console.log(provider.getNodes());
+      return provider;
     }
   }
 
+  // ZD_TODO
+  private async promiseTesting() {
+    let myNodes: DelayLoadedTreeNodeItem[] = await this.getDataProvider(this.props).getNodes();
+    console.log("myNodes");
+    console.log(myNodes);
+    console.log("myNodes.length");
+    console.log(myNodes.length);
+    return myNodes;
+  }
+
   public render() {
+
+    // ZD_TODO
+    let rootNode: DelayLoadedTreeNodeItem;
+    this.promiseTesting().then(function (v) {
+      rootNode = v[0];
+      console.log("rootNode");
+      console.log(rootNode);
+    });
+
     return (
       <>
         <h3 data-testid="tree-component-header">{IModelApp.i18n.translate("SimpleViewer:components.tree")}</h3>
