@@ -8,6 +8,7 @@ import { SimpleViewerApp } from "./api/SimpleViewerApp";
 import App from "./components/App";
 import "./index.css";
 import setupEnv from "../common/configuration";
+// import ViewManager from ‘./ViewManager’;
 
 // setup environment
 setupEnv();
@@ -22,4 +23,5 @@ SimpleViewerApp.ready.then(() => {
     <App />,
     document.getElementById("root") as HTMLElement,
   );
+  // ReactDOM.render(<ViewManager />, document.getElementById("root"));
 });

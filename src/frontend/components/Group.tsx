@@ -4,6 +4,8 @@
 *--------------------------------------------------------------------------------------------*/
 
 import * as React from "react";
+//import "@bentley/ui-core/lib/ui-core/UiCore"
+import * as backend from "../../backend/electron/main";
 // import {
 //   IModelApp, IModelConnection,
 //   ZoomViewTool, PanViewTool, RotateViewTool, SelectionTool, FitViewTool,
@@ -16,36 +18,39 @@ import {
 */
 import "./Group.scss";
 import { Button, ButtonType } from "@bentley/ui-core";
+// import {ipcRenderer } from "electron";
+//import { render } from "enzyme";
 //import { IModelJsElectronManager } from "@bentley/electron-manager";
 //import { IModelHubClient } from "@bentley/imodeljs-clients";
 
 /** Toolbar containing simple navigation tools */
 const groupWidget = () => {
   return (
-      <div>
-        <link rel='stylesheet' href='Group.scss' type='text/css' />
-        <h2>New iModel</h2>
-        <div className = "formField">
+    <div>
+      <link rel='stylesheet' href='Group.scss' type='text/css' />
+      <h2>New iModel</h2>
+      <div className="formField">
         <input type='text' id="openinput" name='text1' />
         <form name="form1" action="#" /*METHOD*/>
         </form>
-        </div>
-          <div className="midLeft">
-          <Button id="submitt" buttonType= {ButtonType.Primary} name="submit" value="Submit">Submit</Button>
-          {/* <div className="column"><input type='button' id="submitt" value="Submit"></input></div>
-          <div className="column"><input type='button' id="newImodel" value="Select new iModel"></input></div> */}
-          <Button id = "newImodel" buttonType= {ButtonType.Primary} title="newImodel">View iModels</Button>
-          </div>
       </div>
-        );
-      };
-      // const select = () => {
-      //   let iModelList = IModelConnection.rootSubjectId
-      // };
-      /**
-       * See the https://imodeljs.github.io/iModelJs-docs-output/learning/frontend/tools/
-       * for more details and available tools.
-       */
+      <div className="midLeft">
+        <Button id="submitt" buttonType={ButtonType.Primary} name="submit" value="Submit">Submit</Button>
+        {/* <div className="column"><input type='button' id="submitt" value="Submit"></input></div>
+          <div className="column"><input type='button' id="newImodel" value="Select new iModel"></input></div> */}
+        <Button id="newImodel" buttonType={ButtonType.Primary} onClick={select} >View iModels</Button>
+      </div>
+    </div>
+  );
+};
+const select = () => {
+  backend.initializePopup();
+};
+
+/**
+ * See the https://imodeljs.github.io/iModelJs-docs-output/learning/frontend/tools/
+ * for more details and available tools.
+ */
 /*
 const select = () => {
           IModelApp.tools.run(SelectionTool.toolId);
@@ -67,4 +72,4 @@ const zoom = () => {
           IModelApp.tools.run(ZoomViewTool.toolId, IModelApp.viewManager.selectedView);
         };
 */
-        export default groupWidget;
+export default groupWidget;
