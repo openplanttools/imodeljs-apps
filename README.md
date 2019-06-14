@@ -12,7 +12,7 @@
 9. Comment code - Nick
 10. Fix spacing of widgets 
 
-### (2) Display only relevant documents in tree.
+## (2) Display only relevant documents in tree.
 1. iModelHub project name (e.g. opbimdev01)
 2. iModel name (e.g. Nick-May2019)
 3. P&ID name (e.g. LakeLand), under PlantDocumentModel>Drawing
