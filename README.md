@@ -13,9 +13,11 @@
 4. Automatically update on changes.
 5. Be able to change the view definition in the viewer.
 6. Be able to edit properties in the viewer.
-7. Resolve all warnings/errors.
-8. Fix initial button page.
-9. Add scrolling to property.
+7. Fix initial button page.
+8. Add scrolling to property.
+9. Clean up code - Nick
+10. Comment code - Nick
+11. Fix spacing of widgets 
 
 ## Development Setup
 
