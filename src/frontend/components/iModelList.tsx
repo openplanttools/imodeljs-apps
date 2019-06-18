@@ -19,6 +19,12 @@ const iModelDataWidget = () => {
     iModelValue: "Testing 2",
     key: "Testing 2",
   };
+  let defaultData = {
+    iModelName: "Pick an iModel",
+    iModelValue: "Pick an iModel",
+    key: "Pick an iModel",
+  };
+  iModelData.push(defaultData);
   testData.push(testData1);
   testData.push(testData2);
   const listOfIModels: HubIModel[] = getiModelsList();

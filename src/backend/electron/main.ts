@@ -3,17 +3,18 @@
 * Licensed under the MIT License. See LICENSE.md in the project root for license terms.
 *--------------------------------------------------------------------------------------------*/
 import * as path from "path";
-import { RpcInterfaceDefinition, ElectronRpcManager} from "@bentley/imodeljs-common";
+import { RpcInterfaceDefinition, ElectronRpcManager } from "@bentley/imodeljs-common";
 import { IModelJsElectronManager } from "@bentley/electron-manager";
 import * as electron from "electron";
+const globalShortcut = electron.globalShortcut;
 
 import { HubIModel, Project } from "@bentley/imodeljs-clients";
-if(electron){
+if (electron) {
   console.log("Electron is loaded");
 } else {
   console.log("Electron not loaded");
 }
-if(electron.ipcMain){
+if (electron.ipcMain) {
   console.log(electron.ipcMain + "electron ipc main loaded");
 }
 var iModelsList: HubIModel[];
@@ -42,25 +43,29 @@ export var setiModelsList = (listOfModels: HubIModel[]) => {
  */
 const manager = new IModelJsElectronManager(path.join(__dirname, "..", "..", "webresources"));
 export default function initialize(rpcs: RpcInterfaceDefinition[]) {
-(async () => { // tslint:disable-line:no-floating-promises
-  await manager.initialize({
-    width: 1280,
-    height: 800,
-    title: "Plant View",
+  (async () => { // tslint:disable-line:no-floating-promises
+    await manager.initialize({
+      width: 1280,
+      height: 800,
+      title: "Plant View",
 
-    webPreferences: {
-      preload: path.resolve('preload.js'),
-      experimentalFeatures: true, // Needed for CSS Grid support
-    },
-    autoHideMenuBar: true,
-    show: false,
+      webPreferences: {
+        preload: path.resolve('preload.js'),
+        experimentalFeatures: true, // Needed for CSS Grid support
+      },
+      autoHideMenuBar: true,
+      show: false,
+    });
+    // tell ElectronRpcManager which RPC interfaces to handle
+    ElectronRpcManager.initializeImpl({}, rpcs);
+    if (manager.mainWindow) {
+      manager.mainWindow.show();
+    }
+  })();
+  globalShortcut.register("f5",  () => {
+    if (manager.mainWindow)
+      manager.mainWindow.reload();
   });
-  // tell ElectronRpcManager which RPC interfaces to handle
-  ElectronRpcManager.initializeImpl({}, rpcs);
-  if (manager.mainWindow) {
-    manager.mainWindow.show();
-  }
-  }) ();
 }
 
 /* initialize the opening of a secondary window, parented by the main window */
@@ -68,22 +73,22 @@ export function initializePopup() {
   (async () => { // tslint:disable-line:no-floating-promises
     const secondaryWindow = new electron.remote.BrowserWindow(
       {
-      width: 640,
-      height: 400,
-      parent: manager.mainWindow,
-      resizable: true,
-      title: "List of iModels",
-      webPreferences: {
-        experimentalFeatures: true,
+        width: 640,
+        height: 400,
+        parent: manager.mainWindow,
+        resizable: true,
+        title: "List of iModels",
+        webPreferences: {
+          experimentalFeatures: true,
+        },
       },
-    },
     );
     if (manager.mainWindow)
-    manager.mainWindow.addTabbedWindow(secondaryWindow);
+      manager.mainWindow.addTabbedWindow(secondaryWindow);
     secondaryWindow.webContents.send("currentProject", currentProject);
     secondaryWindow.webContents.send("iModelsList", iModelsList);
     secondaryWindow.loadFile("../../../../../src/frontend/iModelList.html");
-  }) ();
+  })();
 
 
 }

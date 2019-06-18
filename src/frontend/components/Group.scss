@@ -48,7 +48,12 @@ form {
   #submitt {
     width: 80px;
   }
-
+  #dropList-content a{
+    font-family: sans-serif,
+  }
+  #dropList-content option:hover{
+    background-color: rgb(70, 69, 69)
+  }
   #newImodel{
     width: 160px;
   }

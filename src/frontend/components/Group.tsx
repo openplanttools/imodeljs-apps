@@ -6,9 +6,11 @@
 import * as React from "react";
 import iModelDataWidget from "./iModelList";
 import "../../common/configuration.js";
-import { Config } from "@bentley/imodeljs-clients";
+//import { Config } from "@bentley/imodeljs-clients";
 import "./Group.scss";
 import { Button, ButtonType } from "@bentley/ui-core";
+//import { readJSON } from "fs-extra";
+import { Config } from "@bentley/imodeljs-clients";
 
 /** Group Widget controller class, formats and spaces the collcetion of tools associated with developing a new iModel */
 const groupWidget = () => {
@@ -23,22 +25,61 @@ const groupWidget = () => {
       </div>
       <div className="midLeft">
         <Button id="submitt" buttonType={ButtonType.Primary} name="submit" value="Submit">Submit</Button>
-        <select id="dropList" name="iModelList" value="List of iModels" onChange={() => { changeConfigValue() }}>{iModelDataWidget().map((iModelItem) => {
-          return <option key={iModelItem.key} value={iModelItem.iModelValue} >{iModelItem.iModelName}</option>;
-        })}</select>
+        <IModelList />
       </div>
     </div>
   );
 };
 
-const changeConfigValue = () => {
-  var element = document.getElementById("dropList");
-  var wsgId;
-  if (element)
-    wsgId = element.accessKey;
-  if (wsgId)
-    Config.App.set("imjs_test_imodel", wsgId)
-  else
-    console.log("the value was null");
-};
+export class IModelList extends React.Component<{}, { value: string }> {
+  public myRef: HTMLElement | undefined;
+  public prevIndex: number | undefined;
+  constructor(props: any) {
+    super(props);
+    this.state = { value: '' };
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleChange(event: Event) {
+    if (event.target)
+      this.setState({});
+  }
+
+  handleSubmit() {
+    //alert('A name was submitted: ' + this.state);
+    var mainList = (document.getElementById("dropList")) as HTMLSelectElement;
+    if (mainList) {
+      console.log("selected index " + mainList.selectedIndex);
+      mainList.options[mainList.selectedIndex].selected = true;
+      if (this.prevIndex) {
+        mainList.options[this.prevIndex].selected = false;
+        this.prevIndex = mainList.selectedIndex;
+      } else {
+        this.prevIndex = mainList.selectedIndex;
+      }
+      mainList.options[0].innerHTML = mainList.options[mainList.selectedIndex].innerText;
+      console.log(Config.App.get("imjs_browser_test_redirect_uri"));
+      console.log("REDIRECT UI");
+      Config.App.set("imjs_test_imodel", mainList.options[mainList.selectedIndex].innerText);
+
+    }
+    // event.preventDefault();
+  }
+
+  render() {
+    return (
+      <form onSubmit={() => this.handleSubmit}>
+        <label className="label">
+          Select new iModel
+          <select id="dropList" name="iModelList" value="List of iModels" onChange={() => { this.handleSubmit() }}>{iModelDataWidget().map((iModelItem) => {
+            return <option key={iModelItem.key} /*onClick={() => this.handleSubmit()}*/ /*value={iModelItem.iModelValue} */>{iModelItem.iModelName}</option>;
+          })}List of iModels</select>
+        </label>
+        {/* <input type="submit" value="Submit" /> */}
+      </form>
+    );
+  }
+}
 export default groupWidget;
