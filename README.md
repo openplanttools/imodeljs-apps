@@ -1,5 +1,5 @@
 # In Development PlantView application
-## As of 6/17/19 The code will be in progress, tommorrow morning I'll clean the code base, I'm assuming nobody will view it tonight, if they do I apologize for the mess.
+
 ## Current TODO
 1. Manually view all projects **Done** - Nick
 2. Display only relevant documents in tree. - Zach *in progress*
