@@ -1,5 +1,5 @@
 # In Development PlantView application
-
+## As of 6/17/19 The code will be in progress, tommorrow morning I'll clean the code base, I'm assuming nobody will view it tonight, if they do I apologize for the mess.
 ## Current TODO
 1. Manually view all projects **Done** - Nick
 2. Display only relevant documents in tree. - Zach *in progress*
@@ -15,6 +15,12 @@
 12. Clean up code base *ongoing* - Nick
 13. Comment parts for explanations *ongoing* - Nick
 14. Fix CSS formatting
+15. Fix clashes with electron IPC and configuration of front-back communication.
+16. Determine the necessity of webpack in browser runtime environment.
+17. Modify dependencies list, strip unused pieces, keep only browser specific portions.
+18. If we end up keeping webpack, reconfigure its options to be better suited, right now its causing some problems on the backend.
+19. Add configurable options to options bar, have those be saved in a JSON.
+20. Successfully implement ipcMain - ipcRenderer communication *in progress* - Nick
 
 ##### (2) Display only relevant documents in tree.
 1. iModelHub project name (e.g. opbimdev01)

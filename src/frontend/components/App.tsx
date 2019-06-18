@@ -14,6 +14,7 @@ import { SimpleViewerApp } from "../api/SimpleViewerApp";
 import PropertiesWidget from "./Properties";
 import GridWidget from "./Table";
 import TreeWidget from "./Tree";
+import { setiModelsList } from "../../backend/electron/main.js"
 import ViewportContentControl from "./Viewport";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "./App.css";
@@ -310,10 +311,19 @@ class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps, OpenIM
     } catch (e) {
       throw new Error(`Project with name "${projectName}" does not exist`);
     }
-    resolvedIModelList = await IModelApp.iModelClient.iModels.get(requestContext, project.wsgId);
     const imodelQuery = new IModelQuery();
-    ipcRenderer.send("iModelData", project, resolvedIModelList);
+    resolvedIModelList = await IModelApp.iModelClient.iModels.get(requestContext, project.wsgId, imodelQuery);
+    for (let i = 0; i < resolvedIModelList.length; i++) {
+      console.log(resolvedIModelList[i].name);
+    }
+    // const EventEmitter = require('events');
+    // class MyEmitter extends EventEmitter {}
+    // const myEmitter = new MyEmitter();
+    // myEmitter.emit("testing", resolvedIModelList);
+    //Electron.remote.app.emit("iModelData", project, resolvedIModelList);
     imodelQuery.byName(imodelName);
+    console.log("sending iModels **");
+    setiModelsList(resolvedIModelList);
     const imodels = await IModelApp.iModelClient.iModels.get(requestContext, project.wsgId, imodelQuery);
     if (imodels.length === 0)
       throw new Error(`iModel with name "${imodelName}" does not exist in project "${projectName}"`);
@@ -414,42 +424,42 @@ class IModelComponents extends React.PureComponent<IModelComponentsProps> {
 
 import * as frontend from "./App";
 import "./Group.scss";
-import { ipcRenderer } from "electron";
+// import { ipcRenderer } from "electron";
 
 interface IProps {
   title: string;
 }
-/** Toolbar containing simple navigation tools */
-  export class IModelList extends React.Component <IProps, {}>  {
+/** List that renders iModel components */
+export class IModelList extends React.Component<IProps, {}>  {
   constructor(props: IProps) {
     super(props);
   }
   public render() {
-  const topTitle = "Project: " + frontend.getCurrentProject + " , List of available iModel's";
-  // let iModelNames = [];
-  const listOfIModels = frontend.getIModelsList();
-  const nameList = document.createElement("ul");
-  if (frontend.getIModelsList)
-    for (let i = 0; i < listOfIModels.length; i++) {
-      let listItem = document.createElement("li");
-      listItem.appendChild(document.createTextNode(listOfIModels[i].wsgId));
-      nameList.appendChild(listItem);
+    const topTitle = "Project: " + frontend.getCurrentProject + " , List of available iModel's";
+    // let iModelNames = [];
+    const listOfIModels = frontend.getIModelsList();
+    const nameList = document.createElement("ul");
+    if (frontend.getIModelsList)
+      for (let i = 0; i < listOfIModels.length; i++) {
+        let listItem = document.createElement("li");
+        listItem.appendChild(document.createTextNode(listOfIModels[i].wsgId));
+        nameList.appendChild(listItem);
+      }
+    const generatedList: HTMLElement | null = document.getElementById("List");
+    if (generatedList) {
+      generatedList.appendChild(nameList);
     }
-  const generatedList: HTMLElement | null = document.getElementById("List");
-  if (generatedList) {
-    generatedList.appendChild(nameList);
-  }
-  const title = document.getElementById("Title");
-  if (title) {
-  title.nodeValue = topTitle;
-  }
-  return (
-    <div>
-      <link rel="stylesheet" type="text/css" />
-      <h2 title={topTitle}> </h2>
-      <div className="List" id="List">
+    const title = document.getElementById("Title");
+    if (title) {
+      title.nodeValue = topTitle;
+    }
+    return (
+      <div>
+        <link rel="stylesheet" type="text/css" />
+        <h2 title={topTitle}> </h2>
+        <div className="List" id="List">
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
 }

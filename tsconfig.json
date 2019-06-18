@@ -6,6 +6,8 @@
     "baseUrl": "./node_modules",
     "outDir": "./lib"
   },
+  "compileOnSave": true,
+  "buildOnSave": true,
   "include": [
     "./**/*.ts",
     "./**/*.tsx"

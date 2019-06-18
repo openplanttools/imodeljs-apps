@@ -1,0 +1,180 @@
+This file is just a repository for pieces of code that we might/will need in the future of this project, but are not implemented currently,
+please comment the file the code belongs to and leave ample space.
+To locate code from a given file, control f to search for file name headers.
+*From iModelList.tsx*
+//   return (
+//     <NameList />
+//   );
+// }
+// }
+// export default listWidget;
+//}
+// const select = () => {
+//   backend.initializePopup();
+// };
+
+/**
+ * See the https://imodeljs.github.io/iModelJs-docs-output/learning/frontend/tools/
+ * for more details and available tools.
+ */
+/*
+const select = () => {
+          IModelApp.tools.run(SelectionTool.toolId);
+        };
+
+const fitView = () => {
+          IModelApp.tools.run(FitViewTool.toolId, IModelApp.viewManager.selectedView);
+        };
+
+const rotate = () => {
+          IModelApp.tools.run(RotateViewTool.toolId, IModelApp.viewManager.selectedView);
+        };
+
+const pan = () => {
+          IModelApp.tools.run(PanViewTool.toolId, IModelApp.viewManager.selectedView);
+        };
+
+const zoom = () => {
+          IModelApp.tools.run(ZoomViewTool.toolId, IModelApp.viewManager.selectedView);
+        };
+*/
+// import React = require("react");
+// import { ipcRenderer } from "electron";
+// var currentProject: Project;
+// var iModelsList: HubIModel[] = getiModelsList();
+
+// currentProject = getCurrentProject();
+// interface IProps {
+//   title: string;
+//   wsgId: string;
+//   ecId: string;
+// }
+// listItem.appendChild(document.createTextNode(theName));
+      // if (NameList)
+      //   NameList.appendChild(listItem);
+// ipcRenderer.on("currentProject", (theProject: Project) => {
+//   currentProject = theProject;
+// });
+
+// ipcRenderer.on("iModelsList", (iModels: HubIModel[]) => {
+//   iModelsList = iModels;
+// });
+
+/** Toolbar containing simple navigation tools */
+// export default class IModelList extends React.PureComponent<any, any> {
+//   constructor(props: IProps) {
+//     super(props);
+//   }
+// const topTitle = "Project: " + currentProject + " , List of available iModel's";
+  // const parent = document.getElementById("midLeft");
+  // const NameList = React.reac;
+  // NameList.id = "iModelList";
+   // let listItem = document.createElement("option");
+    // if (parent)
+  //   parent.appendChild(NameList);
+  // const generatedList: HTMLElement | null = document.getElementById("List");
+  // if (generatedList) {
+  //   generatedList.appendChild(nameList);
+  // }
+  // const title = document.getElementById("Title");
+  // if (title) {
+  //   title.nodeValue = topTitle;
+  // }
+      // listItem.value = "i";
+
+*from Group.tsx*
+/**
+ * See the https://imodeljs.github.io/iModelJs-docs-output/learning/frontend/tools/
+ * for more details and available tools.
+ */
+/*
+const select = () => {
+          IModelApp.tools.run(SelectionTool.toolId);
+        };
+
+const fitView = () => {
+          IModelApp.tools.run(FitViewTool.toolId, IModelApp.viewManager.selectedView);
+        };
+
+const rotate = () => {
+          IModelApp.tools.run(RotateViewTool.toolId, IModelApp.viewManager.selectedView);
+        };
+
+const pan = () => {
+          IModelApp.tools.run(PanViewTool.toolId, IModelApp.viewManager.selectedView);
+        };
+
+const zoom = () => {
+          IModelApp.tools.run(ZoomViewTool.toolId, IModelApp.viewManager.selectedView);
+        };
+*/
+ {/* <script>listWidget();</script> */}
+      {/* <listTool></listTool> */}
+        {/* <div className="column"><input type='button' id="submitt" value="Submit"></input></div>
+          <div className="column"><input type='button' id="newImodel" value="Select new iModel"></input></div> */}
+        {/* <Button id="newImodel" buttonType={ButtonType.Primary} onClick={select} >View iModels</Button> */}
+
+//import listTool from "./iModelList";
+// import {ipcRenderer } from "electron";
+//import { render } from "enzyme";
+//import { IModelJsElectronManager } from "@bentley/electron-manager";
+//import { IModelHubClient } from "@bentley/imodeljs-clients";
+//import * as React from "react";
+// const { remote } = require('electron');
+//import "@bentley/ui-core/lib/ui-core/UiCore"
+//import * as backend from "../../backend/electron/main";
+// import {
+//   IModelApp, IModelConnection,
+//   ZoomViewTool, PanViewTool, RotateViewTool, SelectionTool, FitViewTool,
+// } from "@bentley/imodeljs-frontend";
+/*
+import {
+  IModelApp,
+  ZoomViewTool, PanViewTool, RotateViewTool, SelectionTool, FitViewTool,
+} from "@bentley/imodeljs-frontend";
+*/
+
+*from main.ts (electron)*
+
+// const IPC = electron.remote.ipcMain;
+// electron.app.prependListener("iModelData", (theProject: Project, iModelList: HubIModel[]) => {
+//     console.log("Message Received from main");
+//     iModelsList = iModelList;
+//     currentProject = theProject;
+//   });
+// const EventEmitter = require('events');
+// class MyEmitter extends EventEmitter{}
+// const myEmitter = new MyEmitter();
+// myEmitter.on("event", (iModelList: HubIModel[]) => {
+// console.log("testing");
+// console.log("Messaged received");
+// iModelsList = iModelList;
+// });
+// const EventEmitter = require("events");
+// var myEE = new EventEmitter();
+//  import {getIModelsList} from "../../frontend/components/App";
+//import * as iModelList from "../../frontend/components/iModelList";
+// import {BrowserWindow } from "electron";
+// try {
+//   electron.ipcMain.on("ad", () => {});
+//   console.log("Did work????");
+// } catch (e) {
+//   console.log("Didn't work?")
+//   console.log(e);
+// }
+// electron.ipcMain.on("iModelData", (theProject: Project, iModelList: HubIModel[]) => {
+//   console.log("Message Received from main");
+//   iModelsList = iModelList;
+//   currentProject = theProject;
+// });
+
+// electron.remote.ipcMain.on("iModelData", (theProject: Project, iModelList: HubIModel[]) => {
+//   console.log("Message Received from main");
+//   alert("It worked");
+//   iModelsList = iModelList;
+//   currentProject = theProject;
+// });
+// manager.mainWindow.webContents.on('did-finish-load', () => {
+    //   if(manager.mainWindow)
+    //   manager.mainWindow.setTitle("PlantView");
+    // })

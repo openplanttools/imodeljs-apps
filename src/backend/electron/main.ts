@@ -5,32 +5,38 @@
 import * as path from "path";
 import { RpcInterfaceDefinition, ElectronRpcManager} from "@bentley/imodeljs-common";
 import { IModelJsElectronManager } from "@bentley/electron-manager";
-// const EventEmitter = require("events");
-// var myEE = new EventEmitter();
-
-// import {getIModelsList, getCurrentProject} from "../../frontend/components/App";
-//import * as iModelList from "../../frontend/components/iModelList";
-// import {BrowserWindow } from "electron";
 import * as electron from "electron";
-// const IPC = electron.remote.ipcMain;
-import { HubIModel, Project } from "@bentley/imodeljs-clients";
 
-// IPC.on("iModelData", (theProject: Project, iModelList: HubIModel[]) => {
-//   console.log("Message Received from main");
-//   iModelsList = iModelList;
-//   currentProject = theProject;
-// });
+import { HubIModel, Project } from "@bentley/imodeljs-clients";
+if(electron){
+  console.log("Electron is loaded");
+} else {
+  console.log("Electron not loaded");
+}
+if(electron.ipcMain){
+  console.log(electron.ipcMain + "electron ipc main loaded");
+}
 var iModelsList: HubIModel[];
 var currentProject: Project;
 
-export const getiModelsList = () => {
+export var getiModelsList = () => {
   return iModelsList;
 };
 
-export const getCurrentProject = () => {
+export var getCurrentProject = () => {
   return currentProject;
 };
 
+export var setCurrentProject = (theProject: Project) => {
+  currentProject = theProject;
+};
+export var setiModelsList = (listOfModels: HubIModel[]) => {
+  iModelsList = listOfModels;
+  console.log("IMODELS SET SUCCESSFULLY" + iModelsList);
+  for (let i = 0; i < iModelsList.length; i++) {
+    console.log(iModelsList[i].name);
+  }
+};
 /**
  * Initializes Electron backend
  */
@@ -52,15 +58,12 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
   // tell ElectronRpcManager which RPC interfaces to handle
   ElectronRpcManager.initializeImpl({}, rpcs);
   if (manager.mainWindow) {
-    // manager.mainWindow.webContents.on('did-finish-load', () => {
-    //   if(manager.mainWindow)
-    //   manager.mainWindow.setTitle("PlantView");
-    // })
     manager.mainWindow.show();
   }
   }) ();
 }
 
+/* initialize the opening of a secondary window, parented by the main window */
 export function initializePopup() {
   (async () => { // tslint:disable-line:no-floating-promises
     const secondaryWindow = new electron.remote.BrowserWindow(
@@ -81,4 +84,6 @@ export function initializePopup() {
     secondaryWindow.webContents.send("iModelsList", iModelsList);
     secondaryWindow.loadFile("../../../../../src/frontend/iModelList.html");
   }) ();
+
+
 }

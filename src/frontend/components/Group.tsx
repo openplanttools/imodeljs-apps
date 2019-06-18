@@ -4,30 +4,17 @@
 *--------------------------------------------------------------------------------------------*/
 
 import * as React from "react";
-//import "@bentley/ui-core/lib/ui-core/UiCore"
-import * as backend from "../../backend/electron/main";
-// import {
-//   IModelApp, IModelConnection,
-//   ZoomViewTool, PanViewTool, RotateViewTool, SelectionTool, FitViewTool,
-// } from "@bentley/imodeljs-frontend";
-/*
-import {
-  IModelApp,
-  ZoomViewTool, PanViewTool, RotateViewTool, SelectionTool, FitViewTool,
-} from "@bentley/imodeljs-frontend";
-*/
+import iModelDataWidget from "./iModelList";
+import "../../common/configuration.js";
+import { Config } from "@bentley/imodeljs-clients";
 import "./Group.scss";
 import { Button, ButtonType } from "@bentley/ui-core";
-// import {ipcRenderer } from "electron";
-//import { render } from "enzyme";
-//import { IModelJsElectronManager } from "@bentley/electron-manager";
-//import { IModelHubClient } from "@bentley/imodeljs-clients";
 
-/** Toolbar containing simple navigation tools */
+/** Group Widget controller class, formats and spaces the collcetion of tools associated with developing a new iModel */
 const groupWidget = () => {
   return (
     <div>
-      <link rel='stylesheet' href='Group.scss' type='text/css' />
+      <link rel='stylesheet' href="./Group.scss" type='text/css' />
       <h2>New iModel</h2>
       <div className="formField">
         <input type='text' id="openinput" name='text1' />
@@ -36,40 +23,22 @@ const groupWidget = () => {
       </div>
       <div className="midLeft">
         <Button id="submitt" buttonType={ButtonType.Primary} name="submit" value="Submit">Submit</Button>
-        {/* <div className="column"><input type='button' id="submitt" value="Submit"></input></div>
-          <div className="column"><input type='button' id="newImodel" value="Select new iModel"></input></div> */}
-        <Button id="newImodel" buttonType={ButtonType.Primary} onClick={select} >View iModels</Button>
+        <select id="dropList" name="iModelList" value="List of iModels" onChange={() => { changeConfigValue() }}>{iModelDataWidget().map((iModelItem) => {
+          return <option key={iModelItem.key} value={iModelItem.iModelValue} >{iModelItem.iModelName}</option>;
+        })}</select>
       </div>
     </div>
   );
 };
-const select = () => {
-  backend.initializePopup();
+
+const changeConfigValue = () => {
+  var element = document.getElementById("dropList");
+  var wsgId;
+  if (element)
+    wsgId = element.accessKey;
+  if (wsgId)
+    Config.App.set("imjs_test_imodel", wsgId)
+  else
+    console.log("the value was null");
 };
-
-/**
- * See the https://imodeljs.github.io/iModelJs-docs-output/learning/frontend/tools/
- * for more details and available tools.
- */
-/*
-const select = () => {
-          IModelApp.tools.run(SelectionTool.toolId);
-        };
-
-const fitView = () => {
-          IModelApp.tools.run(FitViewTool.toolId, IModelApp.viewManager.selectedView);
-        };
-
-const rotate = () => {
-          IModelApp.tools.run(RotateViewTool.toolId, IModelApp.viewManager.selectedView);
-        };
-
-const pan = () => {
-          IModelApp.tools.run(PanViewTool.toolId, IModelApp.viewManager.selectedView);
-        };
-
-const zoom = () => {
-          IModelApp.tools.run(ZoomViewTool.toolId, IModelApp.viewManager.selectedView);
-        };
-*/
 export default groupWidget;
