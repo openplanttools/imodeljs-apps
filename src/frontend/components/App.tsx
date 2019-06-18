@@ -61,6 +61,7 @@ export interface AppState {
   };
   offlineIModel: boolean;
   imodel?: IModelConnection;
+  iModelName: string;
   viewDefinitionId?: Id64String;
   menuOpened: boolean;
   title: string;
@@ -71,6 +72,7 @@ export default class App extends React.Component<{}, AppState> {
   // static imodel: any;
 
   /** Creates an App instance */
+  /* TODO careacreat iModel, change its state, this will force REACT to recall the rendering DOM processes */
   constructor(props?: any, context?: any) {
     super(props, context);
     this.state = {
@@ -78,11 +80,15 @@ export default class App extends React.Component<{}, AppState> {
         isLoading: false,
         accessToken: undefined,
       },
+      iModelName: Config.App.get("imjs_test_imodel"),
       offlineIModel: false,
       menuOpened: false,
       title: "Plant Viewer:  <Project: " + Config.App.get("imjs_test_project") + ">  <iModel: " + Config.App.get("imjs_test_imodel") + ">",
     };
+
   }
+
+
 
   public componentDidMount() {
     // subscribe for unified selection changes

@@ -5,8 +5,8 @@
 import { getiModelsList } from "../../backend/electron/main.js";
 import { HubIModel } from "@bentley/imodeljs-clients";
 
-/* Creates an iModel data widget, the translates data from the iModel hub, and stores it as an array of iModelData objects */
-const iModelDataWidget = () => {
+//This method initializes the data structure that will store the the iModelData objects, it returns both a test data array, and an empty real data array
+const createiModelStorage = () => {
   let iModelData = [];
   let testData = [];
   let testData1 = {
@@ -27,9 +27,20 @@ const iModelDataWidget = () => {
   iModelData.push(defaultData);
   testData.push(testData1);
   testData.push(testData2);
+  return iModelData;
+};
+
+/* Creates an iModel data widget, the translates data from the iModel hub, and stores it as an array of iModelData objects */
+const iModelDataWidget = () => {
+
+  //stores the iModels with their data in iModelData
+  var iModelData = createiModelStorage();
   const listOfIModels: HubIModel[] = getiModelsList();
   console.log("list of iModels " + listOfIModels);
-  if (listOfIModels)
+  if (listOfIModels) {
+    if(iModelData) {
+
+    //loops through all the iModels
     for (let i = 0; i < listOfIModels.length; i++) {
       console.log(listOfIModels[i].name);
       var theName = listOfIModels[i].name;
@@ -45,8 +56,8 @@ const iModelDataWidget = () => {
     }
   if (iModelData)
     return iModelData;
-  else
-    return testData;
+  }
+}
 };
 
 export default iModelDataWidget;
