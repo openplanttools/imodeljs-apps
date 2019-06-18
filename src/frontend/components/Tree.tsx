@@ -51,6 +51,9 @@ export default class SimpleTreeComponent extends React.PureComponent<Props> {
   // ZD_TODO
   private async promiseTesting() {
     let myNodes: DelayLoadedTreeNodeItem[] = await this.getDataProvider(this.props).getNodes();
+    for (let node of myNodes) {
+      node.autoExpand = true;
+    }
     console.log("myNodes");
     console.log(myNodes);
     console.log("myNodes.length");
