@@ -17,6 +17,9 @@ import { Config } from "@bentley/imodeljs-clients";
 //WIP, event emitter bound function to be called from App.tsx and create changes in the AppState
 //WIP, class to contain the current iModel chosen and return it to App.tsx
 export class iModelContainer {
+
+  //instance variables, storing imodel name as a string and an object, the object is useful because it can be assigned
+  //as a property and dynamically allocated in react components
   currentIModel: string;
   public iModelObject: {
     iModelName: string,
@@ -24,7 +27,8 @@ export class iModelContainer {
     key?: string,
   }
 
-  constructor(){
+  //initializes variables to dummy values
+  constructor() {
     this.currentIModel = "initial_value";
     this.iModelObject = {
       iModelName: "initial_value",
@@ -33,6 +37,7 @@ export class iModelContainer {
     };
   }
 
+  //getters and setters
   public setNewIModel(iModel: string){
     this.currentIModel = iModel;
   }
@@ -64,7 +69,7 @@ export const GroupWidget = () => {
   );
 };
 
-//IModelList class ,is a react component, has an app state with defined instance variables to keep track of relevant information
+/* IModelList class ,is a react component, has an app state with defined instance variables to keep track of relevant information */
 export class IModelList extends React.Component<{}, { value: string }> {
   public myRef: HTMLElement | undefined;
   public prevIndex: number | undefined;
@@ -100,11 +105,12 @@ export class IModelList extends React.Component<{}, { value: string }> {
       } else {
         this.prevIndex = mainList.selectedIndex;
       }
+
+      //updates the primary node of the select element
       mainList.options[0].innerHTML = mainList.options[mainList.selectedIndex].innerText;
-      console.log(Config.App.get("imjs_browser_test_redirect_uri"));
-      console.log("REDIRECT UI");
+
+      //this config setting line should be changed, as we transition to reading and writing from a JSON file for smoother integration
       Config.App.set("imjs_test_imodel", mainList.options[mainList.selectedIndex].innerText);
-      console.log("The new test model is: " + Config.App.get("imjs_test_imodel"));
       IModelContainer.setNewIModel(mainList.options[mainList.selectedIndex].innerText);
 
       //stores an IModelData object representing the imodel selected
@@ -113,8 +119,6 @@ export class IModelList extends React.Component<{}, { value: string }> {
         iModelValue: mainList.options[mainList.selectedIndex].value,
       };
     }
-
-    // event.preventDefault();
   }
 
   //render method, called automatically by react, provides formatting in HTML for the group tool widget
@@ -127,7 +131,6 @@ export class IModelList extends React.Component<{}, { value: string }> {
             return <option key={iModelItem.key} /*onClick={() => this.handleSubmit()}*/ value={iModelItem.iModelValue}>{iModelItem.iModelName}</option>;
           })}List of iModels</select>
         </label>
-        {/* <input type="submit" value="Submit" /> */}
       </form>
     );
   }

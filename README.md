@@ -29,6 +29,7 @@
 19. Add configurable options to options bar, have those be saved in a JSON.
 20. Successfully implement ipcMain - ipcRenderer communication *in progress* - Nick
 21. Get viewport to successfully update **Done** - Nick
+22. Determine whether or not to migrate configuration.ts to a JSON
 
 ##### (2) Display only relevant documents in tree.
 1. iModelHub project name (e.g. opbimdev01)

@@ -8,6 +8,8 @@ import { HubIModel } from "@bentley/imodeljs-clients";
 //This method initializes the data structure that will store the the iModelData objects, it returns both a test data array, and an empty real data array
 const createiModelStorage = () => {
   let iModelData = [];
+
+  //Test data incase of offline usage or if iModel query is failing
   let testData = [];
   let testData1 = {
     iModelName: "Testing 1",

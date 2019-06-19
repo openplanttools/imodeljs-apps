@@ -16,7 +16,6 @@ const getGlobalShortcut = () => {
   });
   return globalShortcut;
 } */
-
 import { HubIModel, Project } from "@bentley/imodeljs-clients";
 
 //Console logging conditionals, that ensure that electron backend has loaded property, a problem with older versions of the application, that can arise
@@ -37,6 +36,7 @@ if (electron.ipcMain) {
 var iModelsList: HubIModel[];
 var currentProject: Project;
 
+//Getters and setters for instance variables, that provide frontend <-> backend communication
 export var getiModelsList = () => {
   return iModelsList;
 };
@@ -48,12 +48,9 @@ export var getCurrentProject = () => {
 export var setCurrentProject = (theProject: Project) => {
   currentProject = theProject;
 };
+
 export var setiModelsList = (listOfModels: HubIModel[]) => {
   iModelsList = listOfModels;
-  console.log("IMODELS SET SUCCESSFULLY" + iModelsList);
-  for (let i = 0; i < iModelsList.length; i++) {
-    console.log(iModelsList[i].name);
-  }
 };
 
 /**
