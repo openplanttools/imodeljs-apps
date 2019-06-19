@@ -36,13 +36,10 @@ const iModelDataWidget = () => {
   //stores the iModels with their data in iModelData
   var iModelData = createiModelStorage();
   const listOfIModels: HubIModel[] = getiModelsList();
-  console.log("list of iModels " + listOfIModels);
   if (listOfIModels) {
-    if(iModelData) {
 
     //loops through all the iModels
     for (let i = 0; i < listOfIModels.length; i++) {
-      console.log(listOfIModels[i].name);
       var theName = listOfIModels[i].name;
       if (!theName) {
         theName = "NAME_MISSING " + i;
@@ -56,10 +53,8 @@ const iModelDataWidget = () => {
       };
       iModelData.push(iModelInfo);
     }
-  if (iModelData)
-    return iModelData;
   }
-}
+  return iModelData;
 };
 
 export default iModelDataWidget;

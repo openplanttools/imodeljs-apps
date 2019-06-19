@@ -19,7 +19,7 @@ import ViewportContentControl from "./Viewport";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "./App.css";
 
-import GroupWidget from "./Group";
+import { GroupWidget, IModelContainer } from "./Group";
 //import { request } from "https";
 
 import chroma = require("chroma-js");
@@ -36,6 +36,7 @@ var project: Project;
 var resolvedIModelList: HubIModel[];
 var currentIModel: string;
 var projectsList: any;
+var imodel: IModelConnection | undefined;
 
 export function getIModelsList() {
   return resolvedIModelList;
@@ -85,11 +86,40 @@ export default class App extends React.Component<{}, AppState> {
       menuOpened: false,
       title: "Plant Viewer:  <Project: " + Config.App.get("imjs_test_project") + ">  <iModel: " + Config.App.get("imjs_test_imodel") + ">",
     };
-
+    addEventListener("click", () => this.reloadIModelComponent());
   }
 
+  public async reloadIModelComponent() {
+    if (IModelContainer.iModelObject.iModelName !== this.state.iModelName && IModelContainer.iModelObject.iModelName !== "initial_value") {
+      this.setState(() => ({
+        iModelName: IModelContainer.iModelObject.iModelName,
+        title: "Plant Viewer:  <Project: " + Config.App.get("imjs_test_project") + ">  <iModel: " + IModelContainer.iModelObject.iModelName + ">",
+      }));
 
-
+      console.log("The state is: " + this.state.iModelName);
+      console.log("In the reload IModelComponent Method");
+      console.log(Config.App.get("imjs_test_project"));
+      console.log("In the conditional in the reload IModelComponent method");
+      console.log(IModelContainer.currentIModel);
+      if (project.name && IModelContainer.currentIModel)
+        IModelConnection.open(project.wsgId, IModelContainer.iModelObject.iModelValue, OpenMode.Readonly) // tslint:disable-line: no-floating-promises
+          .then((newIModel: IModelConnection | undefined) => {
+            this.setState(() => ({
+              imodel: newIModel,
+            }));
+            imodel = newIModel;
+          });
+      // this.setState((prev) => (prev.imodel));
+      console.log("The imodel connection is: " + this.state.imodel);
+    }
+  }
+  public async updateIModelConnection(updatedIModelId: string, updatedIModelProjectId: string) {
+    if (updatedIModelId && updatedIModelProjectId) {
+      const iModelConnection = await IModelConnection.open(updatedIModelProjectId, updatedIModelProjectId, OpenMode.Readonly);
+      return iModelConnection
+    }
+    return "undefined";
+  }
   public componentDidMount() {
     // subscribe for unified selection changes
     Presentation.selection.selectionChange.addListener(this._onSelectionChanged);
@@ -301,7 +331,7 @@ interface OpenIModelButtonState {
   isLoading: boolean;
 }
 /** Renders a button that opens an iModel identified in configuration */
-class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps, OpenIModelButtonState> {
+export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps, OpenIModelButtonState> {
   public state = { isLoading: false };
 
   /** Finds project and imodel ids using their names */
@@ -319,16 +349,7 @@ class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps, OpenIM
     }
     const imodelQuery = new IModelQuery();
     resolvedIModelList = await IModelApp.iModelClient.iModels.get(requestContext, project.wsgId, imodelQuery);
-    for (let i = 0; i < resolvedIModelList.length; i++) {
-      console.log(resolvedIModelList[i].name);
-    }
-    // const EventEmitter = require('events');
-    // class MyEmitter extends EventEmitter {}
-    // const myEmitter = new MyEmitter();
-    // myEmitter.emit("testing", resolvedIModelList);
-    //Electron.remote.app.emit("iModelData", project, resolvedIModelList);
     imodelQuery.byName(imodelName);
-    console.log("sending iModels **");
     setiModelsList(resolvedIModelList);
     const imodels = await IModelApp.iModelClient.iModels.get(requestContext, project.wsgId, imodelQuery);
     if (imodels.length === 0)
@@ -381,6 +402,14 @@ interface IModelComponentsProps {
 /** Renders a viewport, a tree, a property grid and a table */
 class IModelComponents extends React.PureComponent<IModelComponentsProps> {
 
+  private pickIModel(){
+    if(imodel){
+      return imodel;
+    } else {
+      return this.props.imodel
+    }
+  }
+
   public render() {
     /*
      <Button id="New iModel" title="Select new iModel" onClick = "">Select new iModel</Button>
@@ -388,13 +417,12 @@ class IModelComponents extends React.PureComponent<IModelComponentsProps> {
     // ID of the presentation ruleset used by all of the controls; the ruleset
     // can be found at `assets/presentation_rules/Default.PresentationRuleSet.xml`
     const rulesetId = "Default";
-
     // open with Menu opened
     if (this.props.menuOpened) {
       return (
         <div className="app-content">
           <div className="top-left" id="viewport1">
-            <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={this.props.viewDefinitionId} />
+            <ViewportContentControl imodel={this.pickIModel()} rulesetId={rulesetId} viewDefinitionId={this.props.viewDefinitionId} />
           </div>
           <div className="right">
             <div className="top">

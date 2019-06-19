@@ -11,10 +11,42 @@ import "./Group.scss";
 import { Button, ButtonType } from "@bentley/ui-core";
 //import { readJSON } from "fs-extra";
 import { Config } from "@bentley/imodeljs-clients";
+// import initRpc from "../api/rpc";
+// import { RpcControlResponse } from "@bentley/imodeljs-common";
+
+//WIP, event emitter bound function to be called from App.tsx and create changes in the AppState
+//WIP, class to contain the current iModel chosen and return it to App.tsx
+export class iModelContainer {
+  currentIModel: string;
+  public iModelObject: {
+    iModelName: string,
+    iModelValue: string,
+    key?: string,
+  }
+
+  constructor(){
+    this.currentIModel = "initial_value";
+    this.iModelObject = {
+      iModelName: "initial_value",
+      iModelValue: "initial_value",
+      key: "initial_value",
+    };
+  }
+
+  public setNewIModel(iModel: string){
+    this.currentIModel = iModel;
+  }
+
+  public updateIModel(){
+    return this.currentIModel;
+  }
+}
+
+export const IModelContainer = new iModelContainer();
 
 /** Group Widget controller class, formats and spaces the collcetion of tools associated with developing a new iModel */
 //This method formats the required pieces in HTML
-const groupWidget = () => {
+export const GroupWidget = () => {
   return (
     <div>
       <link rel='stylesheet' href="./Group.scss" type='text/css' />
@@ -73,7 +105,13 @@ export class IModelList extends React.Component<{}, { value: string }> {
       console.log("REDIRECT UI");
       Config.App.set("imjs_test_imodel", mainList.options[mainList.selectedIndex].innerText);
       console.log("The new test model is: " + Config.App.get("imjs_test_imodel"));
-      changeIModelEvent();
+      IModelContainer.setNewIModel(mainList.options[mainList.selectedIndex].innerText);
+
+      //stores an IModelData object representing the imodel selected
+      IModelContainer.iModelObject = {
+        iModelName: mainList.options[mainList.selectedIndex].innerHTML,
+        iModelValue: mainList.options[mainList.selectedIndex].value,
+      };
     }
 
     // event.preventDefault();
@@ -86,7 +124,7 @@ export class IModelList extends React.Component<{}, { value: string }> {
         <label className="label">
           Select new iModel
           <select id="dropList" name="iModelList" value="List of iModels" onChange={() => { this.handleSubmit() }}>{iModelDataWidget().map((iModelItem) => {
-            return <option key={iModelItem.key} /*onClick={() => this.handleSubmit()}*/ /*value={iModelItem.iModelValue} */>{iModelItem.iModelName}</option>;
+            return <option key={iModelItem.key} /*onClick={() => this.handleSubmit()}*/ value={iModelItem.iModelValue}>{iModelItem.iModelName}</option>;
           })}List of iModels</select>
         </label>
         {/* <input type="submit" value="Submit" /> */}
@@ -94,10 +132,3 @@ export class IModelList extends React.Component<{}, { value: string }> {
     );
   }
 }
-
-export default groupWidget;
-
-//WIP, event emitter bound function to be called from App.tsx and create changes in the AppState
-export const changeIModelEvent = () => {
-  return;
-};
