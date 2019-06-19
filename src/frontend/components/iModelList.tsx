@@ -47,6 +47,8 @@ const iModelDataWidget = () => {
       if (!theName) {
         theName = "NAME_MISSING " + i;
       }
+
+      //Creates an iModelInfo object, and returns it as an object
       const iModelInfo = {
         iModelName: theName,
         iModelValue: listOfIModels[i].wsgId,
