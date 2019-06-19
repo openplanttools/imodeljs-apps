@@ -36,40 +36,46 @@ export type Props = IModelConnectionProps | DataProviderProps;
 
 /** Tree component for the viewer app */
 export default class SimpleTreeComponent extends React.PureComponent<Props> {
+
+  private onNodesSelected(nodes: TreeNodeItem[], replace: boolean){
+
+  }
+
   private getDataProvider(props: Props) {
     if ((props as any).dataProvider) {
       const providerProps = props as DataProviderProps;
       return providerProps.dataProvider;
     } else {
       const imodelProps = props as IModelConnectionProps;
+      console.log(imodelProps.rulesetId + " this is the iModel Props ruleset ID for simple Tree Component")
       const provider: PresentationTreeDataProvider = new PresentationTreeDataProvider(imodelProps.imodel, imodelProps.rulesetId);
-      console.log(provider.getNodes());
+      // console.log(provider.getNodes());
       return provider;
     }
   }
 
   // ZD_TODO
-  private async promiseTesting() {
-    let myNodes: DelayLoadedTreeNodeItem[] = await this.getDataProvider(this.props).getNodes();
-    for (let node of myNodes) {
-      node.autoExpand = true;
-    }
-    console.log("myNodes");
-    console.log(myNodes);
-    console.log("myNodes.length");
-    console.log(myNodes.length);
-    return myNodes;
-  }
+  // private async promiseTesting() {
+  //   let myNodes: DelayLoadedTreeNodeItem[] = await this.getDataProvider(this.props).getNodes();
+  //   for (let node of myNodes) {
+  //     node.autoExpand = true;
+  //   }
+  //   console.log("myNodes");
+  //   console.log(myNodes);
+  //   console.log("myNodes.length");
+  //   console.log(myNodes.length);
+  //   return myNodes;
+  // }
 
   public render() {
 
-    // ZD_TODO
-    let rootNode: DelayLoadedTreeNodeItem;
-    this.promiseTesting().then(function (v) {
-      rootNode = v[0];
-      console.log("rootNode");
-      console.log(rootNode);
-    });
+//      let rootNode: DelayLoadedTreeNodeItem;
+//     this.promiseTesting().then(function (v) {
+//       rootNode = v[0];
+//       console.log("rootNode");
+//       console.log(rootNode);
+//     });
+// // ZD_TODO
 
     return (
       <>

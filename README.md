@@ -9,10 +9,10 @@
 
 ## Current TODO
 1. Manually view all projects ***Done*** - Nick
-2. Display only relevant documents in tree. - Zach *in progress*
+2. Display only relevant documents in tree. - Zach, Nick *in progress*
 3. Automatically update on changes. **Done** - Nick
 4. Be able to change the view definition in the viewer.
-5. Be able to edit properties in the viewer.
+5. Be able to edit properties in the viewer, unsure if this one needs to be done.
 6. Resolve all warnings/errors.
 7. Fix initial button page.
 8. Add scrolling to property.
@@ -30,6 +30,7 @@
 20. Successfully implement ipcMain - ipcRenderer communication *in progress* - Nick
 21. Get viewport to successfully update **Done** - Nick
 22. Determine whether or not to migrate configuration.ts to a JSON
+23. Implement loading circle function upon switching views/imodels/projects.
 
 ##### (2) Display only relevant documents in tree.
 1. iModelHub project name (e.g. opbimdev01)
