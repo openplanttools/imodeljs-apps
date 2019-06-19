@@ -1,9 +1,16 @@
 # In Development PlantView application
+##### Stages in a task
+1. *ongoing*
+2. *in progress*
+3. *partially done*
+4. *mostly done*
+5. **Done**
+
 
 ## Current TODO
 1. Manually view all projects **Done** - Nick
 2. Display only relevant documents in tree. - Zach *in progress*
-3. Automatically update on changes.
+3. Automatically update on changes. **Done** - Nick
 4. Be able to change the view definition in the viewer.
 5. Be able to edit properties in the viewer.
 6. Resolve all warnings/errors.
@@ -12,8 +19,8 @@
 9. Fix the sign-in button (lacking access to currently fix this).
 10. Convert backend to be entirely electron/desktop based. - Nick **Done**
 11. Pick which project *in progress* - Nick
-12. Clean up code base *ongoing* - Nick
-13. Comment parts for explanations *ongoing* - Nick
+12. Clean up code base *partially done* - Nick
+13. Comment parts for explanations *mostly done* - Nick
 14. Fix CSS formatting
 15. Fix clashes with electron IPC and configuration of front-back communication.
 16. Determine the necessity of webpack in browser runtime environment.
@@ -21,6 +28,7 @@
 18. If we end up keeping webpack, reconfigure its options to be better suited, right now its causing some problems on the backend.
 19. Add configurable options to options bar, have those be saved in a JSON.
 20. Successfully implement ipcMain - ipcRenderer communication *in progress* - Nick
+21. Get viewport to successfully update *partially done* - Nick
 
 ##### (2) Display only relevant documents in tree.
 1. iModelHub project name (e.g. opbimdev01)

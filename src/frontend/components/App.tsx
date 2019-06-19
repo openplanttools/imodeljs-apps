@@ -402,14 +402,6 @@ interface IModelComponentsProps {
 /** Renders a viewport, a tree, a property grid and a table */
 class IModelComponents extends React.PureComponent<IModelComponentsProps> {
 
-  private pickIModel(){
-    if(imodel){
-      return imodel;
-    } else {
-      return this.props.imodel
-    }
-  }
-
   public render() {
     /*
      <Button id="New iModel" title="Select new iModel" onClick = "">Select new iModel</Button>
@@ -422,7 +414,7 @@ class IModelComponents extends React.PureComponent<IModelComponentsProps> {
       return (
         <div className="app-content">
           <div className="top-left" id="viewport1">
-            <ViewportContentControl imodel={this.pickIModel()} rulesetId={rulesetId} viewDefinitionId={this.props.viewDefinitionId} />
+            <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={this.props.viewDefinitionId} />
           </div>
           <div className="right">
             <div className="top">
