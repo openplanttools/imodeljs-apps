@@ -28,7 +28,7 @@
 18. If we end up keeping webpack, reconfigure its options to be better suited, right now its causing some problems on the backend.
 19. Add configurable options to options bar, have those be saved in a JSON.
 20. Successfully implement ipcMain - ipcRenderer communication *in progress* - Nick
-21. Get viewport to successfully update *partially done* - Nick
+21. Get viewport to successfully update **Done** - Nick
 
 ##### (2) Display only relevant documents in tree.
 1. iModelHub project name (e.g. opbimdev01)

@@ -36,7 +36,6 @@ var project: Project;
 var resolvedIModelList: HubIModel[];
 var currentIModel: string;
 var projectsList: any;
-var imodel: IModelConnection | undefined;
 
 export function getIModelsList() {
   return resolvedIModelList;
@@ -103,11 +102,16 @@ export default class App extends React.Component<{}, AppState> {
       console.log(IModelContainer.currentIModel);
       if (project.name && IModelContainer.currentIModel)
         IModelConnection.open(project.wsgId, IModelContainer.iModelObject.iModelValue, OpenMode.Readonly) // tslint:disable-line: no-floating-promises
-          .then((newIModel: IModelConnection | undefined) => {
+          .then(async (newIModel: IModelConnection | undefined) => {
+            var viewDefinition: Id64String;
+            if(newIModel)
+            viewDefinition = await this.getFirstViewDefinitionId(newIModel);
+            else
+            viewDefinition = "BisCore:DrawingViewDefinition";
             this.setState(() => ({
               imodel: newIModel,
+              viewDefinitionId: viewDefinition,
             }));
-            imodel = newIModel;
           });
       // this.setState((prev) => (prev.imodel));
       console.log("The imodel connection is: " + this.state.imodel);
