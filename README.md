@@ -8,7 +8,7 @@
 
 
 ## Current TODO
-1. Manually view all projects **Done** - Nick
+1. Manually view all projects ***Done*** - Nick
 2. Display only relevant documents in tree. - Zach *in progress*
 3. Automatically update on changes. **Done** - Nick
 4. Be able to change the view definition in the viewer.
