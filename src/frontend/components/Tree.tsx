@@ -10,6 +10,7 @@ import {
   PresentationTreeDataProvider,
   treeWithUnifiedSelection,
 } from "@bentley/presentation-components";
+import { NodePathElement } from "@bentley/presentation-common";
 
 // create a HOC tree component that supports unified selection
 // tslint:disable-next-line:variable-name
@@ -27,6 +28,7 @@ export interface IModelConnectionProps {
 /** React properties for the tree component, that accepts a data provider */
 export interface DataProviderProps {
   /** Custom tree data provider. */
+  nodes?: NodePathElement[];
   dataProvider: IPresentationTreeDataProvider;
   onNodesSelected?: (nodes: TreeNodeItem[], replace: boolean) => boolean;
 }
@@ -59,8 +61,9 @@ export default class SimpleTreeComponent extends React.PureComponent<Props> {
   private async getNodePaths(provider: PresentationTreeDataProvider){
     const paths = await provider.getFilteredNodePaths("");
     for(let i = 0; i < paths.length; i++){
-      console.log(i + "Is the index, the following is the element" + paths[i]);
+      console.log(i + "Is the index, the following is the element" + paths[i].node.label);
     }
+    var updatedPaths;
   }
 
   // ZD_TODO
