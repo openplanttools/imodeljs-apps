@@ -11,12 +11,12 @@
 1. Manually view all projects ***Done*** - Nick
 2. Display only relevant documents in tree. - Zach, Nick *in progress*
 3. Automatically update on changes. **Done** - Nick
-4. Be able to change the view definition in the viewer.
-5. Be able to edit properties in the viewer, unsure if this one needs to be done.
-6. Resolve all warnings/errors.
+4. Be able to change the view definition in the viewer. *Unsure if we want to do this*
+5. Be able to edit properties in the viewer, *unsure if this one needs to be done.*
+6. Resolve all warnings/errors. *TBD*
 7. Fix initial button page.
 8. Add scrolling to property.
-9. Fix the sign-in button (lacking access to currently fix this).
+9. Fix the sign-in button (lacking access to currently fix this). *TBD*
 10. Convert backend to be entirely electron/desktop based. - Nick **Done**
 11. Pick which project *in progress* - Nick
 12. Clean up code base *partially done* - Nick

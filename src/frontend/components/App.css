@@ -70,6 +70,8 @@
 
 .app-content .right .bottom .bottom-middle {
   align-self: center;
+  border: solid black;
+  border-width: thin;
 }
 
 .app-content .right {
@@ -88,6 +90,8 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  border: solid black;
+  border-width: thin;
 }
 
 .app-content .right .top h3{

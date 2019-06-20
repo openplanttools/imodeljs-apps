@@ -75,6 +75,7 @@ export default class SimpleTreeComponent extends React.PureComponent<Props> {
       console.log(imodelProps + " These are the iModel Props");
       console.log(imodelProps.rulesetId + " this is the iModel Props ruleset ID for simple Tree Component");
       const provider: PresentationTreeDataProvider = new PresentationTreeDataProvider(imodelProps.imodel, imodelProps.rulesetId);
+      //const document = imodelProps.imodel.tiles.getTileTreeProps("PlantDocumentModel")
       this.getNodePaths(provider);
       // console.log(provider.getNodes());
       return provider;

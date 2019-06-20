@@ -84,7 +84,7 @@ export default class App extends React.Component<{}, AppState> {
       iModelName: Config.App.get("imjs_test_imodel"),
       offlineIModel: false,
       menuOpened: false,
-      title: "Plant Viewer:  <Project: " + Config.App.get("imjs_test_project") + ">  <iModel: " + Config.App.get("imjs_test_imodel") + ">",
+      title: "Project: " + Config.App.get("imjs_test_project") + " iModel: " + Config.App.get("imjs_test_imodel") + "",
     };
     addEventListener("click", () => this.reloadIModelComponent());
   }
@@ -98,7 +98,7 @@ export default class App extends React.Component<{}, AppState> {
       //if these conditions are met, begin by setting the state of the iModel, and updating the title, causing React to re call render processes
       this.setState(() => ({
         iModelName: IModelContainer.iModelObject.iModelName,
-        title: "Plant Viewer:  <Project: " + Config.App.get("imjs_test_project") + ">  <iModel: " + IModelContainer.iModelObject.iModelName + ">",
+        title: "Project: " + Config.App.get("imjs_test_project") + " iModel: " + IModelContainer.iModelObject.iModelName + "",
       }));
 
       //if statement checking that the project name and the current iModel are defined strings/objects

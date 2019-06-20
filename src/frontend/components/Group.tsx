@@ -55,12 +55,6 @@ export const GroupWidget = () => {
   return (
     <div>
       <link rel='stylesheet' href="./Group.scss" type='text/css' />
-      <h2>New iModel</h2>
-      <div className="formField">
-        <input type='text' id="openinput" name='text1' />
-        <form name="form1" action="#" /*METHOD*/>
-        </form>
-      </div>
       <div className="midLeft">
         <Button id="submitt" buttonType={ButtonType.Primary} name="submit" value="Submit">Submit</Button>
         <IModelList />
@@ -126,7 +120,6 @@ export class IModelList extends React.Component<{}, { value: string }> {
     return (
       <form onSubmit={() => this.handleSubmit}>
         <label className="label">
-          Select new iModel
           <select id="dropList" name="iModelList" value="List of iModels" onChange={() => { this.handleSubmit() }}>{iModelDataWidget().map((iModelItem) => {
             return <option key={iModelItem.key} /*onClick={() => this.handleSubmit()}*/ value={iModelItem.iModelValue}>{iModelItem.iModelName}</option>;
           })}List of iModels</select>

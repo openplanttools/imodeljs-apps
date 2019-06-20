@@ -41,7 +41,7 @@ form {
   #submitt, #newImodel {
     height: 30px;
     display:inline-block;
-    align-content: center;
+    align-self: auto;
     background-color: rgba(192, 192, 192, 0.747);
     color: black;
     border: 1px solid black;
@@ -50,6 +50,7 @@ form {
   #submitt {
     width: 80px;
   }
+
   #dropList-content a{
     font-family: sans-serif,
   }
