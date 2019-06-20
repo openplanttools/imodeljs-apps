@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
-import { Tree, TreeNodeItem, DelayLoadedTreeNodeItem } from "@bentley/ui-components";
+import { Tree, TreeNodeItem } from "@bentley/ui-components";
 import {
   IPresentationTreeDataProvider,
   PresentationTreeDataProvider,
@@ -37,13 +37,12 @@ export type Props = IModelConnectionProps | DataProviderProps;
 /** Tree component for the viewer app */
 export default class SimpleTreeComponent extends React.PureComponent<Props> {
 
-  private onNodesSelected(nodes: TreeNodeItem[], replace: boolean){
 
-  }
 
   private getDataProvider(props: Props) {
     if ((props as any).dataProvider) {
       const providerProps = props as DataProviderProps;
+      console.log(providerProps.dataProvider.getFilteredNodePaths("document") + " This is the getfilterednodePaths");
       return providerProps.dataProvider;
     } else {
       const imodelProps = props as IModelConnectionProps;

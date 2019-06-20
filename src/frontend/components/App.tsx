@@ -268,7 +268,7 @@ export default class App extends React.Component<{}, AppState> {
     });
 
     if (sheetViews.length > 0)
-      return sheetViews[1].id!;
+      return sheetViews[0].id!;
 
     return acceptedViewSpecs[0].id!;
   }
