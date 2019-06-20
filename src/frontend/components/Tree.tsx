@@ -46,10 +46,20 @@ export default class SimpleTreeComponent extends React.PureComponent<Props> {
       return providerProps.dataProvider;
     } else {
       const imodelProps = props as IModelConnectionProps;
+
+      console.log(imodelProps + " These are the iModel Props");
       console.log(imodelProps.rulesetId + " this is the iModel Props ruleset ID for simple Tree Component")
       const provider: PresentationTreeDataProvider = new PresentationTreeDataProvider(imodelProps.imodel, imodelProps.rulesetId);
+      this.getNodePaths(provider);
       // console.log(provider.getNodes());
       return provider;
+    }
+  }
+
+  private async getNodePaths(provider: PresentationTreeDataProvider){
+    const paths = await provider.getFilteredNodePaths("");
+    for(let i = 0; i < paths.length; i++){
+      console.log(i + "Is the index, the following is the element" + paths[i]);
     }
   }
 
