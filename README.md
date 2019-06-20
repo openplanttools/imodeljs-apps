@@ -19,15 +19,15 @@
 9. Fix the sign-in button (lacking access to currently fix this). *TBD*
 10. Convert backend to be entirely electron/desktop based. - Nick **Done**
 11. Pick which project *in progress* - Nick
-12. Clean up code base *partially done* - Nick
-13. Comment parts for explanations *mostly done* - Nick
-14. Fix CSS formatting
+12. Clean up code base **Done for now** - Nick
+13. Comment parts for explanations **Done** - Nick
+14. Fix CSS formatting *in progress* - Nick
 15. Fix clashes with electron IPC and configuration of front-back communication.
-16. Determine the necessity of webpack in browser runtime environment.
+16. Determine the necessity of webpack in browser runtime environment. **Done** - Nick
 17. Modify dependencies list, strip unused pieces, keep only browser specific portions.
-18. If we end up keeping webpack, reconfigure its options to be better suited, right now its causing some problems on the backend.
+18. If we end up keeping webpack, reconfigure its options to be better suited, right now its causing some problems on the backend. **Done** - Nick
 19. Add configurable options to options bar, have those be saved in a JSON.
-20. Successfully implement ipcMain - ipcRenderer communication *in progress* - Nick
+20. Determine whether/how to implement ipcMain - ipcRenderer communication **Done** - Nick
 21. Get viewport to successfully update **Done** - Nick
 22. Determine whether or not to migrate configuration.ts to a JSON
 23. Implement loading circle function upon switching views/imodels/projects.

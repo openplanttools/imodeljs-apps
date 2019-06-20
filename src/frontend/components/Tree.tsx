@@ -36,6 +36,7 @@ export interface DataProviderProps {
 /** React properties for the tree component */
 export type Props = IModelConnectionProps | DataProviderProps;
 
+/* WIP attempt to replace the Simple Tree Componenet with something easier to work with*/
 export class FilteredTreeComponent extends React.PureComponent<Props> {
   private getDataProvider(props: Props) {
     if ((props as any).dataProvider) {

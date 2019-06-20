@@ -6,13 +6,9 @@
 import * as React from "react";
 import iModelDataWidget from "./iModelList";
 import "../../common/configuration.js";
-//import { Config } from "@bentley/imodeljs-clients";
 import "./Group.scss";
 import { Button, ButtonType } from "@bentley/ui-core";
-//import { readJSON } from "fs-extra";
 import { Config } from "@bentley/imodeljs-clients";
-// import initRpc from "../api/rpc";
-// import { RpcControlResponse } from "@bentley/imodeljs-common";
 
 //WIP, event emitter bound function to be called from App.tsx and create changes in the AppState
 //WIP, class to contain the current iModel chosen and return it to App.tsx
@@ -120,7 +116,7 @@ export class IModelList extends React.Component<{}, { value: string }> {
     return (
       <form onSubmit={() => this.handleSubmit}>
         <label className="label">
-          <select id="dropList" name="iModelList" value="List of iModels" onChange={() => { this.handleSubmit() }}>{iModelDataWidget().map((iModelItem) => {
+          <select id="dropList" name="iModelList" style={{ fontFamily: "sans-serif" }} value="List of iModels" onChange={() => { this.handleSubmit() }}>{iModelDataWidget().map((iModelItem) => {
             return <option key={iModelItem.key} /*onClick={() => this.handleSubmit()}*/ value={iModelItem.iModelValue}>{iModelItem.iModelName}</option>;
           })}List of iModels</select>
         </label>
