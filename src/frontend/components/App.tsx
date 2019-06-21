@@ -26,16 +26,15 @@ import chroma = require("chroma-js");
 import distinctColors = require("distinct-colors");
 import { ColorDef } from "@bentley/imodeljs-common";
 
-
 // tslint:disable: no-console
 // cSpell:ignore imodels
 // Setting instance variables for multi-class usage
-var requestContext: AuthorizedFrontendRequestContext | undefined;
-var connectClient: ConnectClient | undefined;
-var project: Project;
-var resolvedIModelList: HubIModel[];
-var currentIModel: string;
-var projectsList: any;
+let requestContext: AuthorizedFrontendRequestContext | undefined;
+let connectClient: ConnectClient | undefined;
+let project: Project;
+let resolvedIModelList: HubIModel[];
+let currentIModel: string;
+let projectsList: any;
 
 // Getters and setters
 export function getIModelsList() {

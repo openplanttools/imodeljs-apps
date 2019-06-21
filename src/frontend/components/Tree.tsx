@@ -78,10 +78,16 @@ export default class SimpleTreeComponent extends React.PureComponent<Props> {
       const provider: PresentationTreeDataProvider = new PresentationTreeDataProvider(imodelProps.imodel, imodelProps.rulesetId);
 
       // const document = imodelProps.imodel.tiles.getTileTreeProps("PlantDocumentModel")
-      this.getNodePaths(provider);
+     let testing = this.getNodePaths(provider).then((provider) => {return provider});
+    //  if((testing as any).PresentationTreeDataProvider){
+    //    return testing;
+    //  } else {
+    //    return provider;
+    //  }
+    return provider;
 
       // console.log(provider.getNodes());
-      return provider;
+      // return provider;
     }
   }
 
@@ -110,13 +116,13 @@ export default class SimpleTreeComponent extends React.PureComponent<Props> {
       console.log("Removing child nodes");
       const document = rootNode.children[positionOfDocument];
       for (let i = 0; i < rootNode.children.length; i++) {
-        rootNode.children.pop();
+        rootNode.children[i] = rootNode.children[positionOfDocument];
       }
 
       rootNode.children.push(document);
     }
     for (let i = 0; i < rootNode.children.length; i++){
-      console.log("CHILD NODE " + rootNode.children[i]);
+      console.log("CHILD NODE " + rootNode.children[i].node.label);
     }
    // const k = await provider.getFilteredNodePaths("Document");
   }

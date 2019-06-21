@@ -33,7 +33,7 @@
 23. Implement loading circle function upon switching views/imodels/projects.
 23. Implement nicer loading functionality.
 24. Move select new iModel button to project
-25. Add all Plant Document Models to a list.
+25. Create new component to replace Tree View for plant document models
 
 ##### (2) Display only relevant documents in tree.
 1. iModelHub project name (e.g. opbimdev01)
