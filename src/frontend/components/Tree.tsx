@@ -68,20 +68,24 @@ export class FilteredTreeComponent extends React.PureComponent<Props> {
 
   }
 
-  private buildNewTree(children: Node){
+  private buildNewTree(nodes: Node[], parent: NodeItem) {
+
+  }
+
+  private convertToNodeItem(node: Node, parent: NodeItem ){
 
   }
 
   public render() {
-        return (
-          <>
-            <h3 data-testid="tree-component-header">{IModelApp.i18n.translate("SimpleViewer:components.tree")}</h3>
-            <div style={{ flex: "1" }}>
-            <Tree dataProvider={this.getDataProvider(this.props)} onNodesSelected={this.props.onNodesSelected}/>
-            </div>
-          </>
-        );
-      }
+      //   return (
+      //     <>
+      //       <h3 data-testid="tree-component-header">{IModelApp.i18n.translate("SimpleViewer:components.tree")}</h3>
+      //       <div style={{ flex: "1" }}>
+      //       <Tree dataProvider={this.getDataProvider(this.props)} onNodesSelected={this.props.onNodesSelected}/>
+      //       </div>
+      //     </>
+      //   );
+       }
 }
 
 /** Tree component for the viewer app */
