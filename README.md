@@ -9,7 +9,7 @@
 
 ## Current TODO
 1. Manually view all projects ***Done*** - Nick
-2. Display only relevant documents in tree. - Zach, Nick *in progress*
+2. Display only relevant documents in tree. - Zach *in progress*
 3. Automatically update on changes. **Done** - Nick
 4. Be able to change the view definition in the viewer. *Unsure if we want to do this*
 5. Be able to edit properties in the viewer, *unsure if this one needs to be done.*
@@ -31,9 +31,9 @@
 21. Get viewport to successfully update **Done** - Nick
 22. Determine whether or not to migrate configuration.ts to a JSON
 23. Implement loading circle function upon switching views/imodels/projects.
-23. Implement nicer loading functionality.
-24. Move select new iModel button to project
-25. Create new component to replace Tree View for plant document models
+24. Implement nicer loading functionality.
+25. Move select new iModel button to project
+26. Create new component to replace Tree View for plant document models - Nick *in progress*
 
 ##### (2) Display only relevant documents in tree.
 1. iModelHub project name (e.g. opbimdev01)

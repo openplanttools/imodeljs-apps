@@ -4,17 +4,17 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
-import { Tree, TreeNodeItem } from "@bentley/ui-components";
+import { TreeNodeItem, BeInspireTree} from "@bentley/ui-components";
 import {
   IPresentationTreeDataProvider,
   PresentationTreeDataProvider,
   treeWithUnifiedSelection,
 } from "@bentley/presentation-components";
-import { NodePathElement } from "@bentley/presentation-common";
+import { NodePathElement, Node } from "@bentley/presentation-common";
 
 // create a HOC tree component that supports unified selection
 // tslint:disable-next-line:variable-name
-const SimpleTree = treeWithUnifiedSelection(Tree);
+// const SimpleTree = treeWithUnifiedSelection(Tree);
 
 /** React properties for the tree component, that accepts an iModel connection with ruleset id */
 export interface IModelConnectionProps {
@@ -33,6 +33,13 @@ export interface DataProviderProps {
   onNodesSelected?: (nodes: TreeNodeItem[], replace: boolean) => boolean;
 }
 
+export interface NodeItem {
+  data?: any;
+  label: string;
+  children?: NodeItem[];
+  id?: string;
+}
+
 /** React properties for the tree component */
 export type Props = IModelConnectionProps | DataProviderProps;
 
@@ -47,8 +54,22 @@ export class FilteredTreeComponent extends React.PureComponent<Props> {
       console.log(imodelProps + " These are the iModel Props");
       console.log(imodelProps.rulesetId + " this is the iModel Props ruleset ID for simple Tree Component");
       const provider: PresentationTreeDataProvider = new PresentationTreeDataProvider(imodelProps.imodel, imodelProps.rulesetId);
+      this.filterDataProvider(provider);
       return provider;
     }
+  }
+
+  //WIP to create a new tree item
+  private async filterDataProvider(provider: PresentationTreeDataProvider) {
+
+    const paths = await provider.getFilteredNodePaths("");
+    const rootNode: Node = paths[0].node;
+    const children = paths[0].children;
+
+  }
+
+  private buildNewTree(children: Node){
+
   }
 
   public render() {
