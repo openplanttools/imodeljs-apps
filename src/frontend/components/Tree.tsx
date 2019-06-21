@@ -56,7 +56,7 @@ export class FilteredTreeComponent extends React.PureComponent<Props> {
           <>
             <h3 data-testid="tree-component-header">{IModelApp.i18n.translate("SimpleViewer:components.tree")}</h3>
             <div style={{ flex: "1" }}>
-            <SimpleTree dataProvider={this.getDataProvider(this.props)} onNodesSelected={this.props.onNodesSelected}/>
+            <Tree dataProvider={this.getDataProvider(this.props)} onNodesSelected={this.props.onNodesSelected}/>
             </div>
           </>
         );
@@ -76,8 +76,10 @@ export default class SimpleTreeComponent extends React.PureComponent<Props> {
       console.log(imodelProps + " These are the iModel Props");
       console.log(imodelProps.rulesetId + " this is the iModel Props ruleset ID for simple Tree Component");
       const provider: PresentationTreeDataProvider = new PresentationTreeDataProvider(imodelProps.imodel, imodelProps.rulesetId);
-      //const document = imodelProps.imodel.tiles.getTileTreeProps("PlantDocumentModel")
+
+      // const document = imodelProps.imodel.tiles.getTileTreeProps("PlantDocumentModel")
       this.getNodePaths(provider);
+
       // console.log(provider.getNodes());
       return provider;
     }
@@ -85,35 +87,35 @@ export default class SimpleTreeComponent extends React.PureComponent<Props> {
 
   private async getNodePaths(provider: PresentationTreeDataProvider){
     const paths = await provider.getFilteredNodePaths("");
-    let rootNode = paths[0];
+    const rootNode = paths[0];
     rootNode.isMarked;
-    for(let i = 0; i < rootNode.children.length; i++) {
+    for (let i = 0; i < rootNode.children.length; i++) {
       console.log(i + "index: " + rootNode.children[i].node.label);
       rootNode.children[i].isMarked = true;
-      if(!rootNode.children[i].node.label.includes("Document")) {
+      if (!rootNode.children[i].node.label.includes("Document")) {
         console.log(rootNode.children[i].node.label);
         rootNode.children[i].isMarked = false;
       }
     }
     let positionOfDocument: number = -1;
     console.log("looking for document model")
-    for(let i = 0; i < rootNode.children.length; i++) {
-      if(rootNode.children[i].isMarked) {
+    for (let i = 0; i < rootNode.children.length; i++) {
+      if (rootNode.children[i].isMarked) {
         console.log("documentModelFound");
         positionOfDocument = i;
         break;
       }
     }
-    if(positionOfDocument !== -1) {
+    if (positionOfDocument !== -1) {
       console.log("Removing child nodes");
       const document = rootNode.children[positionOfDocument];
-      for(let i = 0; i < rootNode.children.length; i++) {
+      for (let i = 0; i < rootNode.children.length; i++) {
         rootNode.children.pop();
       }
 
       rootNode.children.push(document);
     }
-    for(let i = 0; i < rootNode.children.length; i++){
+    for (let i = 0; i < rootNode.children.length; i++){
       console.log("CHILD NODE " + rootNode.children[i]);
     }
    // const k = await provider.getFilteredNodePaths("Document");
