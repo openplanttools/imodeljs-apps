@@ -30,10 +30,12 @@
 20. Determine whether/how to implement ipcMain - ipcRenderer communication **Done** - Nick
 21. Get viewport to successfully update **Done** - Nick
 22. Determine whether or not to migrate configuration.ts to a JSON
-23. Implement loading circle function upon switching views/imodels/projects.
+23. Implement loading circle function upon switching views/imodels/projects. - Zach *in progress*
 24. Implement nicer loading functionality.
 25. Move select new iModel button to project
 26. Create new component to replace Tree View for plant document models - Nick *in progress*
+27. Fix weird character bug (e.g. Miscellaneous). - Zach *in progress*
+28. Enable scrolling in Properties menu widget. - Zach *in progress*
 
 ##### (2) Display only relevant documents in tree.
 1. iModelHub project name (e.g. opbimdev01)
