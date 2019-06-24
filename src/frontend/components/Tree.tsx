@@ -35,9 +35,12 @@ export interface DataProviderProps {
 }
 
 export default class TreeToolComponent extends React.Component<IModelConnectionProps> {
+  public theNodes: NodeItem[];
+
   constructor(props: any) {
     super(props);
-    this.getDataProvider;
+    this.getDataProvider(this.props);
+    this.theNodes = [];
   }
 
   private async getDataProvider(props: Props) {
@@ -94,6 +97,7 @@ export default class TreeToolComponent extends React.Component<IModelConnectionP
     this.recursiveTreeBuilder(newDocumentNode, filteredPath.children);
     else
     console.log("Something went wrong, filtered path is null/undefined");
+    this.theNodes = filteredNodes;
   }
 
   private recursiveTreeBuilder(currentNode: NodeItem, currentPath: NodePathElement[]) {
@@ -113,7 +117,7 @@ export default class TreeToolComponent extends React.Component<IModelConnectionP
   }
 
   render() {
-    return <div>HI!</div>;
+    return <div><FilteredTreeComponent theNodes = {this.theNodes}></FilteredTreeComponent></div>;
   }
 }
 export interface NodeItem {
@@ -124,8 +128,9 @@ export interface NodeItem {
 }
 
 export interface TreeState {
-  theNodes: NodeItem;
+  theNodes: NodeItem[];
 }
+
 /** React properties for the tree component */
 export type Props = IModelConnectionProps | DataProviderProps;
 
@@ -141,76 +146,24 @@ export class FilteredTreeComponent extends React.Component<TreeState> {
     };
   }
   public getRootNodes = () => {
-    //return nodes
+    const nodes = this.state;
+
   }
 
   public getChildNodes = () => {
     //get the child nodes of a given node pass as a parameter
   }
 
-
-  // private buildNewTree(nodes: Node[], parent: NodeItem) {
-  //   console.log("ok");
-  // }
-
-  // private convertToNodeItem(node: Node, parent: NodeItem) {
-
-  // }
-
-  componentWillMount() {
-    this.getDataProvider(this.props);
-  }
-
-  // componentDidMount() {
-  //   var toggler = document.getElementsByClassName("caret");
-  //   var i: number;
-
-  //   for (i = 0; i < toggler.length; i++) {
-  //     toggler[i].addEventListener("click", function () {
-  //       const element = toggler[i];
-  //       if (element) {
-  //         const parent = element.parentElement;
-  //         if (parent) {
-  //           const test = parent.querySelector("nested");
-  //           if (test) {
-  //             console.log("In Test");
-  //             test.classList.toggle("active");
-  //           }
-  //           element.classList.toggle("caret-down");
-  //         }
-  //       }
-  //     });
-  //   }
-  // }
-
-  // onClick(id: string) {
-  //   console.log("in onClick")
-  //   const toggler = document.getElementById(id);
-  //   if (toggler) {
-  //     console.log("In toggler");
-  //     const parentElement = toggler.parentElement;
-  //     if (parentElement) {
-  //       console.log("in parent element");
-  //       for (let k = 0; k < parentElement.children.length; k++) {
-  //         console.log(k)
-  //         if (parentElement.children[k].className === "nested") {
-  //           console.log("showing");
-  //           const toggled = toggler.classList.toggle("active");
-  //           console.log(toggled);
-  //         }
-  //         if (parentElement.children[k].className === "active") {
-  //           console.log("hiding");
-  //           const toggled = parentElement.children[k].classList.toggle("nested");
-  //           console.log(toggled);
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
-
   public render() {
     return (
-    //   <div>
+    <div>
+      <TreeNode></TreeNode>
+    </div>
+    );
+  }
+}
+
+//   <div>
     //     <link href = "./Tree.scss"></link>
     //   <ul id="myUL">
     //   <li><span className="caret">Beverages</span>
@@ -235,12 +188,6 @@ export class FilteredTreeComponent extends React.Component<TreeState> {
     //   </li>
     // </ul>
     // </div>
-    <div>
-      <TreeNode></TreeNode>
-    </div>
-    );
-  }
-}
 
 /** Tree component for the viewer app */
 // export default class SimpleTreeComponent extends React.PureComponent<Props> {
@@ -339,3 +286,54 @@ export class FilteredTreeComponent extends React.Component<TreeState> {
 //     );
 //   }
 // }
+
+ // private buildNewTree(nodes: Node[], parent: NodeItem) {
+  //   console.log("ok");
+  // }
+  // private convertToNodeItem(node: Node, parent: NodeItem) {
+  // }
+  // componentDidMount() {
+  //   var toggler = document.getElementsByClassName("caret");
+  //   var i: number;
+
+  //   for (i = 0; i < toggler.length; i++) {
+  //     toggler[i].addEventListener("click", function () {
+  //       const element = toggler[i];
+  //       if (element) {
+  //         const parent = element.parentElement;
+  //         if (parent) {
+  //           const test = parent.querySelector("nested");
+  //           if (test) {
+  //             console.log("In Test");
+  //             test.classList.toggle("active");
+  //           }
+  //           element.classList.toggle("caret-down");
+  //         }
+  //       }
+  //     });
+  //   }
+  // }
+  // onClick(id: string) {
+  //   console.log("in onClick")
+  //   const toggler = document.getElementById(id);
+  //   if (toggler) {
+  //     console.log("In toggler");
+  //     const parentElement = toggler.parentElement;
+  //     if (parentElement) {
+  //       console.log("in parent element");
+  //       for (let k = 0; k < parentElement.children.length; k++) {
+  //         console.log(k)
+  //         if (parentElement.children[k].className === "nested") {
+  //           console.log("showing");
+  //           const toggled = toggler.classList.toggle("active");
+  //           console.log(toggled);
+  //         }
+  //         if (parentElement.children[k].className === "active") {
+  //           console.log("hiding");
+  //           const toggled = parentElement.children[k].classList.toggle("nested");
+  //           console.log(toggled);
+  //         }
+  //       }
+  //     }
+  //   }
+  // }

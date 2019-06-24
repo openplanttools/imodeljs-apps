@@ -82,16 +82,17 @@
     "bunyan": "^1.8.12",
     "chai-jest-snapshot": "^2.0.0",
     "chroma-js": "^2.0.3",
+    "distinct-colors": "^1.0.4",
     "express": "^4",
     "inspire-tree": "^5.0.1",
-    "lodash": "^4.17.10",
+    "lodash": "^4.17.11",
     "react": "^16.4.2",
     "react-dnd": "^5.0.0",
     "react-dnd-html5-backend": "^5.0.1",
     "react-dom": "^16.4.2",
+    "react-icons": "^3.7.0",
     "react-redux": "^5.0.7",
-    "redux": "^4.0.0",
-    "distinct-colors": "^1.0.4"
+    "redux": "^4.0.0"
   },
   "devDependencies": {
     "@bentley/build-tools": "1.0.0",
