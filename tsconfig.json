@@ -4,6 +4,7 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "baseUrl": "./node_modules",
+    "esModuleInterop": true,
     "outDir": "./lib"
   },
   "compileOnSave": true,

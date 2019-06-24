@@ -6,14 +6,14 @@ import "./Tree.scss";
 import * as React from "react";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { TreeNodeItem } from "@bentley/ui-components";
-import {PropTypes} from "prop-types"
+import PropTypes from "prop-types"
 import {
   IPresentationTreeDataProvider,
   PresentationTreeDataProvider,
 } from "@bentley/presentation-components";
 import { NodePathElement} from "@bentley/presentation-common";
 // import { TreeNode } from "inspire-tree";
-import { values } from "lodash/values";
+import  values from "lodash/values";
 import { Triangle } from "@bentley/imodeljs-frontend/lib/rendering";
 import { Box } from "@bentley/geometry-core";
 
