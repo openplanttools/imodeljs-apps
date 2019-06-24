@@ -32,22 +32,22 @@ const createProjectStorage = () => {
   return projectData;
 };
 
-/* Creates an iModel data widget, the translates data from the iModel hub, and stores it as an array of iModelData objects */
+/* Creates a project data widget, the translates data from the iModel hub, and stores it as an array of project objects */
 const ProjectDataWidget = () => {
 
-  // stores the iModels with their data in iModelData
+  // stores the projects with their data in projectData
   var projectData = createProjectStorage();
   const listOfProjects: Project[] = getProjectsList();
   if (listOfProjects) {
 
-    // loops through all the iModels
+    // loops through all the projects
     for (let i = 0; i < listOfProjects.length; i++) {
       var theName = listOfProjects[i].name;
       if (!theName) {
         theName = "NAME_MISSING " + i;
       }
 
-      // Creates an iModelInfo object, and returns it as an object
+      // Creates a projectInfo object, and returns it as an object
       const projectInfo = {
         projectName: theName,
         projectValue: listOfProjects[i].wsgId,
