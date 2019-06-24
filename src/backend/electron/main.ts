@@ -34,11 +34,16 @@ if (electron.ipcMain) {
 // Thus the data must travel App.tsx -> main.ts (backend) -> component that needs the data
 //This data is stored here as instance variables
 var iModelsList: HubIModel[];
+var projectsList: Project[];
 var currentProject: Project;
 
 //Getters and setters for instance variables, that provide frontend <-> backend communication
 export var getiModelsList = () => {
   return iModelsList;
+};
+
+export var getProjectsList = () => {
+  return projectsList;
 };
 
 export var getCurrentProject = () => {
@@ -47,6 +52,10 @@ export var getCurrentProject = () => {
 
 export var setCurrentProject = (theProject: Project) => {
   currentProject = theProject;
+};
+
+export var setProjectsList = (listOfProjects: Project[]) => {
+  projectsList = listOfProjects;
 };
 
 export var setiModelsList = (listOfModels: HubIModel[]) => {
@@ -113,6 +122,7 @@ export function initializePopup() {
     if (manager.mainWindow)
       manager.mainWindow.addTabbedWindow(secondaryWindow);
     secondaryWindow.webContents.send("currentProject", currentProject);
+    secondaryWindow.webContents.send("projectsList", projectsList);
     secondaryWindow.webContents.send("iModelsList", iModelsList);
     secondaryWindow.loadFile("../../../../../src/frontend/iModelList.html");
   })();
