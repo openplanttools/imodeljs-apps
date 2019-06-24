@@ -6,12 +6,16 @@ import "./Tree.scss";
 import * as React from "react";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { TreeNodeItem } from "@bentley/ui-components";
+import {PropTypes} from "prop-types"
 import {
   IPresentationTreeDataProvider,
   PresentationTreeDataProvider,
 } from "@bentley/presentation-components";
 import { NodePathElement} from "@bentley/presentation-common";
-import { TreeNode } from "inspire-tree";
+// import { TreeNode } from "inspire-tree";
+import { values } from "lodash/values";
+import { Triangle } from "@bentley/imodeljs-frontend/lib/rendering";
+import { Box } from "@bentley/geometry-core";
 
 // create a HOC tree component that supports unified selection
 // tslint:disable-next-line:variable-name
@@ -147,7 +151,7 @@ export class FilteredTreeComponent extends React.Component<TreeState> {
   }
   public getRootNodes = () => {
     const nodes = this.state;
-
+    return values(nodes).filter();
   }
 
   public getChildNodes = () => {
@@ -155,12 +159,32 @@ export class FilteredTreeComponent extends React.Component<TreeState> {
   }
 
   public render() {
+    const rootNodes = this.getRootNodes();
     return (
     <div>
-      <TreeNode></TreeNode>
+      {rootNodes.map((node: any) => (<TreeNode node={node} getChildNodes={this.getChildNodes}></TreeNode>))}
     </div>
     );
   }
+}
+
+const TreeNode = (props: { node: any; getChildNodes: any; }) => {
+  const {node, getChildNodes} = props;
+  return (
+    <React.Fragment>
+      <div>
+        <div>
+          {node.isOpen ? Triangle : Box}
+        </div>
+      </div>;
+  {node.isOpen && getChildNodes(node).map((childNode: any) => (
+    <TreeNode
+    {...props}
+    node={childNode}
+    ></TreeNode>
+    ))}
+    </React.Fragment>
+  );
 }
 
 //   <div>
