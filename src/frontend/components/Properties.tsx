@@ -11,6 +11,7 @@ import {
   PresentationPropertyDataProvider,
   propertyGridWithUnifiedSelection,
 } from "@bentley/presentation-components";
+import { PropertyData } from "@bentley/ui-components/lib/ui-components/propertygrid/PropertyDataProvider";
 
 // create a HOC property grid component that supports unified selection
 // tslint:disable-next-line:variable-name
@@ -41,8 +42,19 @@ export default class SimplePropertiesComponent extends React.PureComponent<Props
       return providerProps.dataProvider;
     } else {
       const imodelProps = props as IModelConnectionProps;
-      return new PresentationPropertyDataProvider(imodelProps.imodel, imodelProps.rulesetId);
+      console.log("imodelProps");
+      console.log(imodelProps);
+      const provider: PresentationPropertyDataProvider = new PresentationPropertyDataProvider(imodelProps.imodel, imodelProps.rulesetId);
+      provider.getData().then((theData: PropertyData) => {
+        this.filterDataProvider(theData);
+      });
+      return provider;
     }
+  }
+
+  /** Filters property data */
+  private filterDataProvider(theData: PropertyData) {
+    console.log(theData);
   }
 
   public render() {
