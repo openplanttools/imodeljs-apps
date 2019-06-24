@@ -15,7 +15,7 @@
 5. Be able to edit properties in the viewer, *unsure if this one needs to be done.*
 6. Resolve all warnings/errors. *TBD*
 7. Fix initial button page.
-8. Add scrolling to property.
+8. Add scrolling to property. - Zach *in progress*
 9. Fix the sign-in button (lacking access to currently fix this). *TBD*
 10. Convert backend to be entirely electron/desktop based. - Nick **Done**
 11. Pick which project to view. - Zach *in progress*
@@ -30,7 +30,7 @@
 20. Determine whether/how to implement ipcMain - ipcRenderer communication **Done** - Nick
 21. Get viewport to successfully update **Done** - Nick
 22. Determine whether or not to migrate configuration.ts to a JSON
-23. Implement loading circle function upon switching views/imodels/projects. - Zach *in progress*
+23. Implement loading circle function upon switching views/imodels/projects.
 24. Implement nicer loading functionality.
 25. Move select new iModel button to project
 26. Fix weird character bug (e.g. Miscellaneous). - Zach *in progress*
