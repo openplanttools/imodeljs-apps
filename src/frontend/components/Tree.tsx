@@ -2,13 +2,18 @@
 * Copyright (c) 2019 Bentley Systems, Incorporated. All rights reserved.
 * Licensed under the MIT License. See LICENSE.md in the project root for license terms.
 *--------------------------------------------------------------------------------------------*/
+import "./Tree.scss";
 import * as React from "react";
-import {  IModelConnection } from "@bentley/imodeljs-frontend";
+import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { TreeNodeItem } from "@bentley/ui-components";
 import {
   IPresentationTreeDataProvider,
+  PresentationTreeDataProvider,
 } from "@bentley/presentation-components";
-import { NodePathElement } from "@bentley/presentation-common";
+import { NodePathElement} from "@bentley/presentation-common";
+
+
+
 
 // create a HOC tree component that supports unified selection
 // tslint:disable-next-line:variable-name
@@ -34,7 +39,7 @@ export interface DataProviderProps {
 export interface NodeItem {
   data?: any;
   label: string;
-  children?: NodeItem[];
+  children: NodeItem[];
   id?: string;
 }
 
@@ -43,27 +48,77 @@ export type Props = IModelConnectionProps | DataProviderProps;
 
 /* WIP attempt to replace the Simple Tree Componenet with something easier to work with*/
 export default class FilteredTreeComponent extends React.PureComponent<Props> {
-  // private getDataProvider(props: Props) {
-  //   if ((props as any).dataProvider) {
-  //     const providerProps = props as DataProviderProps;
-  //     return providerProps.dataProvider;
-  //   } else {
-  //     const imodelProps = props as IModelConnectionProps;
-  //     console.log(imodelProps + " These are the iModel Props");
-  //     console.log(imodelProps.rulesetId + " this is the iModel Props ruleset ID for simple Tree Component");
-  //     const provider: PresentationTreeDataProvider = new PresentationTreeDataProvider(imodelProps.imodel, imodelProps.rulesetId);
-  //     this.filterDataProvider(provider);
-  //     return provider;
-  //   }
-  // }
+  // paths
+  private async getDataProvider(props: Props) {
+    if ((props as any).dataProvider) {
+      const providerProps = props as DataProviderProps;
+      return providerProps.dataProvider;
+    } else {
+      const imodelProps = props as IModelConnectionProps;
+      console.log(imodelProps + " These are the iModel Props");
+      console.log(imodelProps.rulesetId + " this is the iModel Props ruleset ID for simple Tree Component");
+      const provider: PresentationTreeDataProvider = new PresentationTreeDataProvider(imodelProps.imodel, imodelProps.rulesetId);
+      provider.getFilteredNodePaths("").then((thePaths: NodePathElement[]) => {
+        this.filterDataProvider(thePaths);
+      });
+      return provider;
+    }
+  }
+
+  // private onNodesSelected(){}
 
   //WIP to create a new tree item
-  // private async filterDataProvider(provider: PresentationTreeDataProvider) {
+  private filterDataProvider(thePaths: NodePathElement[]) {
+    const THE_FILTER = "ocument";
+    const rootNode = thePaths[0].node;
+    const filteredNodes: NodeItem[] = [];
+    const newRootNode: NodeItem = {
+      data: "temp_data",
+      label: rootNode.label,
+      children: [],
+      id: "temp_id",
+    };
+    filteredNodes.push(newRootNode);
+    let filteredPath;
+    let newDocumentNode: NodeItem = {
+      label: "Temp",
+      children: [],
+    };
+    for(let i = 0; i < thePaths[0].children.length; i++) {
+      if(thePaths[0].children[i].node.label.includes(THE_FILTER)) {
+        filteredPath = thePaths[0].children[i];
+        const documentNode = filteredPath.node;
+        newDocumentNode = {
+          data: "temp_data",
+          label: documentNode.label,
+          children: [],
+          id: "temp_id",
+        };
+        newRootNode.children.push(newDocumentNode);
+        break;
+      }
+    }
+    if(filteredPath)
+    this.recursiveTreeBuilder(newDocumentNode, filteredPath.children);
+    else
+    console.log("Something went wrong, filtered path is null/undefined");
+  }
 
-  //   const paths = await provider.getFilteredNodePaths("");
-  //   // const rootNode: Node = paths[0].node;
-  //   // const children = paths[0].children;
-  // }
+  private recursiveTreeBuilder(currentNode: NodeItem, currentPath: NodePathElement[]) {
+    if(currentPath) {
+      //take the nodes out of this repackage them as current nodes children, make recursive call
+      for(let i = 0; i < currentPath.length; i++){
+        const newNodeItem: NodeItem = {
+          data: "temp_data",
+          label: currentPath[i].node.label,
+          children: [],
+          id: "temp_id",
+        };
+        currentNode.children.push(newNodeItem);
+        this.recursiveTreeBuilder(newNodeItem, currentPath[i].children);
+      }
+    }
+  }
 
   // private buildNewTree(nodes: Node[], parent: NodeItem) {
   //   console.log("ok");
@@ -73,54 +128,84 @@ export default class FilteredTreeComponent extends React.PureComponent<Props> {
 
   // }
 
+  componentWillMount() {
+    this.getDataProvider(this.props);
+  }
+
   componentDidMount() {
-    const toggler = document.getElementsByClassName("caret");
-    for (let i = 0; i < toggler.length; i++) {
+    var toggler = document.getElementsByClassName("caret");
+    var i: number;
+
+    for (i = 0; i < toggler.length; i++) {
       toggler[i].addEventListener("click", function () {
-        const currentElement = toggler[i];
-        if (currentElement) {
-          const parentElement = currentElement.parentElement;
-          if (parentElement) {
-            //parentElement.querySelector(".nested").classList.toggle("active");
-            for (let k = 0; k < parentElement.children.length; k++) {
-              if (parentElement.children[k].className === "nested") {
-                parentElement.children[k].classList.toggle("active");
-              }
+        const element = toggler[i];
+        if (element) {
+          const parent = element.parentElement;
+          if (parent) {
+            const test = parent.querySelector("nested");
+            if (test) {
+              console.log("In Test");
+              test.classList.toggle("active");
             }
-            currentElement.classList.toggle("caret-down");
+            element.classList.toggle("caret-down");
           }
         }
       });
     }
   }
 
+  // onClick(id: string) {
+  //   console.log("in onClick")
+  //   const toggler = document.getElementById(id);
+  //   if (toggler) {
+  //     console.log("In toggler");
+  //     const parentElement = toggler.parentElement;
+  //     if (parentElement) {
+  //       console.log("in parent element");
+  //       for (let k = 0; k < parentElement.children.length; k++) {
+  //         console.log(k)
+  //         if (parentElement.children[k].className === "nested") {
+  //           console.log("showing");
+  //           const toggled = toggler.classList.toggle("active");
+  //           console.log(toggled);
+  //         }
+  //         if (parentElement.children[k].className === "active") {
+  //           console.log("hiding");
+  //           const toggled = parentElement.children[k].classList.toggle("nested");
+  //           console.log(toggled);
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
+
   public render() {
     return (
-      <div className="theTop">
-        <link rel="stylesheet" href="./Tree.scss" type="text/css" />
-        <ul id="myUL">
-          <li><span className="caret">Beverages</span>
+      <div>
+        <link href = "./Tree.scss"></link>
+      <ul id="myUL">
+      <li><span className="caret">Beverages</span>
+        <ul className="nested">
+          <li>Water</li>
+          <li>Coffee</li>
+          <li><span className="caret">Tea</span>
             <ul className="nested">
-              <li>Water</li>
-              <li>Coffee</li>
-              <li className="caret">Tea
+              <li>Black Tea</li>
+              <li>White Tea</li>
+              <li><span className="caret">Green Tea</span>
                 <ul className="nested">
-                  <li>Black Tea</li>
-                  <li>White Tea</li>
-                  <li className="caret">Green Tea
-                    <ul className="nested">
-                      <li>Sencha</li>
-                      <li>Gyokuro</li>
-                      <li>Matcha</li>
-                      <li>Pi Lo Chun</li>
-                    </ul>
-                  </li>
+                  <li>Sencha</li>
+                  <li>Gyokuro</li>
+                  <li>Matcha</li>
+                  <li>Pi Lo Chun</li>
                 </ul>
               </li>
             </ul>
           </li>
         </ul>
-      </div>
+      </li>
+    </ul>
+    </div>
     );
   }
 }

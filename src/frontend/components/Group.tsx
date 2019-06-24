@@ -59,7 +59,7 @@ export const GroupWidget = () => {
   );
 };
 
-/* IModelList class ,is a react component, has an app state with defined instance variables to keep track of relevant information */
+/** IModelList class is a react component, has an app state with defined instance variables to keep track of relevant information */
 export class IModelList extends React.Component<{}, { value: string }> {
   public myRef: HTMLElement | undefined;
   public prevIndex: number | undefined;
