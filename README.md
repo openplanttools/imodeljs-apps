@@ -9,7 +9,7 @@
 
 ## Current TODO
 1. Manually view all projects ***Done*** - Nick
-2. Display only relevant documents in tree. - Zach *in progress*
+2. Display only relevant documents in tree, and create new component to replace Tree View for plant document models. - Nick *in progress*
 3. Automatically update on changes. **Done** - Nick
 4. Be able to change the view definition in the viewer. *Unsure if we want to do this*
 5. Be able to edit properties in the viewer, *unsure if this one needs to be done.*
@@ -18,7 +18,7 @@
 8. Add scrolling to property.
 9. Fix the sign-in button (lacking access to currently fix this). *TBD*
 10. Convert backend to be entirely electron/desktop based. - Nick **Done**
-11. Pick which project *in progress* - Nick
+11. Pick which project to view. - Zach *in progress*
 12. Clean up code base **Done for now** - Nick
 13. Comment parts for explanations **Done** - Nick
 14. Fix CSS formatting *in progress* - Nick
@@ -33,9 +33,7 @@
 23. Implement loading circle function upon switching views/imodels/projects. - Zach *in progress*
 24. Implement nicer loading functionality.
 25. Move select new iModel button to project
-26. Create new component to replace Tree View for plant document models - Nick *in progress*
-27. Fix weird character bug (e.g. Miscellaneous). - Zach *in progress*
-28. Enable scrolling in Properties menu widget. - Zach *in progress*
+26. Fix weird character bug (e.g. Miscellaneous). - Zach *in progress*
 
 ##### (2) Display only relevant documents in tree.
 1. iModelHub project name (e.g. opbimdev01)

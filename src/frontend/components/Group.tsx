@@ -7,7 +7,7 @@ import * as React from "react";
 import iModelDataWidget from "./iModelList";
 import "../../common/configuration.js";
 import "./Group.scss";
-import { Button, ButtonType } from "@bentley/ui-core";
+// import { Button, ButtonType } from "@bentley/ui-core";
 import { Config } from "@bentley/imodeljs-clients";
 
 // WIP, event emitter bound function to be called from App.tsx and create changes in the AppState
@@ -52,7 +52,8 @@ export const GroupWidget = () => {
     <div>
       <link rel='stylesheet' href="./Group.scss" type='text/css' />
       <div className="midLeft">
-        <Button id="submitt" buttonType={ButtonType.Primary} name="submit" value="Submit">Submit</Button>
+        {/* <Button id="submitt" buttonType={ButtonType.Primary} name="submit" value="Submit">Submit</Button> */}
+        <ProjectList />
         <IModelList />
       </div>
     </div>
