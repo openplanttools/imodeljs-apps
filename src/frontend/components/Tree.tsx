@@ -3,14 +3,12 @@
 * Licensed under the MIT License. See LICENSE.md in the project root for license terms.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
-import { TreeNodeItem, BeInspireTree} from "@bentley/ui-components";
+import {  IModelConnection } from "@bentley/imodeljs-frontend";
+import { TreeNodeItem } from "@bentley/ui-components";
 import {
   IPresentationTreeDataProvider,
-  PresentationTreeDataProvider,
-  treeWithUnifiedSelection,
 } from "@bentley/presentation-components";
-import { NodePathElement, Node } from "@bentley/presentation-common";
+import { NodePathElement } from "@bentley/presentation-common";
 
 // create a HOC tree component that supports unified selection
 // tslint:disable-next-line:variable-name
@@ -44,144 +42,183 @@ export interface NodeItem {
 export type Props = IModelConnectionProps | DataProviderProps;
 
 /* WIP attempt to replace the Simple Tree Componenet with something easier to work with*/
-export class FilteredTreeComponent extends React.PureComponent<Props> {
-  private getDataProvider(props: Props) {
-    if ((props as any).dataProvider) {
-      const providerProps = props as DataProviderProps;
-      return providerProps.dataProvider;
-    } else {
-      const imodelProps = props as IModelConnectionProps;
-      console.log(imodelProps + " These are the iModel Props");
-      console.log(imodelProps.rulesetId + " this is the iModel Props ruleset ID for simple Tree Component");
-      const provider: PresentationTreeDataProvider = new PresentationTreeDataProvider(imodelProps.imodel, imodelProps.rulesetId);
-      this.filterDataProvider(provider);
-      return provider;
-    }
-  }
-
-  //WIP to create a new tree item
-  private async filterDataProvider(provider: PresentationTreeDataProvider) {
-
-    const paths = await provider.getFilteredNodePaths("");
-    const rootNode: Node = paths[0].node;
-    const children = paths[0].children;
-
-  }
-
-  private buildNewTree(nodes: Node[], parent: NodeItem) {
-
-  }
-
-  private convertToNodeItem(node: Node, parent: NodeItem ){
-
-  }
-
-  public render() {
-      //   return (
-      //     <>
-      //       <h3 data-testid="tree-component-header">{IModelApp.i18n.translate("SimpleViewer:components.tree")}</h3>
-      //       <div style={{ flex: "1" }}>
-      //       <Tree dataProvider={this.getDataProvider(this.props)} onNodesSelected={this.props.onNodesSelected}/>
-      //       </div>
-      //     </>
-      //   );
-       }
-}
-
-/** Tree component for the viewer app */
-export default class SimpleTreeComponent extends React.PureComponent<Props> {
-
-  private getDataProvider(props: Props) {
-    if ((props as any).dataProvider) {
-      const providerProps = props as DataProviderProps;
-      console.log(providerProps.dataProvider.getFilteredNodePaths("document") + " This is the getfilterednodePaths");
-      return providerProps.dataProvider;
-    } else {
-      const imodelProps = props as IModelConnectionProps;
-      console.log(imodelProps + " These are the iModel Props");
-      console.log(imodelProps.rulesetId + " this is the iModel Props ruleset ID for simple Tree Component");
-      const provider: PresentationTreeDataProvider = new PresentationTreeDataProvider(imodelProps.imodel, imodelProps.rulesetId);
-
-      // const document = imodelProps.imodel.tiles.getTileTreeProps("PlantDocumentModel")
-     let testing = this.getNodePaths(provider).then((provider) => {return provider});
-    //  if((testing as any).PresentationTreeDataProvider){
-    //    return testing;
-    //  } else {
-    //    return provider;
-    //  }
-    return provider;
-
-      // console.log(provider.getNodes());
-      // return provider;
-    }
-  }
-
-  private async getNodePaths(provider: PresentationTreeDataProvider){
-    const paths = await provider.getFilteredNodePaths("");
-    const rootNode = paths[0];
-    rootNode.isMarked;
-    for (let i = 0; i < rootNode.children.length; i++) {
-      console.log(i + "index: " + rootNode.children[i].node.label);
-      rootNode.children[i].isMarked = true;
-      if (!rootNode.children[i].node.label.includes("Document")) {
-        console.log(rootNode.children[i].node.label);
-        rootNode.children[i].isMarked = false;
-      }
-    }
-    let positionOfDocument: number = -1;
-    console.log("looking for document model")
-    for (let i = 0; i < rootNode.children.length; i++) {
-      if (rootNode.children[i].isMarked) {
-        console.log("documentModelFound");
-        positionOfDocument = i;
-        break;
-      }
-    }
-    if (positionOfDocument !== -1) {
-      console.log("Removing child nodes");
-      const document = rootNode.children[positionOfDocument];
-      for (let i = 0; i < rootNode.children.length; i++) {
-        rootNode.children[i] = rootNode.children[positionOfDocument];
-      }
-
-      rootNode.children.push(document);
-    }
-    for (let i = 0; i < rootNode.children.length; i++){
-      console.log("CHILD NODE " + rootNode.children[i].node.label);
-    }
-   // const k = await provider.getFilteredNodePaths("Document");
-  }
-
-  // ZD_TODO
-  // private async promiseTesting() {
-  //   let myNodes: DelayLoadedTreeNodeItem[] = await this.getDataProvider(this.props).getNodes();
-  //   for (let node of myNodes) {
-  //     node.autoExpand = true;
+export default class FilteredTreeComponent extends React.PureComponent<Props> {
+  // private getDataProvider(props: Props) {
+  //   if ((props as any).dataProvider) {
+  //     const providerProps = props as DataProviderProps;
+  //     return providerProps.dataProvider;
+  //   } else {
+  //     const imodelProps = props as IModelConnectionProps;
+  //     console.log(imodelProps + " These are the iModel Props");
+  //     console.log(imodelProps.rulesetId + " this is the iModel Props ruleset ID for simple Tree Component");
+  //     const provider: PresentationTreeDataProvider = new PresentationTreeDataProvider(imodelProps.imodel, imodelProps.rulesetId);
+  //     this.filterDataProvider(provider);
+  //     return provider;
   //   }
-  //   console.log("myNodes");
-  //   console.log(myNodes);
-  //   console.log("myNodes.length");
-  //   console.log(myNodes.length);
-  //   return myNodes;
   // }
 
+  //WIP to create a new tree item
+  // private async filterDataProvider(provider: PresentationTreeDataProvider) {
+
+  //   const paths = await provider.getFilteredNodePaths("");
+  //   // const rootNode: Node = paths[0].node;
+  //   // const children = paths[0].children;
+  // }
+
+  // private buildNewTree(nodes: Node[], parent: NodeItem) {
+  //   console.log("ok");
+  // }
+
+  // private convertToNodeItem(node: Node, parent: NodeItem) {
+
+  // }
+
+  componentDidMount() {
+    const toggler = document.getElementsByClassName("caret");
+    for (let i = 0; i < toggler.length; i++) {
+      toggler[i].addEventListener("click", function () {
+        const currentElement = toggler[i];
+        if (currentElement) {
+          const parentElement = currentElement.parentElement;
+          if (parentElement) {
+            //parentElement.querySelector(".nested").classList.toggle("active");
+            for (let k = 0; k < parentElement.children.length; k++) {
+              if (parentElement.children[k].className === "nested") {
+                parentElement.children[k].classList.toggle("active");
+              }
+            }
+            currentElement.classList.toggle("caret-down");
+          }
+        }
+      });
+    }
+  }
+
   public render() {
-
-//      let rootNode: DelayLoadedTreeNodeItem;
-//     this.promiseTesting().then(function (v) {
-//       rootNode = v[0];
-//       console.log("rootNode");
-//       console.log(rootNode);
-//     });
-// // ZD_TODO
-
     return (
-      <>
-        <h3 data-testid="tree-component-header">{IModelApp.i18n.translate("SimpleViewer:components.tree")}</h3>
-        <div style={{ flex: "1" }}>
-        <SimpleTree dataProvider={this.getDataProvider(this.props)} onNodesSelected={this.props.onNodesSelected}/>
-        </div>
-      </>
+      <div className="theTop">
+        <link rel="stylesheet" href="./Tree.scss" type="text/css" />
+        <ul id="myUL">
+          <li><span className="caret">Beverages</span>
+            <ul className="nested">
+              <li>Water</li>
+              <li>Coffee</li>
+              <li className="caret">Tea
+                <ul className="nested">
+                  <li>Black Tea</li>
+                  <li>White Tea</li>
+                  <li className="caret">Green Tea
+                    <ul className="nested">
+                      <li>Sencha</li>
+                      <li>Gyokuro</li>
+                      <li>Matcha</li>
+                      <li>Pi Lo Chun</li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
     );
   }
 }
+
+/** Tree component for the viewer app */
+// export default class SimpleTreeComponent extends React.PureComponent<Props> {
+
+//   private getDataProvider(props: Props) {
+//     if ((props as any).dataProvider) {
+//       const providerProps = props as DataProviderProps;
+//       console.log(providerProps.dataProvider.getFilteredNodePaths("document") + " This is the getfilterednodePaths");
+//       return providerProps.dataProvider;
+//     } else {
+//       const imodelProps = props as IModelConnectionProps;
+//       console.log(imodelProps + " These are the iModel Props");
+//       console.log(imodelProps.rulesetId + " this is the iModel Props ruleset ID for simple Tree Component");
+//       const provider: PresentationTreeDataProvider = new PresentationTreeDataProvider(imodelProps.imodel, imodelProps.rulesetId);
+
+//       // const document = imodelProps.imodel.tiles.getTileTreeProps("PlantDocumentModel")
+//       let testing = this.getNodePaths(provider).then((provider) => { return provider });
+//       //  if((testing as any).PresentationTreeDataProvider){
+//       //    return testing;
+//       //  } else {
+//       //    return provider;
+//       //  }
+//       return provider;
+
+//       // console.log(provider.getNodes());
+//       // return provider;
+//     }
+//   }
+
+//   private async getNodePaths(provider: PresentationTreeDataProvider) {
+//     const paths = await provider.getFilteredNodePaths("");
+//     const rootNode = paths[0];
+//     rootNode.isMarked;
+//     for (let i = 0; i < rootNode.children.length; i++) {
+//       console.log(i + "index: " + rootNode.children[i].node.label);
+//       rootNode.children[i].isMarked = true;
+//       if (!rootNode.children[i].node.label.includes("Document")) {
+//         console.log(rootNode.children[i].node.label);
+//         rootNode.children[i].isMarked = false;
+//       }
+//     }
+//     let positionOfDocument: number = -1;
+//     console.log("looking for document model")
+//     for (let i = 0; i < rootNode.children.length; i++) {
+//       if (rootNode.children[i].isMarked) {
+//         console.log("documentModelFound");
+//         positionOfDocument = i;
+//         break;
+//       }
+//     }
+//     if (positionOfDocument !== -1) {
+//       console.log("Removing child nodes");
+//       const document = rootNode.children[positionOfDocument];
+//       for (let i = 0; i < rootNode.children.length; i++) {
+//         rootNode.children[i] = rootNode.children[positionOfDocument];
+//       }
+
+//       rootNode.children.push(document);
+//     }
+//     for (let i = 0; i < rootNode.children.length; i++) {
+//       console.log("CHILD NODE " + rootNode.children[i].node.label);
+//     }
+//     // const k = await provider.getFilteredNodePaths("Document");
+//   }
+
+//   // ZD_TODO
+//   // private async promiseTesting() {
+//   //   let myNodes: DelayLoadedTreeNodeItem[] = await this.getDataProvider(this.props).getNodes();
+//   //   for (let node of myNodes) {
+//   //     node.autoExpand = true;
+//   //   }
+//   //   console.log("myNodes");
+//   //   console.log(myNodes);
+//   //   console.log("myNodes.length");
+//   //   console.log(myNodes.length);
+//   //   return myNodes;
+//   // }
+
+//   public render() {
+
+//     //      let rootNode: DelayLoadedTreeNodeItem;
+//     //     this.promiseTesting().then(function (v) {
+//     //       rootNode = v[0];
+//     //       console.log("rootNode");
+//     //       console.log(rootNode);
+//     //     });
+//     // // ZD_TODO
+
+//     return (
+//       <>
+//         <h3 data-testid="tree-component-header">{IModelApp.i18n.translate("SimpleViewer:components.tree")}</h3>
+//         <div style={{ flex: "1" }}>
+//           <SimpleTree dataProvider={this.getDataProvider(this.props)} onNodesSelected={this.props.onNodesSelected} />
+//         </div>
+//       </>
+//     );
+//   }
+// }
