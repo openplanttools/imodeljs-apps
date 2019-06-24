@@ -53,7 +53,7 @@ export const GroupWidget = () => {
       <link rel='stylesheet' href="./Group.scss" type='text/css' />
       <div className="midLeft">
         {/* <Button id="submitt" buttonType={ButtonType.Primary} name="submit" value="Submit">Submit</Button> */}
-        <ProjectList />
+        {/* <ProjectList /> */}
         <IModelList />
       </div>
     </div>

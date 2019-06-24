@@ -11,9 +11,7 @@ import {
   PresentationTreeDataProvider,
 } from "@bentley/presentation-components";
 import { NodePathElement} from "@bentley/presentation-common";
-
-
-
+import { TreeNode } from "inspire-tree";
 
 // create a HOC tree component that supports unified selection
 // tslint:disable-next-line:variable-name
@@ -36,19 +34,12 @@ export interface DataProviderProps {
   onNodesSelected?: (nodes: TreeNodeItem[], replace: boolean) => boolean;
 }
 
-export interface NodeItem {
-  data?: any;
-  label: string;
-  children: NodeItem[];
-  id?: string;
-}
+export default class TreeToolComponent extends React.Component<IModelConnectionProps> {
+  constructor(props: any) {
+    super(props);
+    this.getDataProvider;
+  }
 
-/** React properties for the tree component */
-export type Props = IModelConnectionProps | DataProviderProps;
-
-/* WIP attempt to replace the Simple Tree Componenet with something easier to work with*/
-export default class FilteredTreeComponent extends React.PureComponent<Props> {
-  // paths
   private async getDataProvider(props: Props) {
     if ((props as any).dataProvider) {
       const providerProps = props as DataProviderProps;
@@ -58,6 +49,7 @@ export default class FilteredTreeComponent extends React.PureComponent<Props> {
       console.log(imodelProps + " These are the iModel Props");
       console.log(imodelProps.rulesetId + " this is the iModel Props ruleset ID for simple Tree Component");
       const provider: PresentationTreeDataProvider = new PresentationTreeDataProvider(imodelProps.imodel, imodelProps.rulesetId);
+      // tslint:disable-next-line: no-floating-promises
       provider.getFilteredNodePaths("").then((thePaths: NodePathElement[]) => {
         this.filterDataProvider(thePaths);
       });
@@ -120,6 +112,43 @@ export default class FilteredTreeComponent extends React.PureComponent<Props> {
     }
   }
 
+  render() {
+    return <div>HI!</div>;
+  }
+}
+export interface NodeItem {
+  data?: any;
+  label: string;
+  children: NodeItem[];
+  id?: string;
+}
+
+export interface TreeState {
+  theNodes: NodeItem;
+}
+/** React properties for the tree component */
+export type Props = IModelConnectionProps | DataProviderProps;
+
+/* WIP attempt to replace the Simple Tree Componenet with something easier to work with*/
+export class FilteredTreeComponent extends React.Component<TreeState> {
+
+  public theNodes: NodeItem[] | undefined;
+
+  constructor(props: any, filteredNodes: NodeItem[]) {
+    super(props);
+    this.state = {
+      nodes: filteredNodes,
+    };
+  }
+  public getRootNodes = () => {
+    //return nodes
+  }
+
+  public getChildNodes = () => {
+    //get the child nodes of a given node pass as a parameter
+  }
+
+
   // private buildNewTree(nodes: Node[], parent: NodeItem) {
   //   console.log("ok");
   // }
@@ -132,27 +161,27 @@ export default class FilteredTreeComponent extends React.PureComponent<Props> {
     this.getDataProvider(this.props);
   }
 
-  componentDidMount() {
-    var toggler = document.getElementsByClassName("caret");
-    var i: number;
+  // componentDidMount() {
+  //   var toggler = document.getElementsByClassName("caret");
+  //   var i: number;
 
-    for (i = 0; i < toggler.length; i++) {
-      toggler[i].addEventListener("click", function () {
-        const element = toggler[i];
-        if (element) {
-          const parent = element.parentElement;
-          if (parent) {
-            const test = parent.querySelector("nested");
-            if (test) {
-              console.log("In Test");
-              test.classList.toggle("active");
-            }
-            element.classList.toggle("caret-down");
-          }
-        }
-      });
-    }
-  }
+  //   for (i = 0; i < toggler.length; i++) {
+  //     toggler[i].addEventListener("click", function () {
+  //       const element = toggler[i];
+  //       if (element) {
+  //         const parent = element.parentElement;
+  //         if (parent) {
+  //           const test = parent.querySelector("nested");
+  //           if (test) {
+  //             console.log("In Test");
+  //             test.classList.toggle("active");
+  //           }
+  //           element.classList.toggle("caret-down");
+  //         }
+  //       }
+  //     });
+  //   }
+  // }
 
   // onClick(id: string) {
   //   console.log("in onClick")
@@ -181,30 +210,33 @@ export default class FilteredTreeComponent extends React.PureComponent<Props> {
 
   public render() {
     return (
-      <div>
-        <link href = "./Tree.scss"></link>
-      <ul id="myUL">
-      <li><span className="caret">Beverages</span>
-        <ul className="nested">
-          <li>Water</li>
-          <li>Coffee</li>
-          <li><span className="caret">Tea</span>
-            <ul className="nested">
-              <li>Black Tea</li>
-              <li>White Tea</li>
-              <li><span className="caret">Green Tea</span>
-                <ul className="nested">
-                  <li>Sencha</li>
-                  <li>Gyokuro</li>
-                  <li>Matcha</li>
-                  <li>Pi Lo Chun</li>
-                </ul>
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </li>
-    </ul>
+    //   <div>
+    //     <link href = "./Tree.scss"></link>
+    //   <ul id="myUL">
+    //   <li><span className="caret">Beverages</span>
+    //     <ul className="nested">
+    //       <li>Water</li>
+    //       <li>Coffee</li>
+    //       <li><span className="caret">Tea</span>
+    //         <ul className="nested">
+    //           <li>Black Tea</li>
+    //           <li>White Tea</li>
+    //           <li><span className="caret">Green Tea</span>
+    //             <ul className="nested">
+    //               <li>Sencha</li>
+    //               <li>Gyokuro</li>
+    //               <li>Matcha</li>
+    //               <li>Pi Lo Chun</li>
+    //             </ul>
+    //           </li>
+    //         </ul>
+    //       </li>
+    //     </ul>
+    //   </li>
+    // </ul>
+    // </div>
+    <div>
+      <TreeNode></TreeNode>
     </div>
     );
   }
