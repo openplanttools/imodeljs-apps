@@ -4,18 +4,22 @@
 *--------------------------------------------------------------------------------------------*/
 import "./Tree.scss";
 import * as React from "react";
-import { IModelConnection } from "@bentley/imodeljs-frontend";
+import {
+  IModelConnection,
+  MarginPercent
+} from "@bentley/imodeljs-frontend";
 import { TreeNodeItem } from "@bentley/ui-components";
-import PropTypes from "prop-types"
+// import PropTypes from "prop-types";
+import * as icons from "react-icons/fa";
+// import styled, * as style from "styled-components";
 import {
   IPresentationTreeDataProvider,
   PresentationTreeDataProvider,
 } from "@bentley/presentation-components";
-import { NodePathElement} from "@bentley/presentation-common";
+import { NodePathElement } from "@bentley/presentation-common";
 // import { TreeNode } from "inspire-tree";
-import  values from "lodash/values";
-import { Triangle } from "@bentley/imodeljs-frontend/lib/rendering";
-import { Box } from "@bentley/geometry-core";
+// import { Triangle } from "@bentley/imodeljs-frontend/lib/rendering";
+// import { Box } from "@bentley/geometry-core";
 
 // create a HOC tree component that supports unified selection
 // tslint:disable-next-line:variable-name
@@ -43,8 +47,9 @@ export default class TreeToolComponent extends React.Component<IModelConnectionP
 
   constructor(props: any) {
     super(props);
-    this.getDataProvider(this.props);
     this.theNodes = [];
+    // tslint:disable-next-line: no-floating-promises
+    this.getDataProvider(this.props);
   }
 
   private async getDataProvider(props: Props) {
@@ -64,8 +69,6 @@ export default class TreeToolComponent extends React.Component<IModelConnectionP
     }
   }
 
-  // private onNodesSelected(){}
-
   //WIP to create a new tree item
   private filterDataProvider(thePaths: NodePathElement[]) {
     const THE_FILTER = "ocument";
@@ -75,6 +78,7 @@ export default class TreeToolComponent extends React.Component<IModelConnectionP
       data: "temp_data",
       label: rootNode.label,
       children: [],
+      isRoot: true,
       id: "temp_id",
     };
     filteredNodes.push(newRootNode);
@@ -83,8 +87,8 @@ export default class TreeToolComponent extends React.Component<IModelConnectionP
       label: "Temp",
       children: [],
     };
-    for(let i = 0; i < thePaths[0].children.length; i++) {
-      if(thePaths[0].children[i].node.label.includes(THE_FILTER)) {
+    for (let i = 0; i < thePaths[0].children.length; i++) {
+      if (thePaths[0].children[i].node.label.includes(THE_FILTER)) {
         filteredPath = thePaths[0].children[i];
         const documentNode = filteredPath.node;
         newDocumentNode = {
@@ -97,17 +101,20 @@ export default class TreeToolComponent extends React.Component<IModelConnectionP
         break;
       }
     }
-    if(filteredPath)
-    this.recursiveTreeBuilder(newDocumentNode, filteredPath.children);
-    else
-    console.log("Something went wrong, filtered path is null/undefined");
     this.theNodes = filteredNodes;
+    console.log("The length of the nodes are " + this.theNodes.length);
+    if (filteredPath)
+      this.recursiveTreeBuilder(newDocumentNode, filteredPath.children);
+    else
+      console.log("Something went wrong, filtered path is null/undefined");
+    this.theNodes = filteredNodes;
+    console.log("The length of the nodes are " + this.theNodes[0].children[0].children[1].children.length);
   }
 
   private recursiveTreeBuilder(currentNode: NodeItem, currentPath: NodePathElement[]) {
-    if(currentPath) {
+    if (currentPath) {
       //take the nodes out of this repackage them as current nodes children, make recursive call
-      for(let i = 0; i < currentPath.length; i++){
+      for (let i = 0; i < currentPath.length; i++) {
         const newNodeItem: NodeItem = {
           data: "temp_data",
           label: currentPath[i].node.label,
@@ -121,71 +128,128 @@ export default class TreeToolComponent extends React.Component<IModelConnectionP
   }
 
   render() {
-    return <div><FilteredTreeComponent theNodes = {this.theNodes}></FilteredTreeComponent></div>;
+    return (
+      <div>
+        <span>HELLO</span>
+        <div><FilteredTreeComponent theNodes={this.theNodes}></FilteredTreeComponent></div>
+      </div>);
   }
 }
 export interface NodeItem {
   data?: any;
   label: string;
   children: NodeItem[];
+  isRoot?: boolean;
   id?: string;
+  isOpen?: boolean;
 }
 
-export interface TreeState {
+// WIP TreeProps interface, provides method for passing data from TreeToolComponenet to FilteredTreeComponenet
+export interface TreeProps {
   theNodes: NodeItem[];
+  isInitialized?: boolean;
 }
 
 /** React properties for the tree component */
 export type Props = IModelConnectionProps | DataProviderProps;
 
 /* WIP attempt to replace the Simple Tree Componenet with something easier to work with*/
-export class FilteredTreeComponent extends React.Component<TreeState> {
+export class FilteredTreeComponent extends React.PureComponent<TreeProps> {
 
-  public theNodes: NodeItem[] | undefined;
-
-  constructor(props: any, filteredNodes: NodeItem[]) {
+  constructor(props: TreeProps) {
     super(props);
     this.state = {
-      nodes: filteredNodes,
+      theNodes: props.theNodes,
     };
   }
+
   public getRootNodes = () => {
-    const nodes = this.state;
-    return values(nodes).filter();
+    const nodes = this.props.theNodes;
+    return nodes[0];
   }
 
-  public getChildNodes = () => {
-    //get the child nodes of a given node pass as a parameter
+  public getChildNodes = (node: NodeItem) => {
+    if (!node.children) { return [] };
+    return node.children;
   }
 
   public render() {
-    const rootNodes = this.getRootNodes();
+    const rootNode = this.getRootNodes();
     return (
-    <div>
-      {rootNodes.map((node: any) => (<TreeNode node={node} getChildNodes={this.getChildNodes}></TreeNode>))}
-    </div>
+      <div>
+        <span>HELLO2</span>
+        <TreeNode node={rootNode} level={0} getChildNodes={this.getChildNodes(rootNode)}></TreeNode>
+      </div>
     );
   }
 }
 
-const TreeNode = (props: { node: any; getChildNodes: any; }) => {
-  const {node, getChildNodes} = props;
+export interface NodeProps {
+  currentNode: NodeItem;
+  childNodes: NodeItem[];
+  level: number;
+}
+
+export class TreeNodeComponenet extends React.PureComponent<NodeProps> {
+  constructor(props: NodeProps) {
+    super(props);
+    this.state = {
+      currentNode: this.props.currentNode,
+      childNodes: this.props.childNodes,
+      level: this.props.level,
+    };
+  }
+
+  public getChildNodes = (node: NodeItem) => {
+    if (!node.children) { return [] };
+    return node.children;
+  }
+
+  render() {
+    return (
+      <div>
+        HEY 3
+        <div data-level={this.props.level}>
+          <div style={new MarginPercent(.01, .01, .05, .01)}>
+            {this.props.currentNode.isOpen ? icons.FaArrowDown : icons.FaArrowRight}
+          </div>
+          <span role="button">
+            {this.props.currentNode.label}
+          </span>
+        </div>
+        {this.props.currentNode.isOpen && this.getChildNodes(this.props.currentNode).map((childNode: NodeItem) => (
+          <TreeNode
+            getChildNodes={this.getChildNodes}
+            node={childNode}
+            level={this.props.level + 1}
+          ></TreeNode>
+        ))}
+      </div>
+    );
+  }
+}
+const TreeNode = (props: { node: NodeItem; getChildNodes: any; level: number; }) => {
+  const { node, getChildNodes, level } = props;
   return (
     <React.Fragment>
-      <div>
-        <div>
-          {node.isOpen ? Triangle : Box}
+      <div data-level={level}>
+        <div style={new MarginPercent(.01, .01, .05, .01)}>
+          {node.isOpen ? icons.FaArrowDown : icons.FaArrowRight}
         </div>
-      </div>;
-  {node.isOpen && getChildNodes(node).map((childNode: any) => (
-    <TreeNode
-    {...props}
-    node={childNode}
-    ></TreeNode>
-    ))}
+        <span role="button">
+          {node.label}
+        </span>
+      </div>
+      {node.isOpen && getChildNodes(node).map((childNode: any) => (
+        <TreeNode
+          {...props}
+          node={childNode}
+          level={level + 1}
+        ></TreeNode>
+      ))}
     </React.Fragment>
   );
-}
+};
 
 //   <div>
     //     <link href = "./Tree.scss"></link>
@@ -359,5 +423,5 @@ const TreeNode = (props: { node: any; getChildNodes: any; }) => {
   //         }
   //       }
   //     }
-  //   }
-  // }
+//   }
+// }

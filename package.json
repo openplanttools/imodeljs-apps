@@ -10,11 +10,11 @@
   "private": true,
   "scripts": {
     "build": "buildIModelJsModule",
+    "electron": "electron lib/backend/main.js",
     "start:webserver": "node ./node_modules/@bentley/imodeljs-webserver/lib/WebServer.js --port=3000 --resources=./lib/webresources/",
     "start:backend": "node lib/backend/main.js",
     "start:servers": "npm run start:makeconfig && env-cmd ./lib/webresources/config.json run-p \"start:webserver\" \"start:backend\"",
     "start:makeconfig": "strip-json-comments --no-whitespace ./src/common/config.json > ./lib/webresources/config.json",
-    "electron": "electron lib/backend/main.js",
     "clean": "rimraf lib",
     "build:mobile-backend": "tsc 1>&2 && webpack --config ./node_modules/@bentley/webpack-tools/mobile/backend.config.js --env.outdir=./lib/mobile --env.entry=./lib/backend/main.js --env.bundlename=main ",
     "test": "npm run test:unit && npm run test:integration && npm run test:e2e",
@@ -78,6 +78,7 @@
     "@bentley/presentation-testing": "1.0.0",
     "@bentley/ui-components": "1.0.0",
     "@bentley/ui-core": "1.0.0",
+    "@types/styled-components": "^4.1.16",
     "body-parser": "^1.18",
     "bunyan": "^1.8.12",
     "chai-jest-snapshot": "^2.0.0",
@@ -93,7 +94,8 @@
     "react-dom": "^16.4.2",
     "react-icons": "^3.7.0",
     "react-redux": "^5.0.7",
-    "redux": "^4.0.0"
+    "redux": "^4.0.0",
+    "styled-components": "^4.3.2"
   },
   "devDependencies": {
     "@bentley/build-tools": "1.0.0",

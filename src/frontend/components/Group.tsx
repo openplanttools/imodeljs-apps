@@ -218,7 +218,7 @@ export class IModelList extends React.Component<{}, { value: string }> {
     return (
       <form onSubmit={() => this.handleSubmit}>
         <label className="label">
-          <select id="dropList" name="iModelList" style={{ fontFamily: "sans-serif" }} value="List of iModels" onChange={() => { this.handleSubmit() }}>{iModelDataWidget().map((iModelItem) => {
+          <select id="dropList" name="iModelList" style={{ fontFamily: "sans-serif" }} value="List of iModels" onChange={() => { this.handleSubmit()}}>{iModelDataWidget().map((iModelItem) => {
             return <option key={iModelItem.key} /*onClick={() => this.handleSubmit()}*/ value={iModelItem.iModelValue}>{iModelItem.iModelName}</option>;
           })}List of iModels</select>
         </label>
