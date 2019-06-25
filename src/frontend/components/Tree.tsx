@@ -9,15 +9,23 @@ import {
   MarginPercent
 } from "@bentley/imodeljs-frontend";
 import { TreeNodeItem } from "@bentley/ui-components";
+<<<<<<< HEAD
 // import PropTypes from "prop-types";
 import * as icons from "react-icons/fa";
 // import styled, * as style from "styled-components";
+=======
+// import PropTypes from "prop-types"
+>>>>>>> b02a52218776e2080ac7dc703224302a5fe27fea
 import {
   IPresentationTreeDataProvider,
   PresentationTreeDataProvider,
 } from "@bentley/presentation-components";
 import { NodePathElement } from "@bentley/presentation-common";
 // import { TreeNode } from "inspire-tree";
+<<<<<<< HEAD
+=======
+// import values from "lodash/values";
+>>>>>>> b02a52218776e2080ac7dc703224302a5fe27fea
 // import { Triangle } from "@bentley/imodeljs-frontend/lib/rendering";
 // import { Box } from "@bentley/geometry-core";
 
