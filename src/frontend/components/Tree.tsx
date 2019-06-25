@@ -62,9 +62,8 @@ export default class TreeToolComponent extends React.Component<IModelConnectionP
       console.log(imodelProps.rulesetId + " this is the iModel Props ruleset ID for simple Tree Component");
       const provider: PresentationTreeDataProvider = new PresentationTreeDataProvider(imodelProps.imodel, imodelProps.rulesetId);
       // tslint:disable-next-line: no-floating-promises
-      provider.getFilteredNodePaths("").then((thePaths: NodePathElement[]) => {
-        this.filterDataProvider(thePaths);
-      });
+      const thePaths = await provider.getFilteredNodePaths("");
+      this.filterDataProvider(thePaths);
       return provider;
     }
   }
@@ -126,7 +125,9 @@ export default class TreeToolComponent extends React.Component<IModelConnectionP
       }
     }
   }
+  componentWillMount() {
 
+  }
   render() {
     return (
       <div>
@@ -174,11 +175,11 @@ export class FilteredTreeComponent extends React.PureComponent<TreeProps> {
   }
 
   public render() {
-    const rootNode = this.getRootNodes();
+    //const rootNode = this.getRootNodes();
     return (
       <div>
         <span>HELLO2</span>
-        <TreeNode node={rootNode} level={0} getChildNodes={this.getChildNodes(rootNode)}></TreeNode>
+        {/* <TreeNode node={rootNode} level={0} getChildNodes={rootNode.children}></TreeNode> */}
       </div>
     );
   }
@@ -217,13 +218,13 @@ export class TreeNodeComponenet extends React.PureComponent<NodeProps> {
             {this.props.currentNode.label}
           </span>
         </div>
-        {this.props.currentNode.isOpen && this.getChildNodes(this.props.currentNode).map((childNode: NodeItem) => (
+        {/* {this.props.currentNode.isOpen && this.getChildNodes(this.props.currentNode).map((childNode: NodeItem) => (
           <TreeNode
             getChildNodes={this.getChildNodes}
             node={childNode}
             level={this.props.level + 1}
           ></TreeNode>
-        ))}
+        ))} */}
       </div>
     );
   }
