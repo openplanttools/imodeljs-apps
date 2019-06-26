@@ -15,7 +15,7 @@
 5. Be able to edit properties in the viewer, *unsure if this one needs to be done.*
 6. Resolve all warnings/errors. *TBD*
 7. Fix initial button page.
-8. Add scrolling to property. - Zach *in progress*
+8. Add scrolling to property.
 9. Fix the sign-in button (lacking access to currently fix this). *TBD*
 10. Convert backend to be entirely electron/desktop based. - Nick **Done**
 11. Pick which project to view. - Zach *in progress*
@@ -33,16 +33,11 @@
 23. Implement loading circle function upon switching views/imodels/projects.
 24. Implement nicer loading functionality.
 25. Move select new iModel button to project
-26. Fix weird character bug (e.g. Miscellaneous). - Zach *in progress*
+26. Fix weird character bug (e.g. Miscellaneous).
 27. In bottom properties display widget, add functionality to click on category to display only that category, and click on it again to switch back to all categories
-
-##### (2) Display only relevant documents in tree.
-1. iModelHub project name (e.g. opbimdev01)
-2. iModel name (e.g. Nick-May2019)
-3. P&ID name (e.g. LakeLand), under PlantDocumentModel>Drawing
-4. P&ID graphic (e.g. Pid Graphic-3-29 w/ tag value (e.g. EX-0005), heat exchanger), under Equipment
-- keep directories (e.g. Equipment, Valve, etc.)
-- group similar ones together (e.g. Equipment > Centrifugal Pump > PMP-0001, PMP-0002)
+28. Display both the 3D and 2D views in the Viewport.
+29. Only display and allow to pass in the project, iModel, and drawing names.
+30. Maybe move the Menu button to the window menu or in the Toolbar in the Viewport.
 
 ## Development Setup
 
