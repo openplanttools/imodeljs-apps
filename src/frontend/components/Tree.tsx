@@ -17,6 +17,7 @@ import {
   PresentationTreeDataProvider,
 } from "@bentley/presentation-components";
 import { NodePathElement } from "@bentley/presentation-common";
+import styled from "styled-components";
 import assert = require("assert");
 // import { TreeNode } from "inspire-tree";
 // import { Triangle } from "@bentley/imodeljs-frontend/lib/rendering";
@@ -114,16 +115,17 @@ export default class TreeToolComponent extends React.Component<IModelConnectionP
     }
     this.theNodes = filteredNodes;
     if (filteredPath)
-      this.recursiveTreeBuilder(newDocumentNode, filteredPath.children);
+      this.recursiveTreeBuilder(newDocumentNode, filteredPath.children, newDocumentNode.label);
     else
       console.log("Something went wrong, filtered path is null/undefined");
-    this.theNodes = filteredNodes;
+    this.theNodes = [];
+    this.theNodes.push(filteredNodes[0].children[0].children[0]);
     this.setState(() => ({
       isLoading: false,
     }));
   }
 
-  private recursiveTreeBuilder(currentNode: NodeItem, currentPath: NodePathElement[]) {
+  private recursiveTreeBuilder(currentNode: NodeItem, currentPath: NodePathElement[], parentID: string) {
     if (currentPath) {
       //take the nodes out of this repackage them as current nodes children, make recursive call
       for (let i = 0; i < currentPath.length; i++) {
@@ -134,8 +136,9 @@ export default class TreeToolComponent extends React.Component<IModelConnectionP
           id: "temp_id",
           isOpen: true,
         };
+        if(newNodeItem.label !== parentID)
         currentNode.children.push(newNodeItem);
-        this.recursiveTreeBuilder(newNodeItem, currentPath[i].children);
+        this.recursiveTreeBuilder(newNodeItem, currentPath[i].children, newNodeItem.label);
       }
     }
   }
@@ -266,10 +269,14 @@ export class TreeNodeComponent extends React.PureComponent<NodeProps, NodeState>
     }));
   }
 
+  public getPaddingLeft(){
+    return this.state.level * 15;
+  }
   render() {
     return (
-      <div>
-        <div data-level={this.state.level}>
+
+      <StyledTreeNode level = {this.state.level}>
+        <div data-level={this.state.level} className="nodeLevel">
           {/* <div style={}> */}
           {/* this.props.currentNode.isOpen ? icons.FaArrowDown :*/}
           {this.state.isOpen ? <icons.FaArrowDown/> : <icons.FaArrowRight/> }
@@ -281,10 +288,35 @@ export class TreeNodeComponent extends React.PureComponent<NodeProps, NodeState>
         {this.state.isOpen && this.state.childNodes.map((childNode: NodeItem) => (
           <TreeNodeComponent isOpen={false} onToggle={this.onToggle} currentNode={childNode} level={this.state.level + 1} />
         ))}
-      </div>
+      </StyledTreeNode>
     );
   }
 }
+
+export const getPaddingLeft = (level: number) => {
+  return level * 15;
+};
+
+export interface styledTreeProps {
+  level: number;
+}
+
+export const StyledTreeNode = styled.div`
+display: flex;
+flex-direction: column;
+padding-left: ${(props: styledTreeProps) => getPaddingLeft(props.level)}px;
+overflow: hidden;
+flex-flow: column;
+&:hover::after {
+content: "";
+position: absolute;
+background-color: rgb(91, 190, 223);
+top: -50px;
+height: 10px;
+width: 5%;
+z-index: -1;
+}
+`;
 // const TreeNode = (props: { node: NodeItem; getChildNodes: any; level: number; }) => {
 //   const { node, getChildNodes, level } = props;
 //   return (

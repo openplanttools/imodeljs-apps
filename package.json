@@ -83,6 +83,7 @@
     "bunyan": "^1.8.12",
     "chai-jest-snapshot": "^2.0.0",
     "chroma-js": "^2.0.3",
+    "components": "^0.1.0",
     "distinct-colors": "^1.0.4",
     "express": "^4",
     "inspire-tree": "^5.0.1",
@@ -95,6 +96,7 @@
     "react-icons": "^3.7.0",
     "react-redux": "^5.0.7",
     "redux": "^4.0.0",
+    "styled": "^1.0.0",
     "styled-components": "^4.3.2"
   },
   "devDependencies": {

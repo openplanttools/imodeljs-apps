@@ -18,7 +18,7 @@ ul, #myUL {
 /* Create the caret/arrow with a unicode, and style it */
 .caret::before {
   content: "\25B6";
-  color: black;
+  color: rgb(91, 190, 223);
   display: inline-block;
   margin-right: 6px;
 }
@@ -36,4 +36,12 @@ ul, #myUL {
 /* Show the nested list when the user clicks on the caret/arrow (with JavaScript) */
 .active {
   display: block;
+}
+
+.nodeLevel {
+  margin-left: 15px;
+}
+
+li {
+  margin-left: 10px;
 }
