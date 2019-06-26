@@ -6,7 +6,7 @@ import "./Tree.scss";
 import * as React from "react";
 import {
   IModelConnection,
-  MarginPercent
+  // MarginPercent
 } from "@bentley/imodeljs-frontend";
 import { TreeNodeItem } from "@bentley/ui-components";
 // import PropTypes from "prop-types";
@@ -17,6 +17,7 @@ import {
   PresentationTreeDataProvider,
 } from "@bentley/presentation-components";
 import { NodePathElement } from "@bentley/presentation-common";
+import assert = require("assert");
 // import { TreeNode } from "inspire-tree";
 // import { Triangle } from "@bentley/imodeljs-frontend/lib/rendering";
 // import { Box } from "@bentley/geometry-core";
@@ -31,6 +32,7 @@ export interface IModelConnectionProps {
   imodel: IModelConnection;
   /** ID of the presentation rule set to use for creating the hierarchy in the tree */
   rulesetId: string;
+  isLoading?: boolean;
   onNodesSelected?: (nodes: TreeNodeItem[], replace: boolean) => boolean;
 }
 
@@ -42,14 +44,24 @@ export interface DataProviderProps {
   onNodesSelected?: (nodes: TreeNodeItem[], replace: boolean) => boolean;
 }
 
-export default class TreeToolComponent extends React.Component<IModelConnectionProps> {
+export interface TreeToolState {
+  isLoading?: boolean;
+  imodel?: IModelConnection;
+  nodes?: NodePathElement;
+  dataProvider?: IPresentationTreeDataProvider;
+}
+
+export default class TreeToolComponent extends React.Component<IModelConnectionProps, TreeToolState> {
   public theNodes: NodeItem[];
 
   constructor(props: any) {
     super(props);
     this.theNodes = [];
-    // tslint:disable-next-line: no-floating-promises
-    this.getDataProvider(this.props);
+    this.state = {
+      imodel: this.props.imodel,
+      isLoading: true,
+    };
+    this.getDataProvider(props);
   }
 
   private async getDataProvider(props: Props) {
@@ -58,8 +70,6 @@ export default class TreeToolComponent extends React.Component<IModelConnectionP
       return providerProps.dataProvider;
     } else {
       const imodelProps = props as IModelConnectionProps;
-      console.log(imodelProps + " These are the iModel Props");
-      console.log(imodelProps.rulesetId + " this is the iModel Props ruleset ID for simple Tree Component");
       const provider: PresentationTreeDataProvider = new PresentationTreeDataProvider(imodelProps.imodel, imodelProps.rulesetId);
       // tslint:disable-next-line: no-floating-promises
       const thePaths = await provider.getFilteredNodePaths("");
@@ -79,6 +89,7 @@ export default class TreeToolComponent extends React.Component<IModelConnectionP
       children: [],
       isRoot: true,
       id: "temp_id",
+      isOpen: true,
     };
     filteredNodes.push(newRootNode);
     let filteredPath;
@@ -95,19 +106,21 @@ export default class TreeToolComponent extends React.Component<IModelConnectionP
           label: documentNode.label,
           children: [],
           id: "temp_id",
+          isOpen: true,
         };
         newRootNode.children.push(newDocumentNode);
         break;
       }
     }
     this.theNodes = filteredNodes;
-    console.log("The length of the nodes are " + this.theNodes.length);
     if (filteredPath)
       this.recursiveTreeBuilder(newDocumentNode, filteredPath.children);
     else
       console.log("Something went wrong, filtered path is null/undefined");
     this.theNodes = filteredNodes;
-    console.log("The length of the nodes are " + this.theNodes[0].children[0].children[1].children.length);
+    this.setState(() => ({
+      isLoading: false,
+    }));
   }
 
   private recursiveTreeBuilder(currentNode: NodeItem, currentPath: NodePathElement[]) {
@@ -119,21 +132,37 @@ export default class TreeToolComponent extends React.Component<IModelConnectionP
           label: currentPath[i].node.label,
           children: [],
           id: "temp_id",
+          isOpen: true,
         };
         currentNode.children.push(newNodeItem);
         this.recursiveTreeBuilder(newNodeItem, currentPath[i].children);
       }
     }
   }
-  componentWillMount() {
-
+  componentWillReceiveProps(nextProps: IModelConnectionProps) {
+    if (this.state.imodel) {
+      if (this.state.imodel !== nextProps.imodel) {
+        this.setState(() => ({
+          isLoading: true,
+          imodel: nextProps.imodel,
+        }));
+        this.getDataProvider(nextProps);
+      }
+    }
   }
+
   render() {
-    return (
-      <div>
-        <span>HELLO</span>
-        <div><FilteredTreeComponent theNodes={this.theNodes}></FilteredTreeComponent></div>
-      </div>);
+    if (this.state.isLoading) {
+      return (
+        <div>IS LOADING</div>
+      )
+    } else {
+      return (
+        <div>
+          <span></span>
+          <div><FilteredTreeComponent reloadCheck={this.state.imodel} theNodes={this.theNodes} isLoading={this.state.isLoading} /></div>
+        </div>);
+    }
   }
 }
 export interface NodeItem {
@@ -148,22 +177,29 @@ export interface NodeItem {
 // WIP TreeProps interface, provides method for passing data from TreeToolComponenet to FilteredTreeComponenet
 export interface TreeProps {
   theNodes: NodeItem[];
-  isInitialized?: boolean;
+  isLoading?: boolean;
+  reloadCheck?: IModelConnection;
+}
+
+export interface TreeState {
+  theNodes: NodeItem[];
+  isLoading?: boolean;
 }
 
 /** React properties for the tree component */
 export type Props = IModelConnectionProps | DataProviderProps;
 
 /* WIP attempt to replace the Simple Tree Componenet with something easier to work with*/
-export class FilteredTreeComponent extends React.PureComponent<TreeProps> {
+export class FilteredTreeComponent extends React.PureComponent<TreeProps, TreeState> {
 
   constructor(props: TreeProps) {
     super(props);
     this.state = {
       theNodes: props.theNodes,
+      isLoading: props.isLoading,
     };
+    assert(props.theNodes[0] !== undefined);
   }
-
   public getRootNodes = () => {
     const nodes = this.props.theNodes;
     return nodes[0];
@@ -175,11 +211,11 @@ export class FilteredTreeComponent extends React.PureComponent<TreeProps> {
   }
 
   public render() {
-    //const rootNode = this.getRootNodes();
     return (
       <div>
-        <span>HELLO2</span>
-        {/* <TreeNode node={rootNode} level={0} getChildNodes={rootNode.children}></TreeNode> */}
+        <span></span>
+        {assert(this.props.theNodes[0] !== undefined)}
+        <TreeNodeComponent currentNode={this.props.theNodes[0]} level={0} />
       </div>
     );
   }
@@ -187,16 +223,22 @@ export class FilteredTreeComponent extends React.PureComponent<TreeProps> {
 
 export interface NodeProps {
   currentNode: NodeItem;
+  childNodes?: NodeItem[];
+  level: number;
+}
+
+export interface NodeState {
+  currentNode: NodeItem;
   childNodes: NodeItem[];
   level: number;
 }
 
-export class TreeNodeComponenet extends React.PureComponent<NodeProps> {
+export class TreeNodeComponent extends React.PureComponent<NodeProps, NodeState> {
   constructor(props: NodeProps) {
     super(props);
     this.state = {
       currentNode: this.props.currentNode,
-      childNodes: this.props.childNodes,
+      childNodes: this.props.currentNode.children,
       level: this.props.level,
     };
   }
@@ -206,51 +248,62 @@ export class TreeNodeComponenet extends React.PureComponent<NodeProps> {
     return node.children;
   }
 
+  public onClick() {
+    alert("IN ON CLICK METHOD");
+    const newNodeItem: NodeItem = {
+      label: this.state.currentNode.label,
+      isRoot: this.state.currentNode.isRoot,
+      children: this.state.currentNode.children,
+      data: this.state.currentNode.id,
+      isOpen: !this.state.currentNode.isOpen,
+    }
+    this.setState(() => ({
+      currentNode: newNodeItem,
+      childNodes: newNodeItem.children,
+    }));
+  }
+
   render() {
     return (
       <div>
-        HEY 3
-        <div data-level={this.props.level}>
-          <div style={new MarginPercent(.01, .01, .05, .01)}>
-            {this.props.currentNode.isOpen ? icons.FaArrowDown : icons.FaArrowRight}
-          </div>
-          <span role="button">
-            {this.props.currentNode.label}
+        <div data-level={this.state.level}>
+          {/* <div style={}> */}
+          {/* this.props.currentNode.isOpen ? icons.FaArrowDown :*/}
+          <icons.FaArrowRight />
+          {/* </div> */}
+          <span role="button" onClick={() => this.onClick}>
+            {this.state.currentNode.label}
           </span>
         </div>
-        {/* {this.props.currentNode.isOpen && this.getChildNodes(this.props.currentNode).map((childNode: NodeItem) => (
-          <TreeNode
-            getChildNodes={this.getChildNodes}
-            node={childNode}
-            level={this.props.level + 1}
-          ></TreeNode>
-        ))} */}
+        {this.state.currentNode.isOpen && this.state.childNodes.map((childNode: NodeItem) => (
+          <TreeNodeComponent currentNode={childNode} level={this.state.level + 1} />
+        ))}
       </div>
     );
   }
 }
-const TreeNode = (props: { node: NodeItem; getChildNodes: any; level: number; }) => {
-  const { node, getChildNodes, level } = props;
-  return (
-    <React.Fragment>
-      <div data-level={level}>
-        <div style={new MarginPercent(.01, .01, .05, .01)}>
-          {node.isOpen ? icons.FaArrowDown : icons.FaArrowRight}
-        </div>
-        <span role="button">
-          {node.label}
-        </span>
-      </div>
-      {node.isOpen && getChildNodes(node).map((childNode: any) => (
-        <TreeNode
-          {...props}
-          node={childNode}
-          level={level + 1}
-        ></TreeNode>
-      ))}
-    </React.Fragment>
-  );
-};
+// const TreeNode = (props: { node: NodeItem; getChildNodes: any; level: number; }) => {
+//   const { node, getChildNodes, level } = props;
+//   return (
+//     <React.Fragment>
+//       <div data-level={level}>
+//         <div style={new MarginPercent(.01, .01, .05, .01)}>
+//           {node.isOpen ? icons.FaArrowDown : icons.FaArrowRight}
+//         </div>
+//         <span role="button">
+//           {node.label}
+//         </span>
+//       </div>
+//       {node.isOpen && getChildNodes(node).map((childNode: any) => (
+//         <TreeNode
+//           {...props}
+//           node={childNode}
+//           level={level + 1}
+//         ></TreeNode>
+//       ))}
+//     </React.Fragment>
+//   );
+// };
 
 //   <div>
     //     <link href = "./Tree.scss"></link>

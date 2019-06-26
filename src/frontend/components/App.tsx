@@ -435,8 +435,19 @@ interface IModelComponentsProps {
   menuOpened: boolean;
   title: string;
 }
+
+interface IModelComponentState {
+  iModel: IModelConnection;
+}
 /** Renders a viewport, a tree, a property grid and a table */
-class IModelComponents extends React.PureComponent<IModelComponentsProps> {
+class IModelComponents extends React.PureComponent<IModelComponentsProps, IModelComponentState> {
+
+  constructor(props: IModelComponentsProps){
+    super(props);
+    this.state = {
+      iModel: this.props.imodel,
+    }
+  }
 
   public render() {
     /*

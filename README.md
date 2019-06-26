@@ -34,6 +34,7 @@
 24. Implement nicer loading functionality.
 25. Move select new iModel button to project
 26. Fix weird character bug (e.g. Miscellaneous). - Zach *in progress*
+27. In bottom properties display widget, add functionality to click on category to display only that category, and click on it again to switch back to all categories
 
 ##### (2) Display only relevant documents in tree.
 1. iModelHub project name (e.g. opbimdev01)
