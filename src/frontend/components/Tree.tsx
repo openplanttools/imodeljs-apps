@@ -215,7 +215,7 @@ export class FilteredTreeComponent extends React.PureComponent<TreeProps, TreeSt
       <div>
         <span></span>
         {assert(this.props.theNodes[0] !== undefined)}
-        <TreeNodeComponent currentNode={this.props.theNodes[0]} level={0} />
+        <TreeNodeComponent isOpen={true} currentNode={this.props.theNodes[0]} level={0} />
       </div>
     );
   }
@@ -225,12 +225,15 @@ export interface NodeProps {
   currentNode: NodeItem;
   childNodes?: NodeItem[];
   level: number;
+  isOpen?: boolean;
+  onToggle?: () => void;
 }
 
 export interface NodeState {
   currentNode: NodeItem;
   childNodes: NodeItem[];
   level: number;
+  isOpen?: boolean;
 }
 
 export class TreeNodeComponent extends React.PureComponent<NodeProps, NodeState> {
@@ -240,6 +243,7 @@ export class TreeNodeComponent extends React.PureComponent<NodeProps, NodeState>
       currentNode: this.props.currentNode,
       childNodes: this.props.currentNode.children,
       level: this.props.level,
+      isOpen: this.props.isOpen,
     };
   }
 
@@ -248,18 +252,17 @@ export class TreeNodeComponent extends React.PureComponent<NodeProps, NodeState>
     return node.children;
   }
 
+  public onToggle() {
+    this.setState(() => ({
+      isOpen: !this.state.isOpen,
+    }));
+  }
+
   public onClick() {
     alert("IN ON CLICK METHOD");
-    const newNodeItem: NodeItem = {
-      label: this.state.currentNode.label,
-      isRoot: this.state.currentNode.isRoot,
-      children: this.state.currentNode.children,
-      data: this.state.currentNode.id,
-      isOpen: !this.state.currentNode.isOpen,
-    }
+
     this.setState(() => ({
-      currentNode: newNodeItem,
-      childNodes: newNodeItem.children,
+      isOpen: !this.state.isOpen,
     }));
   }
 
@@ -269,14 +272,14 @@ export class TreeNodeComponent extends React.PureComponent<NodeProps, NodeState>
         <div data-level={this.state.level}>
           {/* <div style={}> */}
           {/* this.props.currentNode.isOpen ? icons.FaArrowDown :*/}
-          <icons.FaArrowRight />
+          {this.state.isOpen ? <icons.FaArrowDown/> : <icons.FaArrowRight/> }
           {/* </div> */}
-          <span role="button" onClick={() => this.onClick}>
+          <span role="button" onClick={() => this.onToggle()}>
             {this.state.currentNode.label}
           </span>
         </div>
-        {this.state.currentNode.isOpen && this.state.childNodes.map((childNode: NodeItem) => (
-          <TreeNodeComponent currentNode={childNode} level={this.state.level + 1} />
+        {this.state.isOpen && this.state.childNodes.map((childNode: NodeItem) => (
+          <TreeNodeComponent isOpen={false} onToggle={this.onToggle} currentNode={childNode} level={this.state.level + 1} />
         ))}
       </div>
     );
