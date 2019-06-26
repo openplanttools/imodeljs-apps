@@ -6,13 +6,18 @@
 import * as React from "react";
 import {
   IModelApp,
-  ZoomViewTool, PanViewTool, RotateViewTool, SelectionTool, FitViewTool,
+  ZoomViewTool, PanViewTool, RotateViewTool, SelectionTool, FitViewTool, ScreenViewport, Viewport,
 } from "@bentley/imodeljs-frontend";
 
 import "./Components.scss";
 
 /** Toolbar containing simple navigation tools */
 const toolbar = () => {
+  const style = IModelApp.viewManager.selectedView;
+  //WIP NCIK
+  // if(style){
+  //   style.view.viewsCategory
+  // }
   return (
     <div className="toolbar">
       <a href="#" title={SelectionTool.flyover} onClick={select}><span className="icon icon-cursor"></span></a>
@@ -29,7 +34,7 @@ const toolbar = () => {
  * for more details and available tools.
  */
 
-const select = () => {
+export const select = () => {
   IModelApp.tools.run(SelectionTool.toolId);
 };
 
@@ -38,6 +43,7 @@ const fitView = () => {
 };
 
 const rotate = () => {
+
   IModelApp.tools.run(RotateViewTool.toolId, IModelApp.viewManager.selectedView);
 };
 

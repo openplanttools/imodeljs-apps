@@ -3,6 +3,10 @@
 * Licensed under the MIT License. See LICENSE.md in the project root for license terms.
 *--------------------------------------------------------------------------------------------*/
 import "./Tree.scss";
+import {
+  IModelApp,
+   SelectionTool
+} from "@bentley/imodeljs-frontend";
 import * as React from "react";
 import {
   IModelConnection,
@@ -19,6 +23,7 @@ import {
 import { NodePathElement } from "@bentley/presentation-common";
 import styled from "styled-components";
 import assert = require("assert");
+import { IModel } from "@bentley/imodeljs-common";
 // import { TreeNode } from "inspire-tree";
 // import { Triangle } from "@bentley/imodeljs-frontend/lib/rendering";
 // import { Box } from "@bentley/geometry-core";
@@ -136,8 +141,8 @@ export default class TreeToolComponent extends React.Component<IModelConnectionP
           id: "temp_id",
           isOpen: true,
         };
-        if(newNodeItem.label !== parentID)
-        currentNode.children.push(newNodeItem);
+        if (newNodeItem.label !== parentID)
+          currentNode.children.push(newNodeItem);
         this.recursiveTreeBuilder(newNodeItem, currentPath[i].children, newNodeItem.label);
       }
     }
@@ -259,6 +264,9 @@ export class TreeNodeComponent extends React.PureComponent<NodeProps, NodeState>
     this.setState(() => ({
       isOpen: !this.state.isOpen,
     }));
+    if(this.state.currentNode.label.includes("Pid Graphic-")) {
+      IModelApp.tools.run
+    }
   }
 
   public onClick() {
@@ -269,22 +277,22 @@ export class TreeNodeComponent extends React.PureComponent<NodeProps, NodeState>
     }));
   }
 
-  public getPaddingLeft(){
+  public getPaddingLeft() {
     return this.state.level * 15;
   }
   render() {
     return (
 
-      <StyledTreeNode level = {this.state.level}>
-        <div data-level={this.state.level} className="nodeLevel">
+      <StyledTreeNode level={this.state.level}>
+        <StyledHoverSelection>
           {/* <div style={}> */}
           {/* this.props.currentNode.isOpen ? icons.FaArrowDown :*/}
-          {this.state.isOpen ? <icons.FaArrowDown/> : <icons.FaArrowRight/> }
+          {this.state.isOpen ? <icons.FaArrowDown /> : <icons.FaArrowRight />}
           {/* </div> */}
           <span role="button" onClick={() => this.onToggle()}>
             {this.state.currentNode.label}
           </span>
-        </div>
+        </StyledHoverSelection>
         {this.state.isOpen && this.state.childNodes.map((childNode: NodeItem) => (
           <TreeNodeComponent isOpen={false} onToggle={this.onToggle} currentNode={childNode} level={this.state.level + 1} />
         ))}
@@ -307,16 +315,21 @@ flex-direction: column;
 padding-left: ${(props: styledTreeProps) => getPaddingLeft(props.level)}px;
 overflow: hidden;
 flex-flow: column;
-&:hover::after {
-content: "";
-position: absolute;
-background-color: rgb(91, 190, 223);
-top: -50px;
-height: 10px;
-width: 5%;
-z-index: -1;
-}
 `;
+
+export const StyledHoverSelection = styled.div`
+display: flex;
+flex-direction: row;
+overflow: hidden;
+&:hover::after {
+  content: "";
+  position: absolute;
+  background-color: rgb(91, 190, 223);
+  top: -50px;
+  height: 10px;
+  width: 5%;
+  z-index: -1;
+}`;
 // const TreeNode = (props: { node: NodeItem; getChildNodes: any; level: number; }) => {
 //   const { node, getChildNodes, level } = props;
 //   return (
