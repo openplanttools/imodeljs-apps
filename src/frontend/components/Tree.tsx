@@ -135,7 +135,7 @@ export default class TreeToolComponent extends React.Component<IModelConnectionP
 
   private recursiveTreeBuilder(currentNode: NodeItem, currentPath: NodePathElement[], parentID: string) {
     if (currentPath) {
-      //take the nodes out of this repackage them as current nodes children, make recursive call
+      // take the nodes out of this repackage them as current nodes children, make recursive call
       for (let i = 0; i < currentPath.length; i++) {
         const newNodeItem: NodeItem = {
           data: "temp_data",

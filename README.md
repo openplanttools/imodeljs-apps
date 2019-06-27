@@ -9,7 +9,7 @@
 
 ## Current TODO
 1. Manually view all projects ***Done*** - Nick
-2. Display only relevant documents in tree, and create new component to replace Tree View for plant document models. - Nick *in progress*
+2. Display only relevant documents in tree, and create new component to replace Tree View for plant document models. - Nick **DONE**
 3. Automatically update on changes. **Done** - Nick
 4. Be able to change the view definition in the viewer. *Unsure if we want to do this*
 5. Be able to edit properties in the viewer, *unsure if this one needs to be done.*
@@ -21,7 +21,7 @@
 11. Pick which project to view. - Zach *in progress*
 12. Clean up code base **Done for now** - Nick
 13. Comment parts for explanations **Done** - Nick
-14. Fix CSS formatting *in progress* - Nick
+14. Fix CSS formatting *partially done* - Nick
 15. Fix clashes with electron IPC and configuration of front-back communication.
 16. Determine the necessity of webpack in browser runtime environment. **Done** - Nick
 17. Modify dependencies list, strip unused pieces, keep only browser specific portions.
@@ -38,6 +38,7 @@
 28. Display both the 3D and 2D views in the Viewport.
 29. Only display and allow to pass in the project, iModel, and drawing names.
 30. Maybe move the Menu button to the window menu or in the Toolbar in the Viewport.
+31. Add unified selection capability back into the tree *in progress* - Nick
 
 ## Development Setup
 
@@ -47,7 +48,7 @@
 	Go to [Registered Products], and select [+ New Project].
 	Under [iModel Source], use the sample [Bentley Example] with the [Retail Building Sample] selection.
 
-2.	Open the Command Prompt.
+2.    Open the Command Prompt.
 
 3.	Clone the rpeository from GitHub on your local machine with the following command:
 	*	git clone https://github.com/OpenPlantDev/PlantViewer
