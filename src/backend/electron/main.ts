@@ -38,7 +38,7 @@ var projectsList: Project[];
 var currentProject: Project;
 
 //Getters and setters for instance variables, that provide frontend <-> backend communication
-export var getiModelsList = () => {
+export var getIModelsList = () => {
   return iModelsList;
 };
 
@@ -58,7 +58,7 @@ export var setProjectsList = (listOfProjects: Project[]) => {
   projectsList = listOfProjects;
 };
 
-export var setiModelsList = (listOfModels: HubIModel[]) => {
+export var setIModelsList = (listOfModels: HubIModel[]) => {
   iModelsList = listOfModels;
 };
 

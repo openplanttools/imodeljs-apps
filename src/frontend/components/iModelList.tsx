@@ -2,7 +2,7 @@
 * Copyright (c) 2019 Bentley Systems, Incorporated. All rights reserved.
 * Licensed under the MIT License. See LICENSE.md in the project root for license terms.
 *--------------------------------------------------------------------------------------------*/
-import { getiModelsList } from "../../backend/electron/main.js";
+import { getIModelsList } from "../../backend/electron/main.js";
 import { HubIModel } from "@bentley/imodeljs-clients";
 
 // This method initializes the data structure that will store the the iModelData objects, it returns both a test data array, and an empty real data array
@@ -37,7 +37,7 @@ const iModelDataWidget = () => {
 
   // stores the iModels with their data in iModelData
   var iModelData = createiModelStorage();
-  const listOfIModels: HubIModel[] = getiModelsList();
+  const listOfIModels: HubIModel[] = getIModelsList();
   if (listOfIModels) {
 
     // loops through all the iModels

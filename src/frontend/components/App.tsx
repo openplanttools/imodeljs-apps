@@ -14,7 +14,7 @@ import { SimpleViewerApp } from "../api/SimpleViewerApp";
 import PropertiesWidget from "./Properties";
 import GridWidget from "./Table";
 import TreeWidget from "./Tree";
-import { setiModelsList, setProjectsList } from "../../backend/electron/main.js"
+import { setIModelsList, setProjectsList } from "../../backend/electron/main.js"
 import ViewportContentControl from "./Viewport";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "./App.css";
@@ -98,12 +98,48 @@ export default class App extends React.Component<{}, AppState> {
 
     // conditional checks to make sure that the current title is not the initial value or the same value currently being displayed
     if (projectContainer.projectObject.projectName !== this.state.projectName && projectContainer.projectObject.projectName !== "initial_value") {
+
+      // Updates the current iModel and the list of iModels when a new project is selected
+      const projectName = projectContainer.projectObject.projectName;
+
+      // Requests a context and connection client to access the iModelHub, and retrieves a list of projects
+      requestContext = await AuthorizedFrontendRequestContext.create();
+      connectClient = new ConnectClient();
+      projectsList = await connectClient.getProjects(requestContext);
+      setProjectsList(projectsList);
+
+      // try catch block gets a project, if the project doesnt exist, throw an alert
+      try {
+        project = await connectClient.getProject(requestContext, { $filter: `Name+eq+'${projectName}'` });
+      } catch (e) {
+        alert(`Project with name "${projectName}" does not exist`);
+        throw new Error(`Project with name "${projectName}" does not exist`);
+      }
+
+      // creates a new iModelQuery to connect to the database, and queries with specified context and project
+      // Then resolves that promise and sends that information to constiuent components that need the data
+      const imodelQuery = new IModelQuery();
+      resolvedIModelList = await IModelApp.iModelClient.iModels.get(requestContext, project.wsgId, imodelQuery);
+      setIModelsList(resolvedIModelList);
+      const imodelName = getIModelsList()[0].name;
+      imodelQuery.byName(imodelName as string);
+
+      // gets the specific imodel, returns the project and imodel wsdId's to the functions handling initial startup/rendering
+      const imodels = await IModelApp.iModelClient.iModels.get(requestContext, project.wsgId, imodelQuery);
+      if (imodels.length === 0)
+        throw new Error(`iModel with name "${imodelName}" does not exist in project "${projectName}"`);
+      currentIModel = imodels[0].wsgId;
+      IModelContainer.iModelObject.iModelName = getIModelsList()[0].name as string;
+
       // if these conditions are met, begin by setting the state of the iModel and project, and updating the title, causing React to re call render processes
       this.setState(() => ({
         iModelName: IModelContainer.iModelObject.iModelName,
         projectName: projectContainer.projectObject.projectName,
         title: "Project: " + projectContainer.projectObject.projectName + ", iModel: " + IModelContainer.iModelObject.iModelName + "",
       }));
+
+      console.log("HELP HERE");
+      console.log(imodelName);
 
       // if statement checking that the project name and the current iModel are defined strings/objects
       if (project.name && IModelContainer.currentIModel) {
@@ -440,7 +476,7 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
     const imodelQuery = new IModelQuery();
     resolvedIModelList = await IModelApp.iModelClient.iModels.get(requestContext, project.wsgId, imodelQuery);
     imodelQuery.byName(imodelName);
-    setiModelsList(resolvedIModelList);
+    setIModelsList(resolvedIModelList);
 
     // gets the specific imodel, returns the project and imodel wsdId's to the functions handling initial startup/rendering
     const imodels = await IModelApp.iModelClient.iModels.get(requestContext, project.wsgId, imodelQuery);
