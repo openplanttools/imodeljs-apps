@@ -14,12 +14,12 @@ import { SimpleViewerApp } from "../api/SimpleViewerApp";
 import PropertiesWidget from "./Properties";
 import GridWidget from "./Table";
 import TreeWidget from "./Tree";
-import { setiModelsList } from "../../backend/electron/main.js"
+import { setiModelsList, setProjectsList } from "../../backend/electron/main.js"
 import ViewportContentControl from "./Viewport";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "./App.css";
 
-import { GroupWidget, IModelContainer } from "./Group";
+import { GroupWidget, IModelContainer, projectContainer } from "./Group";
 // import { request } from "https";
 
 import chroma = require("chroma-js");
@@ -62,8 +62,11 @@ export interface AppState {
   offlineIModel: boolean;
   imodel?: IModelConnection;
   iModelName: string;
+  project?: Project;
+  projectName: string;
   viewDefinitionId?: Id64String;
   menuOpened: boolean;
+  menuName: string;
   title: string;
 }
 
@@ -81,9 +84,11 @@ export default class App extends React.Component<{}, AppState> {
         accessToken: undefined,
       },
       iModelName: Config.App.get("imjs_test_imodel"),
+      projectName: Config.App.get("imjs_test_project"),
       offlineIModel: false,
       menuOpened: false,
-      title: "Project: " + Config.App.get("imjs_test_project") + " iModel: " + Config.App.get("imjs_test_imodel") + "",
+      menuName: "Expand Menu",
+      title: "Project: " + Config.App.get("imjs_test_project") + ", iModel: " + Config.App.get("imjs_test_imodel") + "",
     };
     addEventListener("click", () => this.reloadIModelComponent());
   }
@@ -92,35 +97,73 @@ export default class App extends React.Component<{}, AppState> {
   public async reloadIModelComponent() {
 
     // conditional checks to make sure that the current title is not the initial value or the same value currently being displayed
-    if (IModelContainer.iModelObject.iModelName !== this.state.iModelName && IModelContainer.iModelObject.iModelName !== "initial_value") {
-
-      // if these conditions are met, begin by setting the state of the iModel, and updating the title, causing React to re call render processes
+    if (projectContainer.projectObject.projectName !== this.state.projectName && projectContainer.projectObject.projectName !== "initial_value") {
+      // if these conditions are met, begin by setting the state of the iModel and project, and updating the title, causing React to re call render processes
       this.setState(() => ({
         iModelName: IModelContainer.iModelObject.iModelName,
-        title: "Project: " + Config.App.get("imjs_test_project") + " iModel: " + IModelContainer.iModelObject.iModelName + "",
+        projectName: projectContainer.projectObject.projectName,
+        title: "Project: " + projectContainer.projectObject.projectName + ", iModel: " + IModelContainer.iModelObject.iModelName + "",
       }));
 
       // if statement checking that the project name and the current iModel are defined strings/objects
-      if (project.name && IModelContainer.currentIModel)
-
-      // opens a new iModel connection, then asynchronously uses a then call to apply that iModel connection to the state of this class, this change in state
-      // propogates to all child class updates their states as well
+      if (project.name && IModelContainer.currentIModel) {
+        // opens a new iModel connection, then asynchronously uses a then call to apply that iModel connection to the state of this class, this change in state
+        // propogates to all child class updates their states as well
         IModelConnection.open(project.wsgId, IModelContainer.iModelObject.iModelValue, OpenMode.Readonly) // tslint:disable-line: no-floating-promises
           .then(async (newIModel: IModelConnection | undefined) => {
 
-            // gets a valid view definition, for our purpose is fine, but it is possible that viewDefinition is invalid for a given iModel on runtime
-            var viewDefinition: Id64String;
-            if(newIModel)
+          // gets a valid view definition, for our purpose is fine, but it is possible that viewDefinition is invalid for a given iModel on runtime
+          var viewDefinition: Id64String;
+          if (newIModel)
             viewDefinition = await this.getFirstViewDefinitionId(newIModel);
-            else
+          else
             viewDefinition = "BisCore:DrawingViewDefinition";
 
-            // sets a new iModel connection combined with view definition
-            this.setState(() => ({
-              imodel: newIModel,
-              viewDefinitionId: viewDefinition,
-            }));
-          });
+          // sets a new iModel connection combined with view definition
+          this.setState(() => ({
+            imodel: newIModel,
+            viewDefinitionId: viewDefinition,
+          }));
+        });
+      }
+    }
+
+    // conditional checks to make sure that the current title is not the initial value or the same value currently being displayed
+    if (IModelContainer.iModelObject.iModelName !== this.state.iModelName && IModelContainer.iModelObject.iModelName !== "initial_value") {
+
+      // fix while project box is still showing "Pick a Project"
+      if (projectContainer.projectObject.projectName === "initial_value") {
+        projectContainer.projectObject.projectName = Config.App.get("imjs_test_project");
+      }
+
+      // if these conditions are met, begin by setting the state of the iModel and project, and updating the title, causing React to re call render processes
+      this.setState(() => ({
+        iModelName: IModelContainer.iModelObject.iModelName,
+        projectName: projectContainer.projectObject.projectName,
+        title: "Project: " + projectContainer.projectObject.projectName + ", iModel: " + IModelContainer.iModelObject.iModelName + "",
+      }));
+
+       // if statement checking that the project name and the current iModel are defined strings/objects
+      if (project.name && IModelContainer.currentIModel) {
+        // opens a new iModel connection, then asynchronously uses a then call to apply that iModel connection to the state of this class, this change in state
+        // propogates to all child class updates their states as well
+        IModelConnection.open(project.wsgId, IModelContainer.iModelObject.iModelValue, OpenMode.Readonly) // tslint:disable-line: no-floating-promises
+          .then(async (newIModel: IModelConnection | undefined) => {
+
+          // gets a valid view definition, for our purpose is fine, but it is possible that viewDefinition is invalid for a given iModel on runtime
+          var viewDefinition: Id64String;
+          if (newIModel)
+            viewDefinition = await this.getFirstViewDefinitionId(newIModel);
+          else
+            viewDefinition = "BisCore:DrawingViewDefinition";
+
+          // sets a new iModel connection combined with view definition
+          this.setState(() => ({
+            imodel: newIModel,
+            viewDefinitionId: viewDefinition,
+          }));
+        });
+      }
     }
   }
 
@@ -304,7 +347,19 @@ export default class App extends React.Component<{}, AppState> {
 
   // Handles full screen menu button state change
   private _menuClick = async () => {
-    this.setState({ menuOpened: !this.state.menuOpened });
+    this.setState({
+      menuOpened: !this.state.menuOpened,
+    });
+    if (this.state.menuOpened) {
+      this.setState({
+        menuName: "Expand Menu",
+      });
+    }
+    else {
+      this.setState({
+        menuName: "Collapse Menu",
+      });
+    }
   }
 
   /** The component's render method */
@@ -323,7 +378,7 @@ export default class App extends React.Component<{}, AppState> {
       ui = (<OpenIModelButton accessToken={this.state.user.accessToken} offlineIModel={this.state.offlineIModel} onIModelSelected={this._onIModelSelected} />);
     } else {
       // if we do have an imodel and view definition id - render imodel components
-      const titleName: string = "Plant Viewer:  <Project: " + Config.App.get("imjs_test_project") + ">  <iModel: " + Config.App.get("imjs_test_imodel") + ">";
+      const titleName: string = "Project: " + Config.App.get("imjs_test_project") + ", iModel: " + Config.App.get("imjs_test_imodel");
       ui = (<IModelComponents imodel={this.state.imodel} viewDefinitionId={this.state.viewDefinitionId} menuOpened={this.state.menuOpened} title={titleName} />);
     }
 
@@ -333,10 +388,11 @@ export default class App extends React.Component<{}, AppState> {
         <div className="app-header">
           <div className="text">
             <h2>{this.state.title}</h2>
+            {/* <h2><GroupWidget></GroupWidget>></h2> */}
           </div>
           <div className="menu">
             <Button size={ButtonSize.Default} buttonType={ButtonType.Primary} className="expand-menu" onClick={this._menuClick}>
-              <span>Menu</span>
+              <span>{this.state.menuName}</span>
             </Button>
           </div>
         </div>
@@ -368,7 +424,8 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
     // Requests a context and connection client to access the iModelHub, and retrieves a list of projects
     requestContext = await AuthorizedFrontendRequestContext.create();
     connectClient = new ConnectClient();
-    projectsList = connectClient.getProjects(requestContext);
+    projectsList = await connectClient.getProjects(requestContext);
+    setProjectsList(projectsList);
 
     // try catch block gets a project, if the project doesnt exist, throw an alert
     try {

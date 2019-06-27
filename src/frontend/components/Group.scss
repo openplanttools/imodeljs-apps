@@ -35,7 +35,7 @@ form {
     padding-top: 0;
   }
   #openinput {
-    font-size: 12pt;
+    font-size: 15pt;
   }
 
   #submitt, #newImodel {
@@ -51,12 +51,26 @@ form {
     width: 80px;
   }
 
-  #dropList-content a{
-    font-family: sans-serif,
+  #iModelDropList{
+    font-size: 10pt;
   }
-  #dropList-content option:hover{
-    background-color: rgb(70, 69, 69)
+  #iModelDropList-content a{
+    font-family: sans-serif;
   }
+  #iModelDropList-content option:hover{
+    background-color: rgb(70, 69, 69);
+  }
+
+  #projectDropList{
+    font-size: 10pt;
+  }
+  #projectDropList-content a{
+    font-family: sans-serif;
+  }
+  #projectDropList-content option:hover{
+    background-color: rgb(70, 69, 69);
+  }
+
   #newImodel{
     width: 160px;
   }

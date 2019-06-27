@@ -88,8 +88,7 @@ export const GroupWidget = () => {
       <link rel='stylesheet' href="./Group.scss" type='text/css' />
       <div className="midLeft">
         {/* <Button id="submitt" buttonType={ButtonType.Primary} name="submit" value="Submit">Submit</Button> */}
-        {/* <ProjectList /> */}
-        <IModelList />
+        Project: <ProjectList /> iModel: <IModelList />
       </div>
     </div>
   );
@@ -117,7 +116,7 @@ export class ProjectList extends React.Component<{}, { value: string }> {
 
     // alert('A name was submitted: ' + this.state);
     // gets the document list and casts it to a select element
-    var mainList = (document.getElementById("dropList")) as HTMLSelectElement;
+    var mainList = (document.getElementById("projectDropList")) as HTMLSelectElement;
 
     // This conditional holds code that keeps track of a variety of things. 1) The index of the option previously chosen, 2) the object currently selected becomes the selected
     // object, 3) the default node's inner HTML is updated, so the current node is displayed even when the dropdown tool is closed, 4) begins changing the Config files and sending an event that will
@@ -139,7 +138,7 @@ export class ProjectList extends React.Component<{}, { value: string }> {
       Config.App.set("imjs_test_project", mainList.options[mainList.selectedIndex].innerText);
       projectContainer.setNewProject(mainList.options[mainList.selectedIndex].innerText);
 
-      // stores an ProjectData object representing the imodel selected
+      // stores an ProjectData object representing the project selected
       projectContainer.projectObject = {
         projectName: mainList.options[mainList.selectedIndex].innerHTML,
         projectValue: mainList.options[mainList.selectedIndex].value,
@@ -151,8 +150,8 @@ export class ProjectList extends React.Component<{}, { value: string }> {
   render() {
     return (
       <form onSubmit={() => this.handleSubmit}>
-        <label className="label">
-          <select id="dropList" name="ProjectList" style={{ fontFamily: "sans-serif" }} value="List of Projects" onChange={() => { this.handleSubmit() }}>{ProjectDataWidget().map((ProjectItem) => {
+        <label className="projectLabel">
+          <select id="projectDropList" name="ProjectList" style={{ fontFamily: "sans-serif" }} value="List of Projects" onChange={() => { this.handleSubmit() }}>{ProjectDataWidget().map((ProjectItem) => {
             return <option key={ProjectItem.key} /*onClick={() => this.handleSubmit()}*/ value={ProjectItem.projectValue}>{ProjectItem.projectName}</option>;
           })}List of Projects</select>
         </label>
@@ -183,7 +182,7 @@ export class IModelList extends React.Component<{}, { value: string }> {
 
     // alert('A name was submitted: ' + this.state);
     // gets the document list and casts it to a select element
-    var mainList = (document.getElementById("dropList")) as HTMLSelectElement;
+    var mainList = (document.getElementById("iModelDropList")) as HTMLSelectElement;
 
     // This conditional holds code that keeps track of a variety of things. 1) The index of the option previously chosen, 2) the object currently selected becomes the selected
     // object, 3) the default node's inner HTML is updated, so the current node is displayed even when the dropdown tool is closed, 4) begins changing the Config files and sending an event that will
@@ -217,8 +216,8 @@ export class IModelList extends React.Component<{}, { value: string }> {
   render() {
     return (
       <form onSubmit={() => this.handleSubmit}>
-        <label className="label">
-          <select id="dropList" name="iModelList" style={{ fontFamily: "sans-serif" }} value="List of iModels" onChange={() => { this.handleSubmit()}}>{iModelDataWidget().map((iModelItem) => {
+        <label className="iModelLabel">
+          <select id="iModelDropList" name="iModelList" style={{ fontFamily: "sans-serif" }} value="List of iModels" onChange={() => { this.handleSubmit()}}>{iModelDataWidget().map((iModelItem) => {
             return <option key={iModelItem.key} /*onClick={() => this.handleSubmit()}*/ value={iModelItem.iModelValue}>{iModelItem.iModelName}</option>;
           })}List of iModels</select>
         </label>
