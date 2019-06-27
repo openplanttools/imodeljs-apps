@@ -63,12 +63,14 @@ export default function setupEnv() {
     imjs_browser_test_redirect_uri: "electron://frontend/signin-callback",
     imjs_browser_test_client_id: "spa-r2eFZFCkkth19yr8R2Ei4oTk1",
     imjs_buddi_resolve_url_using_region: "102",
+    // imjs_browser_test_client_id: "spa-MBQFbO5ABzMeXkahkOslOJhs7",
 
 
     // (2) SET THE PROJECT AND IMODEL NAMES
     imjs_test_project: "opbimdev01", // Set this to the name of the project
     imjs_test_imodel: "Nick-May2019", // Set this to the name of the iModel
-
+    // imjs_test_project: "OP_CE_VIEW",
+    // imjs_test_imodel: "MistyMountainTop",
     /*Nick's permissions */
     // imjs_browser_test_scope: "openid email profile organization imodelhub context-registry-service reality-data:read",
     // Set this to be the scopes of services the application needs to access
