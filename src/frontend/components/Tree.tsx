@@ -5,32 +5,35 @@
 import "./Tree.scss";
 import {
   IModelApp,
-   SelectionTool
+   //SelectionTool
 } from "@bentley/imodeljs-frontend";
 import * as React from "react";
 import {
   IModelConnection,
   // MarginPercent
 } from "@bentley/imodeljs-frontend";
-import { TreeNodeItem } from "@bentley/ui-components";
+import { TreeNodeItem, Tree } from "@bentley/ui-components";
 // import PropTypes from "prop-types";
 import * as icons from "react-icons/fa";
+
 // import styled, * as style from "styled-components";
 import {
   IPresentationTreeDataProvider,
   PresentationTreeDataProvider,
+  treeWithUnifiedSelection,
 } from "@bentley/presentation-components";
 import { NodePathElement } from "@bentley/presentation-common";
 import styled from "styled-components";
 import assert = require("assert");
-import { IModel } from "@bentley/imodeljs-common";
+//import { IModel } from "@bentley/imodeljs-common";
 // import { TreeNode } from "inspire-tree";
 // import { Triangle } from "@bentley/imodeljs-frontend/lib/rendering";
 // import { Box } from "@bentley/geometry-core";
 
 // create a HOC tree component that supports unified selection
 // tslint:disable-next-line:variable-name
-// const SimpleTree = treeWithUnifiedSelection(Tree);
+const SimpleTree = treeWithUnifiedSelection(Tree);
+
 
 /** React properties for the tree component, that accepts an iModel connection with ruleset id */
 export interface IModelConnectionProps {

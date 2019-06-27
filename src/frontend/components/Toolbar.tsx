@@ -6,18 +6,20 @@
 import * as React from "react";
 import {
   IModelApp,
-  ZoomViewTool, PanViewTool, RotateViewTool, SelectionTool, FitViewTool, ScreenViewport, Viewport,
+  ZoomViewTool, PanViewTool, RotateViewTool, SelectionTool, FitViewTool,
+  //ScreenViewport, Viewport, ViewState,
 } from "@bentley/imodeljs-frontend";
 
 import "./Components.scss";
 
 /** Toolbar containing simple navigation tools */
 const toolbar = () => {
-  const style = IModelApp.viewManager.selectedView;
-  //WIP NCIK
-  // if(style){
-  //   style.view.viewsCategory
-  // }
+//   const style = IModelApp.viewManager.selectedView;
+//  // WIP NCIK
+//   if(style){
+//     ViewState.changeCategoryDisplay;
+//     style.view;
+//   }
   return (
     <div className="toolbar">
       <a href="#" title={SelectionTool.flyover} onClick={select}><span className="icon icon-cursor"></span></a>
