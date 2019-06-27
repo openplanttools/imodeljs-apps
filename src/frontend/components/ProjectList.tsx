@@ -24,7 +24,7 @@ const createProjectStorage = () => {
   const defaultData = {
     projectName: "Pick a Project",
     projectValue: "Pick a Project",
-    key: "Pick a Projcet",
+    key: "Pick a Project",
   };
   projectData.push(defaultData);
   testData.push(testData1);
