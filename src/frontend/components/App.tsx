@@ -112,8 +112,8 @@ export default class App extends React.Component<{}, AppState> {
       try {
         project = await connectClient.getProject(requestContext, { $filter: `Name+eq+'${projectName}'` });
       } catch (e) {
-        alert(`Project with name "${projectName}" does not exist`);
-        throw new Error(`Project with name "${projectName}" does not exist`);
+        alert(`Project with name "${projectName}" does not exist.`);
+        throw new Error(`Project with name "${projectName}" does not exist.`);
       }
 
       // creates a new iModelQuery to connect to the database, and queries with specified context and project
@@ -126,8 +126,10 @@ export default class App extends React.Component<{}, AppState> {
 
       // gets the specific imodel, returns the project and imodel wsdId's to the functions handling initial startup/rendering
       const imodels = await IModelApp.iModelClient.iModels.get(requestContext, project.wsgId, imodelQuery);
-      if (imodels.length === 0)
-        throw new Error(`iModel with name "${imodelName}" does not exist in project "${projectName}"`);
+      if (imodels.length === 0) {
+        alert(`iModel with name "${imodelName}" does not exist in project "${projectName}".`);
+        throw new Error(`iModel with name "${imodelName}" does not exist in project "${projectName}".`);
+      }
       currentIModel = imodels[0].wsgId;
       IModelContainer.iModelObject.iModelName = getIModelsList()[0].name as string;
 
@@ -137,9 +139,6 @@ export default class App extends React.Component<{}, AppState> {
         projectName: projectContainer.projectObject.projectName,
         title: "Project: " + projectContainer.projectObject.projectName + ", iModel: " + IModelContainer.iModelObject.iModelName + "",
       }));
-
-      console.log("HELP HERE");
-      console.log(imodelName);
 
       // if statement checking that the project name and the current iModel are defined strings/objects
       if (project.name && IModelContainer.currentIModel) {
@@ -178,8 +177,7 @@ export default class App extends React.Component<{}, AppState> {
         projectName: projectContainer.projectObject.projectName,
         title: "Project: " + projectContainer.projectObject.projectName + ", iModel: " + IModelContainer.iModelObject.iModelName + "",
       }));
-
-       // if statement checking that the project name and the current iModel are defined strings/objects
+      // if statement checking that the project name and the current iModel are defined strings/objects
       if (project.name && IModelContainer.currentIModel) {
         // opens a new iModel connection, then asynchronously uses a then call to apply that iModel connection to the state of this class, this change in state
         // propogates to all child class updates their states as well
@@ -337,8 +335,10 @@ export default class App extends React.Component<{}, AppState> {
 
     // Filters the possible view definitions of the imodel down to the accepted onces we provide
     const acceptedViewSpecs = viewSpecs.filter((spec) => (-1 !== acceptedViewClasses.indexOf(spec.classFullName)));
-    if (0 === acceptedViewSpecs.length)
-      throw new Error("No valid view definitions in imodel");
+    if (0 === acceptedViewSpecs.length) {
+      alert("No valid view definitions for selected iModel. Please select another one.");
+      throw new Error("No valid view definitions for selected iModel. Please select another one.");
+    }
 
       // prioritises certain view definitions
     const sheetViews = acceptedViewSpecs.filter((v) => {
@@ -467,8 +467,8 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
     try {
       project = await connectClient.getProject(requestContext, { $filter: `Name+eq+'${projectName}'` });
     } catch (e) {
-      alert(`Project with name "${projectName}" does not exist`);
-      throw new Error(`Project with name "${projectName}" does not exist`);
+      alert(`Project with name "${projectName}" does not exist.`);
+      throw new Error(`Project with name "${projectName}" does not exist.`);
     }
 
     // creates a new iModelQuery to connect to the database, and queries with specified context and project
@@ -480,8 +480,10 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
 
     // gets the specific imodel, returns the project and imodel wsdId's to the functions handling initial startup/rendering
     const imodels = await IModelApp.iModelClient.iModels.get(requestContext, project.wsgId, imodelQuery);
-    if (imodels.length === 0)
-      throw new Error(`iModel with name "${imodelName}" does not exist in project "${projectName}"`);
+    if (imodels.length === 0) {
+      alert(`iModel with name "${imodelName}" does not exist in project "${projectName}".`);
+      throw new Error(`iModel with name "${imodelName}" does not exist in project "${projectName}".`);
+    }
     currentIModel = imodels[0].wsgId;
     return { projectId: project.wsgId, imodelId: imodels[0].wsgId };
   }

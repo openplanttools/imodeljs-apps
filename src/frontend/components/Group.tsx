@@ -122,7 +122,6 @@ export class ProjectList extends React.Component<{}, { value: string }> {
     // object, 3) the default node's inner HTML is updated, so the current node is displayed even when the dropdown tool is closed, 4) begins changing the Config files and sending an event that will
     // change the App State, changing the App State is necessary, as it will force react to re-render the desired processes, providing a new view.
     if (mainList) {
-      console.log("selected index " + mainList.selectedIndex);
       mainList.options[mainList.selectedIndex].selected = true;
       if (this.prevIndex) {
         mainList.options[this.prevIndex].selected = false;
@@ -142,6 +141,36 @@ export class ProjectList extends React.Component<{}, { value: string }> {
       projectContainer.projectObject = {
         projectName: mainList.options[mainList.selectedIndex].innerHTML,
         projectValue: mainList.options[mainList.selectedIndex].value,
+      };
+    }
+
+    // gets the document list and casts it to a select element
+    var otherList = (document.getElementById("iModelDropList")) as HTMLSelectElement;
+
+    // This conditional holds code that keeps track of a variety of things. 1) The index of the option previously chosen, 2) the object currently selected becomes the selected
+    // object, 3) the default node's inner HTML is updated, so the current node is displayed even when the dropdown tool is closed, 4) begins changing the Config files and sending an event that will
+    // change the App State, changing the App State is necessary, as it will force react to re-render the desired processes, providing a new view.
+    if (otherList) {
+      otherList.options[otherList.selectedIndex].selected = true;
+      if (this.prevIndex) {
+        otherList.options[this.prevIndex].selected = false;
+        this.prevIndex = otherList.selectedIndex;
+      } else {
+        this.prevIndex = otherList.selectedIndex;
+      }
+
+      // updates the primary node of the select element
+      // otherList.options[0].innerHTML = otherList.options[otherList.selectedIndex].innerText;
+      otherList.options[0].innerHTML = otherList.options[1].innerHTML;
+
+      // this config setting line should be changed, as we transition to reading and writing from a JSON file for smoother integration
+      Config.App.set("imjs_test_imodel", otherList.options[otherList.selectedIndex].innerText);
+      IModelContainer.setNewIModel(otherList.options[otherList.selectedIndex].innerText);
+
+      // stores an IModelData object representing the imodel selected
+      IModelContainer.iModelObject = {
+        iModelName: otherList.options[otherList.selectedIndex].innerHTML,
+        iModelValue: otherList.options[otherList.selectedIndex].value,
       };
     }
   }
@@ -188,7 +217,6 @@ export class IModelList extends React.Component<{}, { value: string }> {
     // object, 3) the default node's inner HTML is updated, so the current node is displayed even when the dropdown tool is closed, 4) begins changing the Config files and sending an event that will
     // change the App State, changing the App State is necessary, as it will force react to re-render the desired processes, providing a new view.
     if (mainList) {
-      console.log("selected index " + mainList.selectedIndex);
       mainList.options[mainList.selectedIndex].selected = true;
       if (this.prevIndex) {
         mainList.options[this.prevIndex].selected = false;
