@@ -18,39 +18,51 @@ import { setIModelsList, setProjectsList } from "../../backend/electron/main.js"
 import ViewportContentControl from "./Viewport";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "./App.css";
-
-import { GroupWidget, IModelContainer, projectContainer } from "./Group";
-// import { request } from "https";
-
+import * as frontend from "./App";
+import "./Group.scss";
+import { Drawing } from "@bentley/imodeljs-backend";
+import { GroupWidget, IModelContainer, projectContainer, drawingContainer } from "./Group";
 import chroma = require("chroma-js");
 import distinctColors = require("distinct-colors");
 import { ColorDef } from "@bentley/imodeljs-common";
+// import { request } from "https";
+// import { ipcRenderer } from "electron";
 
 // tslint:disable: no-console
 // cSpell:ignore imodels
 // Setting instance variables for multi-class usage
 let requestContext: AuthorizedFrontendRequestContext | undefined;
 let connectClient: ConnectClient | undefined;
-let project: Project;
-let resolvedIModelList: HubIModel[];
+let currentProject: Project;
+let projectsList: Project[];
 let currentIModel: string;
-let projectsList: any;
+let resolvedIModelList: HubIModel[];
+let currentDrawing: Drawing;
+let drawingsList: Drawing[];
 
 // Getters and setters
-export function getIModelsList() {
-  return resolvedIModelList;
+export function getCurrentProject() {
+  return currentProject;
 }
 
 export function getProjectsList() {
   return projectsList;
 }
 
-export function getCurrentProject() {
-  return project;
-}
-
 export function getCurrentIModel() {
   return currentIModel;
+}
+
+export function getIModelsList() {
+  return resolvedIModelList;
+}
+
+export function getCurrentDrawing() {
+  return currentDrawing;
+}
+
+export function getDrawingsList() {
+  return drawingsList;
 }
 
 /** React state of the App component */
@@ -64,6 +76,8 @@ export interface AppState {
   iModelName: string;
   project?: Project;
   projectName: string;
+  drawing?: Drawing;
+  drawingName: string;
   viewDefinitionId?: Id64String;
   menuOpened: boolean;
   menuName: string;
@@ -83,12 +97,13 @@ export default class App extends React.Component<{}, AppState> {
         isLoading: false,
         accessToken: undefined,
       },
-      iModelName: Config.App.get("imjs_test_imodel"),
       projectName: Config.App.get("imjs_test_project"),
+      iModelName: Config.App.get("imjs_test_imodel"),
+      drawingName: Config.App.get("imjs_test_drawing"),
       offlineIModel: false,
       menuOpened: false,
       menuName: "Expand Menu",
-      title: "Project: " + Config.App.get("imjs_test_project") + ", iModel: " + Config.App.get("imjs_test_imodel") + "",
+      title: "Project: " + Config.App.get("imjs_test_project") + ", iModel: " + Config.App.get("imjs_test_imodel") + ", Drawing: " + Config.App.get("imjs_test_drawing"),
     };
     addEventListener("click", () => this.reloadIModelComponent());
   }
@@ -110,7 +125,7 @@ export default class App extends React.Component<{}, AppState> {
 
       // try catch block gets a project, if the project doesnt exist, throw an alert
       try {
-        project = await connectClient.getProject(requestContext, { $filter: `Name+eq+'${projectName}'` });
+        currentProject = await connectClient.getProject(requestContext, { $filter: `Name+eq+'${projectName}'` });
       } catch (e) {
         alert(`Project with name "${projectName}" does not exist.`);
         throw new Error(`Project with name "${projectName}" does not exist.`);
@@ -119,13 +134,13 @@ export default class App extends React.Component<{}, AppState> {
       // creates a new iModelQuery to connect to the database, and queries with specified context and project
       // Then resolves that promise and sends that information to constiuent components that need the data
       const imodelQuery = new IModelQuery();
-      resolvedIModelList = await IModelApp.iModelClient.iModels.get(requestContext, project.wsgId, imodelQuery);
+      resolvedIModelList = await IModelApp.iModelClient.iModels.get(requestContext, currentProject.wsgId, imodelQuery);
       setIModelsList(resolvedIModelList);
       const imodelName = getIModelsList()[0].name;
       imodelQuery.byName(imodelName as string);
 
       // gets the specific imodel, returns the project and imodel wsdId's to the functions handling initial startup/rendering
-      const imodels = await IModelApp.iModelClient.iModels.get(requestContext, project.wsgId, imodelQuery);
+      const imodels = await IModelApp.iModelClient.iModels.get(requestContext, currentProject.wsgId, imodelQuery);
       if (imodels.length === 0) {
         alert(`iModel with name "${imodelName}" does not exist in project "${projectName}".`);
         throw new Error(`iModel with name "${imodelName}" does not exist in project "${projectName}".`);
@@ -137,14 +152,14 @@ export default class App extends React.Component<{}, AppState> {
       this.setState(() => ({
         iModelName: IModelContainer.iModelObject.iModelName,
         projectName: projectContainer.projectObject.projectName,
-        title: "Project: " + projectContainer.projectObject.projectName + ", iModel: " + IModelContainer.iModelObject.iModelName + "",
+        title: "Project: " + projectContainer.projectObject.projectName + ", iModel: " + IModelContainer.iModelObject.iModelName + ", Drawing: " + drawingContainer.drawingObject.drawingName,
       }));
 
       // if statement checking that the project name and the current iModel are defined strings/objects
-      if (project.name && IModelContainer.currentIModel) {
+      if (currentProject.name && IModelContainer.currentIModel) {
         // opens a new iModel connection, then asynchronously uses a then call to apply that iModel connection to the state of this class, this change in state
         // propogates to all child class updates their states as well
-        IModelConnection.open(project.wsgId, IModelContainer.iModelObject.iModelValue, OpenMode.Readonly) // tslint:disable-line: no-floating-promises
+        IModelConnection.open(currentProject.wsgId, IModelContainer.iModelObject.iModelValue, OpenMode.Readonly) // tslint:disable-line: no-floating-promises
           .then(async (newIModel: IModelConnection | undefined) => {
 
           // gets a valid view definition, for our purpose is fine, but it is possible that viewDefinition is invalid for a given iModel on runtime
@@ -161,6 +176,10 @@ export default class App extends React.Component<{}, AppState> {
           }));
         });
       }
+
+      // Fix to ensure that the dropdown for iModels displays the current iModel at the top
+      var otherList = (document.getElementById("iModelDropList")) as HTMLSelectElement;
+      otherList.options[0].innerHTML = otherList.options[1].innerHTML;
     }
 
     // conditional checks to make sure that the current title is not the initial value or the same value currently being displayed
@@ -175,13 +194,13 @@ export default class App extends React.Component<{}, AppState> {
       this.setState(() => ({
         iModelName: IModelContainer.iModelObject.iModelName,
         projectName: projectContainer.projectObject.projectName,
-        title: "Project: " + projectContainer.projectObject.projectName + ", iModel: " + IModelContainer.iModelObject.iModelName + "",
+        title: "Project: " + projectContainer.projectObject.projectName + ", iModel: " + IModelContainer.iModelObject.iModelName + ", Drawing: " + drawingContainer.drawingObject.drawingName,
       }));
       // if statement checking that the project name and the current iModel are defined strings/objects
-      if (project.name && IModelContainer.currentIModel) {
+      if (currentProject.name && IModelContainer.currentIModel) {
         // opens a new iModel connection, then asynchronously uses a then call to apply that iModel connection to the state of this class, this change in state
         // propogates to all child class updates their states as well
-        IModelConnection.open(project.wsgId, IModelContainer.iModelObject.iModelValue, OpenMode.Readonly) // tslint:disable-line: no-floating-promises
+        IModelConnection.open(currentProject.wsgId, IModelContainer.iModelObject.iModelValue, OpenMode.Readonly) // tslint:disable-line: no-floating-promises
           .then(async (newIModel: IModelConnection | undefined) => {
 
           // gets a valid view definition, for our purpose is fine, but it is possible that viewDefinition is invalid for a given iModel on runtime
@@ -236,6 +255,7 @@ export default class App extends React.Component<{}, AppState> {
   // change the viewport to display a new drawing, by drawing id
   public async changeView(newDrawingId: string, vp: ScreenViewport, doFit?: boolean) {
     const view = vp.view;
+    console.log("NEWDRAWINGID: " + newDrawingId);
     if (!(view instanceof DrawingViewState)) // this only works if the viewport is showing a DrawingView
       return;
 
@@ -298,6 +318,7 @@ export default class App extends React.Component<{}, AppState> {
         if (ecClass === "BisCore:Drawing") { // if we clicked on a row that is a drawing, switch the view to it.
           const viewport = IModelApp.viewManager.selectedView!;
           const drawingId = ids.values().next().value;
+          console.log("DRAWINGID: " + drawingId);
           await this.changeView(drawingId, viewport, true);
           await this.setupDisplayByCategories(drawingId, viewport);
         }
@@ -414,7 +435,7 @@ export default class App extends React.Component<{}, AppState> {
       ui = (<OpenIModelButton accessToken={this.state.user.accessToken} offlineIModel={this.state.offlineIModel} onIModelSelected={this._onIModelSelected} />);
     } else {
       // if we do have an imodel and view definition id - render imodel components
-      const titleName: string = "Project: " + Config.App.get("imjs_test_project") + ", iModel: " + Config.App.get("imjs_test_imodel");
+      const titleName: string = "Project: " + Config.App.get("imjs_test_project") + ", iModel: " + Config.App.get("imjs_test_imodel") + ", Drawing: " + Config.App.get("imjs_test_drawing");
       ui = (<IModelComponents imodel={this.state.imodel} viewDefinitionId={this.state.viewDefinitionId} menuOpened={this.state.menuOpened} title={titleName} />);
     }
 
@@ -465,7 +486,7 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
 
     // try catch block gets a project, if the project doesnt exist, throw an alert
     try {
-      project = await connectClient.getProject(requestContext, { $filter: `Name+eq+'${projectName}'` });
+      currentProject = await connectClient.getProject(requestContext, { $filter: `Name+eq+'${projectName}'` });
     } catch (e) {
       alert(`Project with name "${projectName}" does not exist.`);
       throw new Error(`Project with name "${projectName}" does not exist.`);
@@ -474,18 +495,18 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
     // creates a new iModelQuery to connect to the database, and queries with specified context and project
     // Then resolves that promise and sends that information to constiuent components that need the data
     const imodelQuery = new IModelQuery();
-    resolvedIModelList = await IModelApp.iModelClient.iModels.get(requestContext, project.wsgId, imodelQuery);
+    resolvedIModelList = await IModelApp.iModelClient.iModels.get(requestContext, currentProject.wsgId, imodelQuery);
     imodelQuery.byName(imodelName);
     setIModelsList(resolvedIModelList);
 
     // gets the specific imodel, returns the project and imodel wsdId's to the functions handling initial startup/rendering
-    const imodels = await IModelApp.iModelClient.iModels.get(requestContext, project.wsgId, imodelQuery);
+    const imodels = await IModelApp.iModelClient.iModels.get(requestContext, currentProject.wsgId, imodelQuery);
     if (imodels.length === 0) {
       alert(`iModel with name "${imodelName}" does not exist in project "${projectName}".`);
       throw new Error(`iModel with name "${imodelName}" does not exist in project "${projectName}".`);
     }
     currentIModel = imodels[0].wsgId;
-    return { projectId: project.wsgId, imodelId: imodels[0].wsgId };
+    return { projectId: currentProject.wsgId, imodelId: imodels[0].wsgId };
   }
 
   /** Handle iModel open event */
@@ -589,10 +610,6 @@ class IModelComponents extends React.PureComponent<IModelComponentsProps, IModel
     }
   }
 }
-
-import * as frontend from "./App";
-import "./Group.scss";
-// import { ipcRenderer } from "electron";
 
 interface IProps {
   title: string;
