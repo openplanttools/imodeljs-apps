@@ -327,6 +327,16 @@ export class DrawingList extends React.Component<{}, { value: string }> {
 
       // updates the primary node of the select element
       mainList.options[0].innerHTML = mainList.options[mainList.selectedIndex].innerText;
+
+      // this config setting line should be changed, as we transition to reading and writing from a JSON file for smoother integration
+      Config.App.set("imjs_test_drawing", mainList.options[mainList.selectedIndex].innerText);
+      drawingContainer.setNewDrawing(mainList.options[mainList.selectedIndex].innerText);
+
+      // stores an IModelData object representing the imodel selected
+      drawingContainer.drawingObject = {
+        drawingName: mainList.options[mainList.selectedIndex].innerHTML,
+        drawingValue: mainList.options[mainList.selectedIndex].value,
+      };
     }
   }
 
@@ -337,7 +347,7 @@ export class DrawingList extends React.Component<{}, { value: string }> {
         <label className="drawingLabel">
           <select id="drawingDropList" name="drawingList" style={{ fontFamily: "sans-serif" }} value="List of Drawings" onChange={() => { this.handleSubmit()}}>{DrawingDataWidget().map((drawingItem) => {
             return <option key={drawingItem.key} /*onClick={() => this.handleSubmit()}*/ value={drawingItem.drawingValue}>{drawingItem.drawingName}</option>;
-          })}List of iModels</select>
+          })}List of Drawings</select>
         </label>
       </form>
     );

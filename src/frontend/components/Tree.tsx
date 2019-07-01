@@ -581,7 +581,18 @@ export default class SimpleTreeComponent extends React.PureComponent<Props> {
       return providerProps.dataProvider;
     } else {
       const imodelProps = props as IModelConnectionProps;
-      return new PresentationTreeDataProvider(imodelProps.imodel, imodelProps.rulesetId);
+      const provider: PresentationTreeDataProvider = new PresentationTreeDataProvider(imodelProps.imodel, imodelProps.rulesetId);
+      this.asyncTest(provider);
+      return provider;
+    }
+  }
+
+  private async asyncTest(provider: PresentationTreeDataProvider) {
+    const test = await provider.getFilteredNodePaths("");
+    const arr = test[0].children;
+    for (let elem of arr) {
+      console.log(elem.node.label);
+      console.log(elem.node); // find another way to get drawing ID
     }
   }
 

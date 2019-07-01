@@ -72,7 +72,6 @@ export default function setupEnv() {
     // imjs_test_imodel: "MistyMountainTop",
     // imjs_test_drawing: "Pid001_MT",
 
-
     /*Nick's permissions */
     // imjs_browser_test_scope: "openid email profile organization imodelhub context-registry-service reality-data:read",
     // Set this to be the scopes of services the application needs to access
