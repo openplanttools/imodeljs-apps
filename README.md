@@ -1,4 +1,5 @@
 # In Development PlantView application
+
 ##### Stages in a task
 1. *ongoing*
 2. *in progress*
@@ -105,7 +106,7 @@
 
   It will then push changes, but be careful. If you get something called a merge conflict warning, type git stash, and google how to proceed. a merge conflict will change portions of the code. This is preferably avoided.
   Git stash creates a local copy of your changes, but reverts your files to the main shared version. This is one way to deal with merge conflicts. To apply your changes simply type git stash pop.
-  *Warning* If you have a merge conflict, this jumble the code, you should check what was changed before you commit.
+  **Warning** If you have a merge conflict, this will jumble the code, you should check what was changed before you commit.
 
   If you would like to check the files you are about to commit, before you commit type git status.
 
