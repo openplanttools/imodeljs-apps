@@ -19,27 +19,32 @@
 8. Add scrolling to property.
 9. Fix the sign-in button (lacking access to currently fix this). *TBD*
 10. Convert backend to be entirely electron/desktop based. - Nick **Done**
-11. Pick which project to view. - Zach *in progress*
-12. Clean up code base **Done for now** - Nick
-13. Comment parts for explanations **Done** - Nick
-14. Fix CSS formatting *partially done* - Nick
-15. Fix clashes with electron IPC and configuration of front-back communication.
-16. Determine the necessity of webpack in browser runtime environment. **Done** - Nick
-17. Modify dependencies list, strip unused pieces, keep only browser specific portions.
-18. If we end up keeping webpack, reconfigure its options to be better suited, right now its causing some problems on the backend. **Done** - Nick
-19. Add configurable options to options bar, have those be saved in a JSON.
-20. Determine whether/how to implement ipcMain - ipcRenderer communication **Done** - Nick
-21. Get viewport to successfully update **Done** - Nick
-22. Determine whether or not to migrate configuration.ts to a JSON
-23. Implement loading circle function upon switching views/imodels/projects.
-24. Implement nicer loading functionality.
-25. Move select new iModel button to project
-26. Fix weird character bug (e.g. Miscellaneous).
-27. In bottom properties display widget, add functionality to click on category to display only that category, and click on it again to switch back to all categories
-28. Display both the 3D and 2D views in the Viewport.
-29. Only display and allow to pass in the project, iModel, and drawing names.
-30. Maybe move the Menu button to the window menu or in the Toolbar in the Viewport.
-31. Add unified selection capability back into the tree *in progress* - Nick
+11. Clean up code base **Done for now** - Nick
+12. Comment parts for explanations **Done** - Nick
+13. Fix CSS formatting *partially done* - Nick
+14. Fix clashes with electron IPC and configuration of front-back communication.
+15. Determine the necessity of webpack in browser runtime environment. **Done** - Nick
+16. Modify dependencies list, strip unused pieces, keep only browser specific portions.
+17. If we end up keeping webpack, reconfigure its options to be better suited, right now its causing some problems on the backend. **Done** - Nick
+18. Add configurable options to options bar, have those be saved in a JSON.
+19. Determine whether/how to implement ipcMain - ipcRenderer communication **Done** - Nick
+20. Get viewport to successfully update **Done** - Nick
+21. Determine whether or not to migrate configuration.ts to a JSON
+22. Implement loading circle function upon switching views/imodels/projects.
+23. Implement nicer loading functionality.
+24. Move select new iModel button to project
+25. Fix weird character bug (e.g. Miscellaneous).
+26. In bottom properties display widget, add functionality to click on category to display only that category, and click on it again to switch back to all categories
+27. Display both the 3D and 2D views in the Viewport.
+28. Only display and allow to pass in the project, iModel, and drawing names.
+29. Maybe move the Menu button to the window menu or in the Toolbar in the Viewport.
+30. Add unified selection capability back into the tree *in progress* - Nick
+31. Pick which project to view. - Zach *in progress*
+32. Pick which drawing to view. - Zach *in progress*
+33. Move dropdown boxes for project, iModel, and drawing selections to the header. - Zach *in progress*
+34. Move configuration.ts set-up into the Electron viewer instead. - Zach *in progress*
+35. In Production, fix the list of projects. - Zach *in progress*
+36. In Production, fix the briefcase id error (if this is not just a conncetion issue).
 
 ## Development Setup
 

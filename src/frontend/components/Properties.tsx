@@ -42,8 +42,6 @@ export default class SimplePropertiesComponent extends React.PureComponent<Props
       return providerProps.dataProvider;
     } else {
       const imodelProps = props as IModelConnectionProps;
-      console.log("imodelProps");
-      console.log(imodelProps);
       const provider: PresentationPropertyDataProvider = new PresentationPropertyDataProvider(imodelProps.imodel, imodelProps.rulesetId);
       provider.getData().then((theData: PropertyData) => {
         this.filterDataProvider(theData);
@@ -54,7 +52,7 @@ export default class SimplePropertiesComponent extends React.PureComponent<Props
 
   /** Filters property data */
   private filterDataProvider(theData: PropertyData) {
-    console.log(theData);
+    console.log("WIP for property fix: " + theData);
   }
 
   public render() {

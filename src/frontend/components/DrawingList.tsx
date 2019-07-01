@@ -2,61 +2,61 @@
 * Copyright (c) 2019 Bentley Systems, Incorporated. All rights reserved.
 * Licensed under the MIT License. See LICENSE.md in the project root for license terms.
 *--------------------------------------------------------------------------------------------*/
-import { getIModelsList } from "../../backend/electron/main.js";
-import { HubIModel } from "@bentley/imodeljs-clients";
+import { getDrawingsList } from "../../backend/electron/main.js";
+import { Drawing } from "@bentley/imodeljs-backend";
 
 // This method initializes the data structure that will store the the iModelData objects, it returns both a test data array, and an empty real data array
-const createiModelStorage = () => {
-  let iModelData = [];
+const createDrawingStorage = () => {
+  let drawingData = [];
 
   // Test data incase of offline usage or if iModel query is failing
   const testData = [];
   const testData1 = {
-    iModelName: "Testing 1",
-    iModelValue: "Testing 1",
+    drawingName: "Testing 1",
+    drawingValue: "Testing 1",
     key: "Testing 1",
   };
   const testData2 = {
-    iModelName: "Testing 2",
-    iModelValue: "Testing 2",
+    drawingName: "Testing 2",
+    drawingValue: "Testing 2",
     key: "Testing 2",
   };
   const defaultData = {
-    iModelName: "Pick an iModel",
-    iModelValue: "Pick an iModel",
-    key: "Pick an iModel",
+    drawingName: "Pick a Drawing",
+    drawingValue: "Pick a Drawing",
+    key: "Pick a Drawing",
   };
-  iModelData.push(defaultData);
+  drawingData.push(defaultData);
   testData.push(testData1);
   testData.push(testData2);
-  return iModelData;
+  return drawingData;
 };
 
 /* Creates an iModel data widget, the translates data from the iModel hub, and stores it as an array of iModelData objects */
-const iModelDataWidget = () => {
+const DrawingDataWidget = () => {
 
   // stores the iModels with their data in iModelData
-  var iModelData = createiModelStorage();
-  const listOfIModels: HubIModel[] = getIModelsList();
-  if (listOfIModels) {
+  var drawingData = createDrawingStorage();
+  const listOfDrawings: Drawing[] = getDrawingsList();
+  if (listOfDrawings) {
 
     // loops through all the iModels
-    for (let i = 0; i < listOfIModels.length; i++) {
-      var theName = listOfIModels[i].name;
+    for (let i = 0; i < listOfDrawings.length; i++) {
+      var theName = listOfDrawings[i].name;
       if (!theName) {
         theName = "NAME_MISSING " + i;
       }
 
       // Creates an iModelInfo object, and returns it as an object
-      const iModelInfo = {
-        iModelName: theName,
-        iModelValue: listOfIModels[i].wsgId,
-        key: listOfIModels[i].wsgId,
+      const drawingInfo = {
+        drawingName: theName,
+        drawingValue: listOfDrawings[i].wsgId,
+        key: listOfDrawings[i].wsgId,
       };
-      iModelData.push(iModelInfo);
+      drawingData.push(drawingInfo);
     }
   }
-  return iModelData;
+  return drawingData;
 };
 
-export default iModelDataWidget;
+export default DrawingDataWidget;
