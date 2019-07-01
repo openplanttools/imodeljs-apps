@@ -38,7 +38,7 @@
 27. Display both the 3D and 2D views in the Viewport.
 28. Only display and allow to pass in the project, iModel, and drawing names.
 29. Maybe move the Menu button to the window menu or in the Toolbar in the Viewport.
-30. Add unified selection capability back into the tree *in progress* - Nick
+30. Add unified selection capability back into the tree **Done** - Nick
 31. Pick which project to view. - Zach *in progress*
 32. Pick which drawing to view. - Zach *in progress*
 33. Move dropdown boxes for project, iModel, and drawing selections to the header. - Zach *in progress*
