@@ -507,6 +507,7 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
       throw new Error(`iModel with name "${imodelName}" does not exist in project "${projectName}".`);
     }
     currentIModel = imodels[0].wsgId;
+
     return { projectId: currentProject.wsgId, imodelId: imodels[0].wsgId };
   }
 
@@ -627,9 +628,9 @@ export class IModelList extends React.Component<IProps, {}>  {
     const listOfIModels = frontend.getIModelsList();
     const nameList = document.createElement("ul");
     if (frontend.getIModelsList)
-      for (let i = 0; i < listOfIModels.length; i++) {
+      for (let elem of listOfIModels) {
         let listItem = document.createElement("li");
-        listItem.appendChild(document.createTextNode(listOfIModels[i].wsgId));
+        listItem.appendChild(document.createTextNode(elem.wsgId));
         nameList.appendChild(listItem);
       }
     const generatedList: HTMLElement | null = document.getElementById("List");
