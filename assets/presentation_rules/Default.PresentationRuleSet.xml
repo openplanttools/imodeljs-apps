@@ -4,7 +4,7 @@
 
   <!-- Root Subject -->
   <RootNodeRule>
-    <InstancesOfSpecificClasses ClassNames='BisCore:Document' ArePolymorphic='true' GroupByClass='true' GroupByLabel='false'/>
+    <InstancesOfSpecificClasses ClassNames='BisCore:Document' ArePolymorphic='true' GroupByClass='false' GroupByLabel='false'/>
   </RootNodeRule>
   <!-- Navigation of Subject / Subject and Subject / InformationPartitionElement hierarchy -->
   <ChildNodeRule Condition='ParentNode.ECInstance.IsOfClass("Subject", "BisCore")'>
@@ -15,10 +15,10 @@
   <ChildNodeRule Condition='ParentNode.IsInstanceNode ANDALSO ParentNode.ECInstance.IsOfClass("InformationPartitionElement", "BisCore")'>
     <RelatedInstances RelationshipClassNames='BisCore:ModelModelsElement' RequiredDirection='Backward' RelatedClassNames='BisCore:Model' GroupByClass='false' GroupByLabel='false' HideNodesInHierarchy='true' />
   </ChildNodeRule>
-  <!-- Navigation of DocumentListModel -->
-      <ChildNodeRule Condition='ParentNode.ECInstance.IsOfClass("Document", "BisCore")'>
+  <!-- Navigation of DocumentListModel, uncomment this to be able to see the child nodes (in this case the PID components) as expandable options in the tree -->
+     <!-- <ChildNodeRule Condition='ParentNode.ECInstance.IsOfClass("Document", "BisCore")'>
         <RelatedInstances RelationshipClassNames='BisCore:ModelModelsElement' RequiredDirection='Backward' RelatedClassNames='BisCore:Model' GroupByClass='false' GroupByLabel='false' HideNodesInHierarchy='true' />
-      </ChildNodeRule>
+      </ChildNodeRule> -->
   <!-- Navigation of GroupInformationModel -->
   <ChildNodeRule Condition='ParentNode.IsInstanceNode ANDALSO ParentNode.ECInstance.IsOfClass("GroupInformationModel", "BisCore")'>
     <RelatedInstances RelationshipClassNames='BisCore:ModelContainsElements' RequiredDirection='Forward' RelatedClassNames='BisCore:GroupInformationElement' GroupByClass='false' GroupByLabel='false'>

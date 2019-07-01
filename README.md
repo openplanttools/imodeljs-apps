@@ -41,10 +41,11 @@
 30. Add unified selection capability back into the tree **Done** - Nick
 31. Pick which project to view. - Zach *in progress*
 32. Pick which drawing to view. - Zach *in progress*
-33. Move dropdown boxes for project, iModel, and drawing selections to the header. - Zach *in progress*
+33. Move dropdown boxes for project, iModel, and drawing selections to the header. - Nick, Zach *in progress*
 34. Move configuration.ts set-up into the Electron viewer instead. - Zach *in progress*
 35. In Production, fix the list of projects. - Zach *in progress*
 36. In Production, fix the briefcase id error (if this is not just a conncetion issue).
+37. Rework Titles - Nick *in progress*
 
 ## Development Setup
 

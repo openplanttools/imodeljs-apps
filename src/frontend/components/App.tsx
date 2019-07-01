@@ -25,6 +25,7 @@ import { GroupWidget, IModelContainer, projectContainer, drawingContainer } from
 import chroma = require("chroma-js");
 import distinctColors = require("distinct-colors");
 import { ColorDef } from "@bentley/imodeljs-common";
+import TitleBar from "./Title";
 // import { request } from "https";
 // import { ipcRenderer } from "electron";
 
@@ -444,7 +445,7 @@ export default class App extends React.Component<{}, AppState> {
       <div className="app">
         <div className="app-header">
           <div className="text">
-            <h2>{this.state.title}</h2>
+            <TitleBar projectName = {this.state.projectName} drawingName = {this.state.drawingName} iModelName = {this.state.iModelName}/>
             {/* <h2><GroupWidget></GroupWidget>></h2> */}
           </div>
           <div className="menu">

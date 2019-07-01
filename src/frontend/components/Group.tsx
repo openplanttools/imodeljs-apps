@@ -2,7 +2,7 @@
 * Copyright (c) 2019 Bentley Systems, Incorporated. All rights reserved.
 * Licensed under the MIT License. See LICENSE.md in the project root for license terms.
 *--------------------------------------------------------------------------------------------*/
-
+import styled from "styled-components";
 import * as React from "react";
 import iModelDataWidget from "./iModelList";
 import ProjectDataWidget from "./ProjectList";
@@ -278,17 +278,22 @@ export class IModelList extends React.Component<{}, { value: string }> {
   // render method, called automatically by react, provides formatting in HTML for the group tool widget
   render() {
     return (
-      <form onSubmit={() => this.handleSubmit}>
+      <StyledWrapper>
         <label className="iModelLabel">
-          <select id="iModelDropList" name="iModelList" style={{ fontFamily: "sans-serif" }} value="List of iModels" onChange={() => { this.handleSubmit()}}>{iModelDataWidget().map((iModelItem) => {
+          <select id="iModelDropList" name="iModelList" style={{ fontFamily: "sans-serif" }} onSubmit={() => this.handleSubmit} value="List of iModels" onChange={() => { this.handleSubmit()}}>{iModelDataWidget().map((iModelItem) => {
             return <option key={iModelItem.key} /*onClick={() => this.handleSubmit()}*/ value={iModelItem.iModelValue}>{iModelItem.iModelName}</option>;
           })}List of iModels</select>
         </label>
-      </form>
+      </StyledWrapper>
     );
   }
 }
-
+export const StyledWrapper = styled.text`
+padding-top: 0px;
+padding-left: 3px;
+padding-right: 3px;
+font-weight: bold;
+font-size: large;`;
 /** DrawingList class is a react component, has an app state with defined instance variables to keep track of relevant information */
 export class DrawingList extends React.Component<{}, { value: string }> {
   public myRef: HTMLElement | undefined;

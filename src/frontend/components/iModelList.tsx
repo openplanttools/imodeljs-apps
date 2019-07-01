@@ -4,6 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { getIModelsList } from "../../backend/electron/main.js";
 import { HubIModel } from "@bentley/imodeljs-clients";
+import {Config} from "@bentley/imodeljs-clients";
 
 // This method initializes the data structure that will store the the iModelData objects, it returns both a test data array, and an empty real data array
 const createiModelStorage = () => {
@@ -22,9 +23,9 @@ const createiModelStorage = () => {
     key: "Testing 2",
   };
   const defaultData = {
-    iModelName: "Pick an iModel",
-    iModelValue: "Pick an iModel",
-    key: "Pick an iModel",
+    iModelName: Config.App.get("imjs_test_imodel"),
+    iModelValue: Config.App.get("imjs_test_imodel"),
+    key: Config.App.get("imjs_test_imodel"),
   };
   iModelData.push(defaultData);
   testData.push(testData1);
