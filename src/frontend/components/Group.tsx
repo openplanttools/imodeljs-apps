@@ -280,20 +280,27 @@ export class IModelList extends React.Component<{}, { value: string }> {
     return (
       <StyledWrapper>
         <label className="iModelLabel">
-          <select id="iModelDropList" name="iModelList" style={{ fontFamily: "sans-serif" }} onSubmit={() => this.handleSubmit} value="List of iModels" onChange={() => { this.handleSubmit()}}>{iModelDataWidget().map((iModelItem) => {
+          <StyledSelect id="iModelDropList" name="iModelList" style={{ fontFamily: "sans-serif" }} onSubmit={() => this.handleSubmit} value="List of iModels" onChange={() => { this.handleSubmit()}}>{iModelDataWidget().map((iModelItem) => {
             return <option key={iModelItem.key} /*onClick={() => this.handleSubmit()}*/ value={iModelItem.iModelValue}>{iModelItem.iModelName}</option>;
-          })}List of iModels</select>
+          })}List of iModels</StyledSelect>
         </label>
       </StyledWrapper>
     );
   }
 }
+
+export const StyledSelect = styled.select`
+background-color: #222;
+color: white;
+`;
+
 export const StyledWrapper = styled.text`
 padding-top: 0px;
 padding-left: 3px;
 padding-right: 3px;
 font-weight: bold;
 font-size: large;`;
+
 /** DrawingList class is a react component, has an app state with defined instance variables to keep track of relevant information */
 export class DrawingList extends React.Component<{}, { value: string }> {
   public myRef: HTMLElement | undefined;
