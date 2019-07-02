@@ -299,7 +299,8 @@ padding-top: 0px;
 padding-left: 3px;
 padding-right: 3px;
 font-weight: bold;
-font-size: large;`;
+font-size: large;
+`;
 
 /** DrawingList class is a react component, has an app state with defined instance variables to keep track of relevant information */
 export class DrawingList extends React.Component<{}, { value: string }> {

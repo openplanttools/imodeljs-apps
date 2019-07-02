@@ -1,5 +1,5 @@
 import * as React from "react";
-import {IModelList} from "./Group";
+import { IModelList } from "./Group";
 import styled from "styled-components";
 // import {Config} from "@bentley/imodeljs-clients";
 
@@ -28,9 +28,8 @@ export default class TitleBar extends React.PureComponent<TitleProps, TitleState
   render() {
     return (
       <StyledWrapper>
-
-    <StyledWrapper> {"Project: " + this.state.projectName + " iModel: "} <IModelList/> {" Drawing: " + this.state.drawingName} </StyledWrapper>
-    </StyledWrapper>
+        <StyledWrapper> {"Project: " + this.state.projectName + "   iModel: "} <IModelList /> {"Drawing: " + this.state.drawingName} </StyledWrapper>
+      </StyledWrapper>
     );
   }
 }

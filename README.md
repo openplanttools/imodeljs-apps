@@ -46,6 +46,7 @@
 35. In Production, fix the list of projects. - Zach *in progress*
 36. In Production, fix the briefcase id error (if this is not just a conncetion issue).
 37. Rework Titles - Nick *in progress*
+38. Put button selections in the menu
 
 ## Development Setup
 
