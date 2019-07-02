@@ -18,7 +18,7 @@ import { setIModelsList, setProjectsList } from "../../backend/electron/main.js"
 import ViewportContentControl from "./Viewport";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "./App.css";
-import * as frontend from "./App";
+//import * as frontend from "./App";
 import "./Group.scss";
 import { Drawing } from "@bentley/imodeljs-backend";
 import { GroupWidget, IModelContainer, projectContainer, drawingContainer } from "./Group";
@@ -441,10 +441,13 @@ export default class App extends React.Component<{}, AppState> {
     }
 
     // render the app
+    console.log("In render call");
     return (
       <div className="app">
         <div className="app-header">
           <div className="text">
+            {console.log("In the titlebar thing")}
+            {console.log(this.state.iModelName)}
             <TitleBar projectName = {this.state.projectName} drawingName = {this.state.drawingName} iModelName = {this.state.iModelName}/>
             {/* <h2><GroupWidget></GroupWidget>></h2> */}
           </div>
@@ -610,44 +613,5 @@ class IModelComponents extends React.PureComponent<IModelComponentsProps, IModel
         </div>
       );
     }
-  }
-}
-
-interface IProps {
-  title: string;
-}
-/** List that renders iModel components, this class is outdated and in future versions can possibly be removed */
-export class IModelList extends React.Component<IProps, {}>  {
-  constructor(props: IProps) {
-    super(props);
-  }
-
-  /* renders the components in HTML and appends the desired iModel data */
-  public render() {
-    const topTitle = "Project: " + frontend.getCurrentProject + " , List of available iModel's";
-    const listOfIModels = frontend.getIModelsList();
-    const nameList = document.createElement("ul");
-    if (frontend.getIModelsList)
-      for (let elem of listOfIModels) {
-        let listItem = document.createElement("li");
-        listItem.appendChild(document.createTextNode(elem.wsgId));
-        nameList.appendChild(listItem);
-      }
-    const generatedList: HTMLElement | null = document.getElementById("List");
-    if (generatedList) {
-      generatedList.appendChild(nameList);
-    }
-    const title = document.getElementById("Title");
-    if (title) {
-      title.nodeValue = topTitle;
-    }
-    return (
-      <div>
-        <link rel="stylesheet" type="text/css" />
-        <h2 title={topTitle}> </h2>
-        <div className="List" id="List">
-        </div>
-      </div>
-    );
   }
 }

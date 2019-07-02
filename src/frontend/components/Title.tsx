@@ -1,11 +1,14 @@
 import * as React from "react";
-import { IModelList } from "./Group";
+//import { IModelList } from "./Group";
 import styled from "styled-components";
+
+
+// import console = require("console");
 // import {Config} from "@bentley/imodeljs-clients";
 
 export interface TitleProps {
-  projectName: string;
-  drawingName: string;
+  projectName?: string;
+  drawingName?: string;
   iModelName: string;
 }
 
@@ -15,7 +18,7 @@ export interface TitleState {
   iModelName: string;
 }
 
-export default class TitleBar extends React.PureComponent<TitleProps, TitleState> {
+export default class TitleBar extends React.Component<TitleProps, TitleState> {
   constructor(props: TitleProps) {
     super(props);
     this.state = {
@@ -24,11 +27,18 @@ export default class TitleBar extends React.PureComponent<TitleProps, TitleState
       iModelName: this.props.iModelName,
     };
   }
+  componentWillReceiveProps(newProps: TitleProps) {
+    this.setState(() => ({
+      iModelName: newProps.iModelName,
+      projectName: newProps.projectName,
+      drawingName: newProps.drawingName,
+    }));
+  }
 
   render() {
     return (
-      <StyledWrapper>
-        <StyledWrapper> {"Project: " + this.state.projectName + "   iModel: "} <IModelList /> {"Drawing: " + this.state.drawingName} </StyledWrapper>
+      <StyledWrapper id={this.state.iModelName} key = {this.state.iModelName}>
+        <StyledWrapper id = {this.state.iModelName + "1"}> {"Project: " + this.state.projectName + "   iModel: " + this.state.iModelName + " Drawing: " + this.state.drawingName} </StyledWrapper>
       </StyledWrapper>
     );
   }

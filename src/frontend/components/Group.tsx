@@ -278,13 +278,13 @@ export class IModelList extends React.Component<{}, { value: string }> {
   // render method, called automatically by react, provides formatting in HTML for the group tool widget
   render() {
     return (
-      <StyledWrapper>
+         <form onSubmit={() => this.handleSubmit}>
         <label className="iModelLabel">
-          <StyledSelect id="iModelDropList" name="iModelList" style={{ fontFamily: "sans-serif" }} onSubmit={() => this.handleSubmit} value="List of iModels" onChange={() => { this.handleSubmit()}}>{iModelDataWidget().map((iModelItem) => {
+          <select id="iModelDropList" name="iModelList" style={{ fontFamily: "sans-serif" }} value="List of iModels" onChange={() => { this.handleSubmit()}}>{iModelDataWidget().map((iModelItem) => {
             return <option key={iModelItem.key} /*onClick={() => this.handleSubmit()}*/ value={iModelItem.iModelValue}>{iModelItem.iModelName}</option>;
-          })}List of iModels</StyledSelect>
+          })}List of iModels</select>
         </label>
-      </StyledWrapper>
+        </form>
     );
   }
 }
@@ -294,10 +294,18 @@ background-color: #222;
 color: white;
 `;
 
+export const StyledForm = styled.form`
+padding-top: 0px;
+padding-left: 5px;
+padding-right: 5px;
+font-weight: bold;
+font-size: large;
+`;
+
 export const StyledWrapper = styled.text`
 padding-top: 0px;
-padding-left: 3px;
-padding-right: 3px;
+padding-left: 5px;
+padding-right: 5px;
 font-weight: bold;
 font-size: large;
 `;
