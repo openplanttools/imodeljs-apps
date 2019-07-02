@@ -43,6 +43,7 @@ export default class SimplePropertiesComponent extends React.PureComponent<Props
     } else {
       const imodelProps = props as IModelConnectionProps;
       const provider: PresentationPropertyDataProvider = new PresentationPropertyDataProvider(imodelProps.imodel, imodelProps.rulesetId);
+      // tslint:disable-next-line: no-floating-promises
       provider.getData().then((theData: PropertyData) => {
         this.filterDataProvider(theData);
       });
@@ -59,7 +60,7 @@ export default class SimplePropertiesComponent extends React.PureComponent<Props
     return (
       <>
         <h3 data-testid="property-pane-component-header">{IModelApp.i18n.translate("SimpleViewer:components.properties")}</h3>
-        <div style={{ flex: "1", height: "calc(100% - 50px)" }}>
+        <div style={{ flex: "1", height: "calc(100% - 50px)"}}>
           <SimplePropertyGrid
             orientation={Orientation.Horizontal}
             dataProvider={this.getDataProvider(this.props)}
