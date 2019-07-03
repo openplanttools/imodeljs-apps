@@ -6,4 +6,5 @@
   // -----------------------------------------------------------------------------------------------------------
   // "imjs_test_project" : "testing27", // Set this to the name of the project
   // "imjs_test_imodel"  : "testing27" // Set this to the name of the iModel
+  "default_drawing" : "PIDP301"
 }

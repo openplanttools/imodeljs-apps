@@ -66,8 +66,9 @@ export default function setupEnv() {
 
     // (2) SET THE PROJECT AND IMODEL NAMES
     imjs_test_project: "opbimdev01", // Set this to the name of the project
-    imjs_test_imodel: "Nick-May2019", // Set this to the name of the iModel
-    imjs_test_drawing: "LakeLand", // Set this to the name of the drawing
+    // imjs_test_imodel: "Nick-May2019", // Set this to the name of the iModel
+    imjs_test_imodel: "OpDev_IPL_Baytown_YII",
+    imjs_test_drawing: "PIDP301", // Set this to the name of the drawing
     // imjs_test_project: "OP_CE_VIEW",
     // imjs_test_imodel: "MistyMountainTop",
     // imjs_test_drawing: "Pid001_MT",

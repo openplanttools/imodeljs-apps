@@ -27,6 +27,7 @@ export default class TitleBar extends React.Component<TitleProps, TitleState> {
       iModelName: this.props.iModelName,
     };
   }
+
   componentWillReceiveProps(newProps: TitleProps) {
     this.setState(() => ({
       iModelName: newProps.iModelName,

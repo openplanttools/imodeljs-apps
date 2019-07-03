@@ -327,6 +327,26 @@ export default class App extends React.Component<{}, AppState> {
     }
   }
 
+  // private _drawingSelection = () => {
+  //   const drawingID = Config.App.get("imjs_test_drawing");
+  //   const temp = this.state.imodel;
+  //   if (temp) {
+
+  //   }
+  //   const selection = selectionProvider.getSelection(evt.imodel, evt.level);
+  //   if (!selection.isEmpty) {
+  //     selection.instanceKeys.forEach(async (ids, ecClass) => {
+  //       if (ecClass === "BisCore:Drawing") {
+  //         const viewport = IModelApp.viewManager.selectedView!;
+  //         const drawingId = ids.values().next().value;
+  //         console.log("DRAWINGID: " + drawingId);
+  //         await this.changeView(drawingId, viewport, true);
+  //         await this.setupDisplayByCategories(drawingId, viewport);
+  //       }
+  //     });
+  //   }
+  // }
+
   // Function for if there is no internet connection
   private _onOffline = () => {
     this.setState((prev) => ({ user: { ...prev.user, isLoading: false }, offlineIModel: true }));
@@ -511,6 +531,7 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
     }
     currentIModel = imodels[0].wsgId;
 
+    //returns
     return { projectId: currentProject.wsgId, imodelId: imodels[0].wsgId };
   }
 
