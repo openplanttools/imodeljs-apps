@@ -34,41 +34,41 @@ if (electron.ipcMain) {
 //This is because external components that require data gathered in App.tsx, are unable to import that file, due to security reasons.
 // Thus the data must travel App.tsx -> main.ts (backend) -> component that needs the data
 //This data is stored here as instance variables
-var iModelsList: HubIModel[];
-var projectsList: Project[];
-var currentProject: Project;
-var drawingsList: Drawing[];
+let iModelsList: HubIModel[];
+let projectsList: Project[];
+let currentProject: Project;
+let drawingsList: Drawing[];
 
 //Getters and setters for instance variables, that provide frontend <-> backend communication
-export var getIModelsList = () => {
+export let getIModelsList = () => {
   return iModelsList;
 };
 
-export var getProjectsList = () => {
+export let getProjectsList = () => {
   return projectsList;
 };
 
-export var getCurrentProject = () => {
+export let getCurrentProject = () => {
   return currentProject;
 };
 
-export var getDrawingsList = () => {
+export let getDrawingsList = () => {
   return drawingsList;
 }
 
-export var setCurrentProject = (theProject: Project) => {
+export let setCurrentProject = (theProject: Project) => {
   currentProject = theProject;
 };
 
-export var setProjectsList = (listOfProjects: Project[]) => {
+export let setProjectsList = (listOfProjects: Project[]) => {
   projectsList = listOfProjects;
 };
 
-export var setIModelsList = (listOfModels: HubIModel[]) => {
+export let setIModelsList = (listOfModels: HubIModel[]) => {
   iModelsList = listOfModels;
 };
 
-export var setDrawingsList = (listOfDrawings: Drawing[]) => {
+export let setDrawingsList = (listOfDrawings: Drawing[]) => {
   drawingsList = listOfDrawings;
 }
 

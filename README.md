@@ -12,16 +12,16 @@
 1. Manually view all projects ***Done*** - Nick
 2. Display only relevant documents in tree, and create new component to replace Tree View for plant document models. - Nick **DONE**
 3. Automatically update on changes. **Done** - Nick
-4. Be able to change the view definition in the viewer. *Unsure if we want to do this*
-5. Be able to edit properties in the viewer, *unsure if this one needs to be done.*
+4. Be able to change the views in the viewer. **Done** - Nick
+5. Be able to edit properties in the viewer, **is done**
 6. Resolve all warnings/errors. *TBD*
 7. Fix initial button page.
-8. Add scrolling to property.
+8. Add scrolling to property. - **Done** Nick
 9. Fix the sign-in button (lacking access to currently fix this). *TBD*
 10. Convert backend to be entirely electron/desktop based. - Nick **Done**
 11. Clean up code base **Done for now** - Nick
 12. Comment parts for explanations **Done** - Nick
-13. Fix CSS formatting *partially done* - Nick
+13. Fix CSS formatting *mostly done* - Nick
 14. Fix clashes with electron IPC and configuration of front-back communication. **Done** - Nick
 15. Determine the necessity of webpack in browser runtime environment. **Done** - Nick
 16. Modify dependencies list, strip unused pieces, keep only browser specific portions.
@@ -30,10 +30,10 @@
 19. Determine whether/how to implement ipcMain - ipcRenderer communication **Done** - Nick
 20. Get viewport to successfully update **Done** - Nick
 21. Determine whether or not to migrate configuration.ts to a JSON **Done** - Nick
-22. Implement loading circle function upon switching views/imodels/projects.
-23. Implement nicer loading functionality.
+22. Implement loading circle function upon switching views/imodels/projects. *possibly does not need to be done*
+23. Implement nicer loading functionality. *possibly does not need to be done*
 24. Move select new iModel button to project **done?**
-25. Fix weird character bug (e.g. Miscellaneous).
+25. Fix weird character bug (e.g. Miscellaneous). - Nick *in progress*
 26. In bottom properties display widget, add functionality to click on category to display only that category, and click on it again to switch back to all categories
 27. Display both the 3D and 2D views in the Viewport.
 28. Only display and allow to pass in the project, iModel, and drawing names.
@@ -45,7 +45,7 @@
 34. Move configuration.ts set-up into the Electron viewer instead. - Zach *in progress*
 35. In Production, fix the list of projects. - Zach *in progress*
 36. In Production, fix the briefcase id error (if this is not just a conncetion issue).
-37. Rework Titles - Nick *in progress*
+37. Rework Titles - Nick *mostly done*
 38. Put button selections in the menu
 39. Fix scrolling issue with properties tool - Nick **Done**
 
