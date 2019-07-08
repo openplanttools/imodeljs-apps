@@ -14,11 +14,12 @@ import { SimpleViewerApp } from "../api/SimpleViewerApp";
 import PropertiesWidget from "./Properties";
 import GridWidget from "./Table";
 import TreeWidget from "./Tree";
-import { setIModelsList, setProjectsList } from "../../backend/electron/main.js"
+import * as configurationData from "../../common/config.json";
+import { setIModelsList, setProjectsList } from "../../backend/electron/main.js";
 import ViewportContentControl from "./Viewport";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "./App.css";
-//import * as frontend from "./App";
+// import * as frontend from "./App";
 import "./Group.scss";
 import { Drawing } from "@bentley/imodeljs-backend";
 import { GroupWidget, IModelContainer, projectContainer, drawingContainer } from "./Group";
@@ -26,6 +27,7 @@ import chroma = require("chroma-js");
 import distinctColors = require("distinct-colors");
 import { ColorDef } from "@bentley/imodeljs-common";
 import TitleBar from "./Title";
+const setValue = require("set-value");
 // import { request } from "https";
 // import { ipcRenderer } from "electron";
 
@@ -83,6 +85,9 @@ export interface AppState {
   menuOpened: boolean;
   menuName: string;
   title: string;
+  iModelDefault?: string;
+  projectDefault?: string;
+  drawingDefault?: string;
 }
 
 /** A component the renders the whole application UI */
@@ -106,7 +111,16 @@ export default class App extends React.Component<{}, AppState> {
       menuName: "Expand Menu",
       title: "Project: " + Config.App.get("imjs_test_project") + ", iModel: " + Config.App.get("imjs_test_imodel") + ", Drawing: " + Config.App.get("imjs_test_drawing"),
     };
+    this.getConfiguration();
     addEventListener("click", () => this.reloadIModelComponent());
+  }
+
+  public getConfiguration() {
+    if (configurationData) {
+      var test = configurationData;
+      console.log("Ok?");
+    }
+    // const oldData = fs.readFile("../../");
   }
 
   /* Function that reloads the iModel based on a new selection pased in an IModelContainer object */
@@ -164,7 +178,7 @@ export default class App extends React.Component<{}, AppState> {
           .then(async (newIModel: IModelConnection | undefined) => {
 
           // gets a valid view definition, for our purpose is fine, but it is possible that viewDefinition is invalid for a given iModel on runtime
-          var viewDefinition: Id64String;
+          let viewDefinition: Id64String;
           if (newIModel)
             viewDefinition = await this.getFirstViewDefinitionId(newIModel);
           else
@@ -179,7 +193,7 @@ export default class App extends React.Component<{}, AppState> {
       }
 
       // Fix to ensure that the dropdown for iModels displays the current iModel at the top
-      var otherList = (document.getElementById("iModelDropList")) as HTMLSelectElement;
+      let otherList = (document.getElementById("iModelDropList")) as HTMLSelectElement;
       otherList.options[0].innerHTML = otherList.options[1].innerHTML;
     }
 
@@ -205,7 +219,7 @@ export default class App extends React.Component<{}, AppState> {
           .then(async (newIModel: IModelConnection | undefined) => {
 
           // gets a valid view definition, for our purpose is fine, but it is possible that viewDefinition is invalid for a given iModel on runtime
-          var viewDefinition: Id64String;
+          let viewDefinition: Id64String;
           if (newIModel)
             viewDefinition = await this.getFirstViewDefinitionId(newIModel);
           else
@@ -461,13 +475,11 @@ export default class App extends React.Component<{}, AppState> {
     }
 
     // render the app
-    console.log("In render call");
+
     return (
       <div className="app">
         <div className="app-header">
           <div className="text">
-            {console.log("In the titlebar thing")}
-            {console.log(this.state.iModelName)}
             <TitleBar projectName = {this.state.projectName} drawingName = {this.state.drawingName} iModelName = {this.state.iModelName}/>
             {/* <h2><GroupWidget></GroupWidget>></h2> */}
           </div>
@@ -531,7 +543,7 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
     }
     currentIModel = imodels[0].wsgId;
 
-    //returns
+    // returns
     return { projectId: currentProject.wsgId, imodelId: imodels[0].wsgId };
   }
 
@@ -588,7 +600,7 @@ class IModelComponents extends React.PureComponent<IModelComponentsProps, IModel
     super(props);
     this.state = {
       iModel: this.props.imodel,
-    }
+    };
   }
 
   public render() {

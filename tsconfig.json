@@ -11,7 +11,7 @@
   "buildOnSave": true,
   "include": [
     "./**/*.ts",
-    "./**/*.tsx"
+    "./**/*.tsx",
   ],
   "exclude": [
     "lib",

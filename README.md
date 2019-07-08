@@ -49,6 +49,7 @@
 38. Put button selections in the menu
 39. Fix scrolling issue with properties tool - Nick **Done**
 40. Look into token restoration after certain periods of time (eg does token expire after an hour even if using)
+41. Fix configuration reading, comply with config.json *in progress* - Nick
 
 ## Development Setup
 
