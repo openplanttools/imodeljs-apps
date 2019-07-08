@@ -6,9 +6,10 @@ import * as path from "path";
 import { RpcInterfaceDefinition, ElectronRpcManager } from "@bentley/imodeljs-common";
 import { IModelJsElectronManager } from "@bentley/electron-manager";
 import * as electron from "electron";
+import * as configurationData from "../../common/config.json";
 const electronFs = require("fs");
-//const electronDialog = electron.remote.dialog;
 
+/** Testing method for updating config.json */
 export let testingMethod = () => {
   const temp = {
     imodel_name : "testing",
@@ -17,7 +18,45 @@ export let testingMethod = () => {
   };
   const newTemp = JSON.stringify(temp);
  electronFs.writeFileSync(path.join(__dirname, "../../common/config.json"), newTemp);
- // console.log(electronDialog)
+};
+
+/** Method to change the iModelName stored in the config.json
+ * @param iModelName string wsgId of the new iModel
+ */
+export const changeiModel = (iModelName: string) => {
+const newConfig = {
+  imodel_name : iModelName,
+  project_name : configurationData.project_name,
+  drawing_name : configurationData.drawing_name,
+};
+const stringifiedConfig = JSON.stringify(newConfig);
+electronFs.writeFileSync(path.join(__dirname, "../../common/config.json"), stringifiedConfig);
+};
+
+/** Method to change the iModelName stored in the config.json
+ * @param ProjectName string wsgId of the new Project
+ */
+export const changeProject = (projectName: string) => {
+  const newConfig = {
+    imodel_name : configurationData.imodel_name,
+    project_name : projectName,
+    drawing_name : configurationData.drawing_name,
+  };
+  const stringifiedConfig = JSON.stringify(newConfig);
+  electronFs.writeFileSync(path.join(__dirname, "../../common/config.json"), stringifiedConfig);
+};
+
+/** Method to change the iModelName stored in the config.json
+ * @param drawingName string wsgId of the new drawing
+ */
+export const drawingName = (drawingName: string) => {
+  const newConfig = {
+    imodel_name : configurationData.imodel_name,
+    project_name : configurationData.project_name,
+    drawing_name : drawingName,
+  };
+  const stringifiedConfig = JSON.stringify(newConfig);
+  electronFs.writeFileSync(path.join(__dirname, "../../common/config.json"), stringifiedConfig);
 };
 
 import { HubIModel, Project } from "@bentley/imodeljs-clients";
