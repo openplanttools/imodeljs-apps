@@ -6,7 +6,6 @@ import * as path from "path";
 import { RpcInterfaceDefinition, ElectronRpcManager } from "@bentley/imodeljs-common";
 import { IModelJsElectronManager } from "@bentley/electron-manager";
 import * as electron from "electron";
-// tslint:disable: no-console
 
 /*
 const getGlobalShortcut = () => {
@@ -22,14 +21,14 @@ import { Drawing } from "@bentley/imodeljs-backend";
 
 // Console logging conditionals, that ensure that electron backend has loaded property, a problem with older versions of the application, that can arise
 // again when improperly importing and using electron modules
-if (electron) {
-  console.log("Electron is loaded");
-} else {
-  console.log("Electron not loaded");
-}
-if (electron.ipcMain) {
-  console.log(electron.ipcMain + "electron ipc main loaded");
-}
+// if (electron) {
+//   console.log("Electron is loaded");
+// } else {
+//   console.log("Electron not loaded");
+// }
+// if (electron.ipcMain) {
+//   console.log(electron.ipcMain + "electron ipc main loaded");
+// }
 
 // The following four variables are bound to functions, and serve as getters and settings for backend-frontend communication
 // This is because external components that require data gathered in App.tsx, are unable to import that file, due to security reasons.
