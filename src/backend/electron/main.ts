@@ -6,6 +6,7 @@ import * as path from "path";
 import { RpcInterfaceDefinition, ElectronRpcManager } from "@bentley/imodeljs-common";
 import { IModelJsElectronManager } from "@bentley/electron-manager";
 import * as electron from "electron";
+// tslint:disable: no-console
 
 /*
 const getGlobalShortcut = () => {
@@ -19,8 +20,8 @@ const getGlobalShortcut = () => {
 import { HubIModel, Project } from "@bentley/imodeljs-clients";
 import { Drawing } from "@bentley/imodeljs-backend";
 
-//Console logging conditionals, that ensure that electron backend has loaded property, a problem with older versions of the application, that can arise
-//again when improperly importing and using electron modules
+// Console logging conditionals, that ensure that electron backend has loaded property, a problem with older versions of the application, that can arise
+// again when improperly importing and using electron modules
 if (electron) {
   console.log("Electron is loaded");
 } else {
@@ -30,16 +31,16 @@ if (electron.ipcMain) {
   console.log(electron.ipcMain + "electron ipc main loaded");
 }
 
-//The following four variables are bound to functions, and serve as getters and settings for backend-frontend communication
-//This is because external components that require data gathered in App.tsx, are unable to import that file, due to security reasons.
+// The following four variables are bound to functions, and serve as getters and settings for backend-frontend communication
+// This is because external components that require data gathered in App.tsx, are unable to import that file, due to security reasons.
 // Thus the data must travel App.tsx -> main.ts (backend) -> component that needs the data
-//This data is stored here as instance variables
+// This data is stored here as instance variables
 let iModelsList: HubIModel[];
 let projectsList: Project[];
 let currentProject: Project;
 let drawingsList: Drawing[];
 
-//Getters and setters for instance variables, that provide frontend <-> backend communication
+// Getters and setters for instance variables, that provide frontend <-> backend communication
 export let getIModelsList = () => {
   return iModelsList;
 };
@@ -54,7 +55,7 @@ export let getCurrentProject = () => {
 
 export let getDrawingsList = () => {
   return drawingsList;
-}
+};
 
 export let setCurrentProject = (theProject: Project) => {
   currentProject = theProject;
@@ -70,7 +71,7 @@ export let setIModelsList = (listOfModels: HubIModel[]) => {
 
 export let setDrawingsList = (listOfDrawings: Drawing[]) => {
   drawingsList = listOfDrawings;
-}
+};
 
 /**
  * Initializes Electron backend
@@ -78,16 +79,16 @@ export let setDrawingsList = (listOfDrawings: Drawing[]) => {
 const manager = new IModelJsElectronManager(path.join(__dirname, "..", "..", "webresources"));
 export default function initialize(rpcs: RpcInterfaceDefinition[]) {
 
-  //Much of electron and iModelJS's functionality is wrapped in promises, so this nested async function is needed to avoid unhandled promise exceptions
+  // Much of electron and iModelJS's functionality is wrapped in promises, so this nested async function is needed to avoid unhandled promise exceptions
   (async () => { // tslint:disable-line:no-floating-promises
     await manager.initialize({
       width: 1280,
       height: 800,
       title: "Plant View",
 
-      //Web preferences deal with the paths the main electron window will use
+      // Web preferences deal with the paths the main electron window will use
       webPreferences: {
-        preload: path.resolve('preload.js'),
+        preload: path.resolve("preload.js"),
         experimentalFeatures: true, // Needed for CSS Grid support
       },
       autoHideMenuBar: true,
@@ -118,7 +119,7 @@ export function initializePopup() {
         width: 640,
         height: 400,
 
-        //establishes this windows relation to its parent window
+        // establishes this windows relation to its parent window
         parent: manager.mainWindow,
         resizable: true,
         title: "List of iModels",
@@ -128,7 +129,7 @@ export function initializePopup() {
       },
     );
 
-    //once the secondary window has been initialized, low its relative files, send messages across the main window
+    // once the secondary window has been initialized, low its relative files, send messages across the main window
     if (manager.mainWindow)
       manager.mainWindow.addTabbedWindow(secondaryWindow);
     secondaryWindow.webContents.send("currentProject", currentProject);

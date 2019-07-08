@@ -5,8 +5,8 @@
 import styled from "styled-components";
 import * as React from "react";
 import iModelDataWidget from "./iModelList";
-import ProjectDataWidget from "./ProjectList";
-import DrawingDataWidget from "./DrawingList";
+import projectDataWidget from "./ProjectList";
+import drawingDataWidget from "./DrawingList";
 import "../../common/configuration.js";
 import "./Group.scss";
 // import { Button, ButtonType } from "@bentley/ui-core";
@@ -18,12 +18,12 @@ export class ProjectContainer {
 
   // instance variables, storing imodel name as a string and an object, the object is useful because it can be assigned
   // as a property and dynamically allocated in react components
-  currentProject: string;
+  public currentProject: string;
   public projectObject: {
     projectName: string,
     projectValue: string,
     key?: string,
-  }
+  };
 
   // initializes variables to dummy values
   constructor() {
@@ -36,27 +36,27 @@ export class ProjectContainer {
   }
 
   // getters and setters
-  public setNewProject(project: string){
+  public setNewProject(project: string) {
     this.currentProject = project;
   }
 
-  public updateProject(){
+  public updateProject() {
     return this.currentProject;
   }
 }
 
 // WIP, event emitter bound function to be called from App.tsx and create changes in the AppState
 // WIP, class to contain the current iModel chosen and return it to App.tsx
-export class iModelContainer {
+export class IModelContainer {
 
   // instance variables, storing imodel name as a string and an object, the object is useful because it can be assigned
   // as a property and dynamically allocated in react components
-  currentIModel: string;
+  public currentIModel: string;
   public iModelObject: {
     iModelName: string,
     iModelValue: string,
     key?: string,
-  }
+  };
 
   // initializes variables to dummy values
   constructor() {
@@ -69,11 +69,11 @@ export class iModelContainer {
   }
 
   // getters and setters
-  public setNewIModel(iModel: string){
+  public setNewIModel(iModel: string) {
     this.currentIModel = iModel;
   }
 
-  public updateIModel(){
+  public updateIModel() {
     return this.currentIModel;
   }
 }
@@ -84,12 +84,12 @@ export class DrawingContainer {
 
   // instance variables, storing imodel name as a string and an object, the object is useful because it can be assigned
   // as a property and dynamically allocated in react components
-  currentDrawing: string;
+  public currentDrawing: string;
   public drawingObject: {
     drawingName: string,
     drawingValue: string,
     key?: string,
-  }
+  };
 
   // initializes variables to dummy values
   constructor() {
@@ -102,25 +102,26 @@ export class DrawingContainer {
   }
 
   // getters and setters
-  public setNewDrawing(drawing: string){
+  public setNewDrawing(drawing: string) {
     this.currentDrawing = drawing;
   }
 
-  public updateDrawing(){
+  public updateDrawing() {
     return this.currentDrawing;
   }
 }
 
 export const projectContainer = new ProjectContainer();
-export const IModelContainer = new iModelContainer();
+export const iModelContainer = new IModelContainer();
 export const drawingContainer = new DrawingContainer();
 
 /** Group Widget controller class, formats and spaces the collcetion of tools associated with developing a new iModel */
 // This method formats the required pieces in HTML
+// tslint:disable-next-line: variable-name
 export const GroupWidget = () => {
   return (
     <div>
-      <link rel='stylesheet' href="./Group.scss" type='text/css' />
+      <link rel="stylesheet" href="./Group.scss" type="text/css" />
       <div className="midLeft">
         {/* <Button id="submitt" buttonType={ButtonType.Primary} name="submit" value="Submit">Submit</Button> */}
         Project: <ProjectList /> iModel: <IModelList /> Drawing: <DrawingList />
@@ -135,23 +136,23 @@ export class ProjectList extends React.Component<{}, { value: string }> {
   public prevIndex: number | undefined;
   constructor(props: any) {
     super(props);
-    this.state = { value: '' };
+    this.state = { value: "" };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   // WIP, handles changes to the state of this piece when the desired project is changed, functionality not yet implemented
-  handleChange(event: Event) {
+  public handleChange(event: Event) {
     if (event.target)
       this.setState({});
   }
 
   // Handles new form submission of dropdown elements from the list
-  handleSubmit() {
+  public handleSubmit() {
 
     // alert('A name was submitted: ' + this.state);
     // gets the document list and casts it to a select element
-    var mainList = (document.getElementById("projectDropList")) as HTMLSelectElement;
+    const mainList = (document.getElementById("projectDropList")) as HTMLSelectElement;
 
     // This conditional holds code that keeps track of a variety of things. 1) The index of the option previously chosen, 2) the object currently selected becomes the selected
     // object, 3) the default node's inner HTML is updated, so the current node is displayed even when the dropdown tool is closed, 4) begins changing the Config files and sending an event that will
@@ -180,7 +181,7 @@ export class ProjectList extends React.Component<{}, { value: string }> {
     }
 
     // gets the document list and casts it to a select element
-    var otherList = (document.getElementById("iModelDropList")) as HTMLSelectElement;
+    const otherList = (document.getElementById("iModelDropList")) as HTMLSelectElement;
 
     // This conditional holds code that keeps track of a variety of things. 1) The index of the option previously chosen, 2) the object currently selected becomes the selected
     // object, 3) the default node's inner HTML is updated, so the current node is displayed even when the dropdown tool is closed, 4) begins changing the Config files and sending an event that will
@@ -200,10 +201,10 @@ export class ProjectList extends React.Component<{}, { value: string }> {
 
       // this config setting line should be changed, as we transition to reading and writing from a JSON file for smoother integration
       Config.App.set("imjs_test_imodel", otherList.options[otherList.selectedIndex].innerText);
-      IModelContainer.setNewIModel(otherList.options[otherList.selectedIndex].innerText);
+      iModelContainer.setNewIModel(otherList.options[otherList.selectedIndex].innerText);
 
       // stores an IModelData object representing the imodel selected
-      IModelContainer.iModelObject = {
+      iModelContainer.iModelObject = {
         iModelName: otherList.options[otherList.selectedIndex].innerHTML,
         iModelValue: otherList.options[otherList.selectedIndex].value,
       };
@@ -211,12 +212,12 @@ export class ProjectList extends React.Component<{}, { value: string }> {
   }
 
   // render method, called automatically by react, provides formatting in HTML for the group tool widget
-  render() {
+  public render() {
     return (
       <form onSubmit={() => this.handleSubmit}>
         <label className="projectLabel">
-          <select id="projectDropList" name="ProjectList" style={{ fontFamily: "sans-serif" }} value="List of Projects" onChange={() => { this.handleSubmit() }}>{ProjectDataWidget().map((ProjectItem) => {
-            return <option key={ProjectItem.key} value={ProjectItem.projectValue}>{ProjectItem.projectName}</option>;
+          <select id="projectDropList" name="ProjectList" style={{ fontFamily: "sans-serif" }} value="List of Projects" onChange={() => { this.handleSubmit(); }}>{projectDataWidget().map((projectItem) => {
+            return <option key={projectItem.key} value={projectItem.projectValue}>{projectItem.projectName}</option>;
           })}List of Projects</select>
         </label>
       </form>
@@ -230,23 +231,23 @@ export class IModelList extends React.Component<{}, { value: string }> {
   public prevIndex: number | undefined;
   constructor(props: any) {
     super(props);
-    this.state = { value: '' };
+    this.state = { value: "" };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   // WIP, handles changes to the state of this piece when the desired project is changed, functionality not yet implemented
-  handleChange(event: Event) {
+  public handleChange(event: Event) {
     if (event.target)
       this.setState({});
   }
 
   // Handles new form submission of dropdown elements from the list
-  handleSubmit() {
+  public handleSubmit() {
 
     // alert('A name was submitted: ' + this.state);
     // gets the document list and casts it to a select element
-    var mainList = (document.getElementById("iModelDropList")) as HTMLSelectElement;
+    const mainList = (document.getElementById("iModelDropList")) as HTMLSelectElement;
 
     // This conditional holds code that keeps track of a variety of things. 1) The index of the option previously chosen, 2) the object currently selected becomes the selected
     // object, 3) the default node's inner HTML is updated, so the current node is displayed even when the dropdown tool is closed, 4) begins changing the Config files and sending an event that will
@@ -265,10 +266,10 @@ export class IModelList extends React.Component<{}, { value: string }> {
 
       // this config setting line should be changed, as we transition to reading and writing from a JSON file for smoother integration
       Config.App.set("imjs_test_imodel", mainList.options[mainList.selectedIndex].innerText);
-      IModelContainer.setNewIModel(mainList.options[mainList.selectedIndex].innerText);
+      iModelContainer.setNewIModel(mainList.options[mainList.selectedIndex].innerText);
 
       // stores an IModelData object representing the imodel selected
-      IModelContainer.iModelObject = {
+      iModelContainer.iModelObject = {
         iModelName: mainList.options[mainList.selectedIndex].innerHTML,
         iModelValue: mainList.options[mainList.selectedIndex].value,
       };
@@ -276,11 +277,11 @@ export class IModelList extends React.Component<{}, { value: string }> {
   }
 
   // render method, called automatically by react, provides formatting in HTML for the group tool widget
-  render() {
+  public render() {
     return (
          <form onSubmit={() => this.handleSubmit}>
         <label className="iModelLabel">
-          <select id="iModelDropList" name="iModelList" style={{ fontFamily: "sans-serif" }} value="List of iModels" onChange={() => { this.handleSubmit()}}>{iModelDataWidget().map((iModelItem) => {
+          <select id="iModelDropList" name="iModelList" style={{ fontFamily: "sans-serif" }} value="List of iModels" onChange={() => { this.handleSubmit(); }}>{iModelDataWidget().map((iModelItem) => {
             return <option key={iModelItem.key} value={iModelItem.iModelValue}>{iModelItem.iModelName}</option>;
           })}List of iModels</select>
         </label>
@@ -289,12 +290,12 @@ export class IModelList extends React.Component<{}, { value: string }> {
   }
 }
 
-export const StyledSelect = styled.select`
+export const styledSelect = styled.select`
 background-color: #222;
 color: white;
 `;
 
-export const StyledForm = styled.form`
+export const styledForm = styled.form`
 padding-top: 0px;
 padding-left: 5px;
 padding-right: 5px;
@@ -302,7 +303,7 @@ font-weight: bold;
 font-size: large;
 `;
 
-export const StyledWrapper = styled.text`
+export const styledWrapper = styled.text`
 padding-top: 0px;
 padding-left: 5px;
 padding-right: 5px;
@@ -316,23 +317,23 @@ export class DrawingList extends React.Component<{}, { value: string }> {
   public prevIndex: number | undefined;
   constructor(props: any) {
     super(props);
-    this.state = { value: '' };
+    this.state = { value: "" };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   // WIP, handles changes to the state of this piece when the desired project is changed, functionality not yet implemented
-  handleChange(event: Event) {
+  public handleChange(event: Event) {
     if (event.target)
       this.setState({});
   }
 
   // Handles new form submission of dropdown elements from the list
-  handleSubmit() {
+  public handleSubmit() {
 
     // alert('A name was submitted: ' + this.state);
     // gets the document list and casts it to a select element
-    var mainList = (document.getElementById("drawingDropList")) as HTMLSelectElement;
+    const mainList = (document.getElementById("drawingDropList")) as HTMLSelectElement;
 
     // This conditional holds code that keeps track of a variety of things. 1) The index of the option previously chosen, 2) the object currently selected becomes the selected
     // object, 3) the default node's inner HTML is updated, so the current node is displayed even when the dropdown tool is closed, 4) begins changing the Config files and sending an event that will
@@ -362,11 +363,11 @@ export class DrawingList extends React.Component<{}, { value: string }> {
   }
 
   // render method, called automatically by react, provides formatting in HTML for the group tool widget
-  render() {
+  public render() {
     return (
       <form onSubmit={() => this.handleSubmit}>
         <label className="drawingLabel">
-          <select id="drawingDropList" name="drawingList" style={{ fontFamily: "sans-serif" }} value="List of Drawings" onChange={() => { this.handleSubmit()}}>{DrawingDataWidget().map((drawingItem) => {
+          <select id="drawingDropList" name="drawingList" style={{ fontFamily: "sans-serif" }} value="List of Drawings" onChange={() => { this.handleSubmit(); }}>{drawingDataWidget().map((drawingItem) => {
             return <option key={drawingItem.key} value={drawingItem.drawingValue}>{drawingItem.drawingName}</option>;
           })}List of Drawings</select>
         </label>

@@ -7,7 +7,7 @@ import { Project } from "@bentley/imodeljs-clients";
 
 // This method initializes the data structure that will store the the iModelData objects, it returns both a test data array, and an empty real data array
 const createProjectStorage = () => {
-  let projectData = [];
+  const projectData = [];
 
   // Test data incase of offline usage or if iModel query is failing
   const testData = [];
@@ -33,16 +33,16 @@ const createProjectStorage = () => {
 };
 
 /* Creates a project data widget, the translates data from the iModel hub, and stores it as an array of project objects */
-const ProjectDataWidget = () => {
+const projectDataWidget = () => {
 
   // stores the projects with their data in projectData
-  var projectData = createProjectStorage();
+  const projectData = createProjectStorage();
   const listOfProjects: Project[] = getProjectsList();
   if (listOfProjects) {
 
     // loops through all the projects
     for (let i = 0; i < listOfProjects.length; i++) {
-      var theName = listOfProjects[i].name;
+      let theName = listOfProjects[i].name;
       if (!theName) {
         theName = "NAME_MISSING " + i;
       }
@@ -59,4 +59,4 @@ const ProjectDataWidget = () => {
   return projectData;
 };
 
-export default ProjectDataWidget;
+export default projectDataWidget;

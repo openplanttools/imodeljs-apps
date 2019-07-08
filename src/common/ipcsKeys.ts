@@ -1,1 +1,1 @@
-export const MessageFromMain: string = "Message from the Main";
+export const messageFromMain: string = "Message from the Main";
