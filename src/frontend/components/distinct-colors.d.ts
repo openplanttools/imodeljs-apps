@@ -5,9 +5,9 @@
 
 /// <reference types="node" />
 
-declare module 'distinct-colors' {
+declare module "distinct-colors" {
 
-  import chroma = require('chroma-js');
+  import chroma = require("chroma-js");
 
   function distinctColors(options: any): chroma.Color[];
 

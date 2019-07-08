@@ -6,6 +6,7 @@ import * as React from "react";
 import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
 import { Tree } from "@bentley/ui-components";
 import { IPresentationTreeDataProvider, PresentationTreeDataProvider, treeWithUnifiedSelection } from "@bentley/presentation-components";
+// tslint:disable: no-console
 
 // create a HOC tree component that supports unified selection
 // tslint:disable-next-line:variable-name
@@ -39,6 +40,7 @@ export default class SimpleTreeComponent extends React.PureComponent<Props> {
     } else {
       const imodelProps = props as IModelConnectionProps;
       const provider: PresentationTreeDataProvider = new PresentationTreeDataProvider(imodelProps.imodel, imodelProps.rulesetId);
+      // tslint:disable-next-line: no-floating-promises
       this.asyncTest(provider);
       return provider;
     }
@@ -47,12 +49,12 @@ export default class SimpleTreeComponent extends React.PureComponent<Props> {
   /** Temporary testing method to try to get a list of drawing labels and corresponding IDs */
   private async asyncTest(provider: PresentationTreeDataProvider) {
     const test = await provider.getNodes();
-    console.log("ZD_START");
-    for (let elem of test) {
+    console.log("tree start");
+    for (const elem of test) {
       console.log(elem.label);
       console.log(elem);
     }
-    console.log("ZD_END");
+    console.log("tree end");
   }
 
   /* Fills the tree using the data provider when the app is updated */

@@ -7,7 +7,7 @@ import { Drawing } from "@bentley/imodeljs-backend";
 
 // This method initializes the data structure that will store the the iModelData objects, it returns both a test data array, and an empty real data array
 const createDrawingStorage = () => {
-  let drawingData = [];
+  const drawingData = [];
 
   // Test data incase of offline usage or if iModel query is failing
   const testData = [];
@@ -33,16 +33,16 @@ const createDrawingStorage = () => {
 };
 
 /* Creates an iModel data widget, the translates data from the iModel hub, and stores it as an array of iModelData objects */
-const DrawingDataWidget = () => {
+const drawingDataWidget = () => {
 
   // stores the iModels with their data in iModelData
-  var drawingData = createDrawingStorage();
+  const drawingData = createDrawingStorage();
   const listOfDrawings: Drawing[] = getDrawingsList();
   if (listOfDrawings) {
 
     // loops through all the iModels
     for (let i = 0; i < listOfDrawings.length; i++) {
-      var theName = listOfDrawings[i].name;
+      let theName = listOfDrawings[i].name;
       if (!theName) {
         theName = "NAME_MISSING " + i;
       }
@@ -59,4 +59,4 @@ const DrawingDataWidget = () => {
   return drawingData;
 };
 
-export default DrawingDataWidget;
+export default drawingDataWidget;

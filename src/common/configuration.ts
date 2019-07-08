@@ -7,7 +7,7 @@ import { Config } from "@bentley/imodeljs-clients";
 /**
  * List of possible backends that simple-viewer-app can use
  */
-export const enum UseBackend {
+export enum UseBackend {
   /** Use local simple-viewer-app backend */
   Local = 0,
 
@@ -33,7 +33,7 @@ export default function setupEnv() {
     // of running this sample on localhost, ensure your registration includes http://localhost:3000/signin-callback as a
     // valid redirect URI.
     // -----------------------------------------------------------------------------------------------------------
-    //imjs_browser_test_client_id: "spa-QtBqEiXs0Pj9lLoiTWhMnkvjz",
+    // imjs_browser_test_client_id: "spa-QtBqEiXs0Pj9lLoiTWhMnkvjz",
 
     /* Nick's stuff */
     // imjs_browser_test_client_id: "spa-MBQFbO5ABzMeXkahkOslOJhs7",
@@ -42,7 +42,6 @@ export default function setupEnv() {
     // imjs_buddi_resolve_url_using_region: "102",
     // Set this to the registered clientId
     // Note: "imodeljs-spa-test-2686" is setup to work with the (default) localhost redirect URI below
-
 
     // (1) UN-COMMENT ONE OF THE FOLLOWING FOUR BLOCKS
 

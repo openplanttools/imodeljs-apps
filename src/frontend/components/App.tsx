@@ -22,7 +22,7 @@ import "./App.css";
 // import * as frontend from "./App";
 import "./Group.scss";
 import { Drawing } from "@bentley/imodeljs-backend";
-import { GroupWidget, IModelContainer, projectContainer, drawingContainer } from "./Group";
+import { GroupWidget, iModelContainer, projectContainer, drawingContainer } from "./Group";
 import chroma = require("chroma-js");
 import distinctColors = require("distinct-colors");
 import { ColorDef } from "@bentley/imodeljs-common";
@@ -41,8 +41,8 @@ let currentProject: Project;
 let projectsList: Project[];
 let currentIModel: string;
 let resolvedIModelList: HubIModel[];
-let currentDrawing: Drawing;
-let drawingsList: Drawing[];
+// let currentDrawing: Drawing;
+// let drawingsList: Drawing[];
 
 // Getters and setters
 export function getCurrentProject() {
@@ -61,13 +61,13 @@ export function getIModelsList() {
   return resolvedIModelList;
 }
 
-export function getCurrentDrawing() {
-  return currentDrawing;
-}
+// export function getCurrentDrawing() {
+//   return currentDrawing;
+// }
 
-export function getDrawingsList() {
-  return drawingsList;
-}
+// export function getDrawingsList() {
+//   return drawingsList;
+// }
 
 /** React state of the App component */
 export interface AppState {
@@ -167,20 +167,20 @@ export default class App extends React.Component<{}, AppState> {
         throw new Error(`iModel with name "${imodelName}" does not exist in project "${projectName}".`);
       }
       currentIModel = imodels[0].wsgId;
-      IModelContainer.iModelObject.iModelName = getIModelsList()[0].name as string;
+      iModelContainer.iModelObject.iModelName = getIModelsList()[0].name as string;
 
       // if these conditions are met, begin by setting the state of the iModel and project, and updating the title, causing React to re call render processes
       this.setState(() => ({
-        iModelName: IModelContainer.iModelObject.iModelName,
+        iModelName: iModelContainer.iModelObject.iModelName,
         projectName: projectContainer.projectObject.projectName,
-        title: "Project: " + projectContainer.projectObject.projectName + ", iModel: " + IModelContainer.iModelObject.iModelName + ", Drawing: " + drawingContainer.drawingObject.drawingName,
+        title: "Project: " + projectContainer.projectObject.projectName + ", iModel: " + iModelContainer.iModelObject.iModelName + ", Drawing: " + drawingContainer.drawingObject.drawingName,
       }));
 
       // if statement checking that the project name and the current iModel are defined strings/objects
-      if (currentProject.name && IModelContainer.currentIModel) {
+      if (currentProject.name && iModelContainer.currentIModel) {
         // opens a new iModel connection, then asynchronously uses a then call to apply that iModel connection to the state of this class, this change in state
         // propogates to all child class updates their states as well
-        IModelConnection.open(currentProject.wsgId, IModelContainer.iModelObject.iModelValue, OpenMode.Readonly) // tslint:disable-line: no-floating-promises
+        IModelConnection.open(currentProject.wsgId, iModelContainer.iModelObject.iModelValue, OpenMode.Readonly) // tslint:disable-line: no-floating-promises
           .then(async (newIModel: IModelConnection | undefined) => {
 
           // gets a valid view definition, for our purpose is fine, but it is possible that viewDefinition is invalid for a given iModel on runtime
@@ -199,12 +199,16 @@ export default class App extends React.Component<{}, AppState> {
       }
 
       // Fix to ensure that the dropdown for iModels displays the current iModel at the top
+<<<<<<< HEAD
       let otherList = (document.getElementById("iModelDropList")) as HTMLSelectElement;
+=======
+      const otherList = (document.getElementById("iModelDropList")) as HTMLSelectElement;
+>>>>>>> f575a650ef1627ede905419d08c5547cb4e47bbf
       otherList.options[0].innerHTML = otherList.options[1].innerHTML;
     }
 
     // conditional checks to make sure that the current title is not the initial value or the same value currently being displayed
-    if (IModelContainer.iModelObject.iModelName !== this.state.iModelName && IModelContainer.iModelObject.iModelName !== "initial_value") {
+    if (iModelContainer.iModelObject.iModelName !== this.state.iModelName && iModelContainer.iModelObject.iModelName !== "initial_value") {
 
       // fix while project box is still showing "Pick a Project"
       if (projectContainer.projectObject.projectName === "initial_value") {
@@ -213,15 +217,15 @@ export default class App extends React.Component<{}, AppState> {
 
       // if these conditions are met, begin by setting the state of the iModel and project, and updating the title, causing React to re call render processes
       this.setState(() => ({
-        iModelName: IModelContainer.iModelObject.iModelName,
+        iModelName: iModelContainer.iModelObject.iModelName,
         projectName: projectContainer.projectObject.projectName,
-        title: "Project: " + projectContainer.projectObject.projectName + ", iModel: " + IModelContainer.iModelObject.iModelName + ", Drawing: " + drawingContainer.drawingObject.drawingName,
+        title: "Project: " + projectContainer.projectObject.projectName + ", iModel: " + iModelContainer.iModelObject.iModelName + ", Drawing: " + drawingContainer.drawingObject.drawingName,
       }));
       // if statement checking that the project name and the current iModel are defined strings/objects
-      if (currentProject.name && IModelContainer.currentIModel) {
+      if (currentProject.name && iModelContainer.currentIModel) {
         // opens a new iModel connection, then asynchronously uses a then call to apply that iModel connection to the state of this class, this change in state
         // propogates to all child class updates their states as well
-        IModelConnection.open(currentProject.wsgId, IModelContainer.iModelObject.iModelValue, OpenMode.Readonly) // tslint:disable-line: no-floating-promises
+        IModelConnection.open(currentProject.wsgId, iModelContainer.iModelObject.iModelValue, OpenMode.Readonly) // tslint:disable-line: no-floating-promises
           .then(async (newIModel: IModelConnection | undefined) => {
 
           // gets a valid view definition, for our purpose is fine, but it is possible that viewDefinition is invalid for a given iModel on runtime
@@ -431,8 +435,7 @@ export default class App extends React.Component<{}, AppState> {
       this.setState({
         menuName: "Expand Menu",
       });
-    }
-    else {
+    } else {
       this.setState({
         menuName: "Collapse Menu",
       });
@@ -466,7 +469,6 @@ export default class App extends React.Component<{}, AppState> {
         <div className="app-header">
           <div className="text">
             <TitleBar projectName = {this.state.projectName} drawingName = {this.state.drawingName} iModelName = {this.state.iModelName}/>
-            {/* <h2><GroupWidget></GroupWidget>></h2> */}
           </div>
           <div className="menu">
             <Button size={ButtonSize.Default} buttonType={ButtonType.Primary} className="expand-menu" onClick={this._menuClick}>
@@ -581,7 +583,7 @@ interface IModelComponentState {
 /** Renders a viewport, a tree, a property grid and a table */
 class IModelComponents extends React.PureComponent<IModelComponentsProps, IModelComponentState> {
 
-  constructor(props: IModelComponentsProps){
+  constructor(props: IModelComponentsProps) {
     super(props);
     this.state = {
       iModel: this.props.imodel,
@@ -618,9 +620,8 @@ class IModelComponents extends React.PureComponent<IModelComponentsProps, IModel
           </div>
         </div>
       );
-    }
-    // open with Menu closed
-    else {
+    } else {
+      // open with Menu closed
       return (
         <div className="app-content">
           <div className="top-left-expanded" id="viewport1">

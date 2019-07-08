@@ -3,12 +3,11 @@
 * Licensed under the MIT License. See LICENSE.md in the project root for license terms.
 *--------------------------------------------------------------------------------------------*/
 import { getIModelsList } from "../../backend/electron/main.js";
-import { HubIModel } from "@bentley/imodeljs-clients";
-import {Config} from "@bentley/imodeljs-clients";
+import { Config, HubIModel } from "@bentley/imodeljs-clients";
 
 // This method initializes the data structure that will store the the iModelData objects, it returns both a test data array, and an empty real data array
 const createiModelStorage = () => {
-  let iModelData = [];
+  const iModelData = [];
 
   // Test data incase of offline usage or if iModel query is failing
   const testData = [];
@@ -37,13 +36,13 @@ const createiModelStorage = () => {
 const iModelDataWidget = () => {
 
   // stores the iModels with their data in iModelData
-  var iModelData = createiModelStorage();
+  const iModelData = createiModelStorage();
   const listOfIModels: HubIModel[] = getIModelsList();
   if (listOfIModels) {
 
     // loops through all the iModels
     for (let i = 0; i < listOfIModels.length; i++) {
-      var theName = listOfIModels[i].name;
+      let theName = listOfIModels[i].name;
       if (!theName) {
         theName = "NAME_MISSING " + i;
       }
