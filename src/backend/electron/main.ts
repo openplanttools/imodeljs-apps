@@ -6,16 +6,20 @@ import * as path from "path";
 import { RpcInterfaceDefinition, ElectronRpcManager } from "@bentley/imodeljs-common";
 import { IModelJsElectronManager } from "@bentley/electron-manager";
 import * as electron from "electron";
+const electronFs = require("fs");
+//const electronDialog = electron.remote.dialog;
 
-/*
-const getGlobalShortcut = () => {
-  var globalShortcut;
-  (async () => { // tslint:disable-line:no-floating-promises
-    const resolvedGlobalShortcut = await electron.remote.globalShortcut;
-      globalShortcut = resolvedGlobalShortcut;
-  });
-  return globalShortcut;
-} */
+export let testingMethod = () => {
+  const temp = {
+    imodel_name : "testing",
+    project_name : "testing",
+    drawing_name : "testing",
+  };
+  const newTemp = JSON.stringify(temp);
+ electronFs.writeFileSync(path.join(__dirname, "../../common/config.json"), newTemp);
+ // console.log(electronDialog)
+};
+
 import { HubIModel, Project } from "@bentley/imodeljs-clients";
 import { Drawing } from "@bentley/imodeljs-backend";
 
@@ -108,6 +112,7 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
       manager.mainWindow.reload();
   });
   } */
+  testingMethod();
 }
 
 /* initialize the opening of a secondary window, parented by the main window */

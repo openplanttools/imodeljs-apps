@@ -216,7 +216,7 @@ export class ProjectList extends React.Component<{}, { value: string }> {
       <form onSubmit={() => this.handleSubmit}>
         <label className="projectLabel">
           <select id="projectDropList" name="ProjectList" style={{ fontFamily: "sans-serif" }} value="List of Projects" onChange={() => { this.handleSubmit() }}>{ProjectDataWidget().map((ProjectItem) => {
-            return <option key={ProjectItem.key} /*onClick={() => this.handleSubmit()}*/ value={ProjectItem.projectValue}>{ProjectItem.projectName}</option>;
+            return <option key={ProjectItem.key} value={ProjectItem.projectValue}>{ProjectItem.projectName}</option>;
           })}List of Projects</select>
         </label>
       </form>
@@ -281,7 +281,7 @@ export class IModelList extends React.Component<{}, { value: string }> {
          <form onSubmit={() => this.handleSubmit}>
         <label className="iModelLabel">
           <select id="iModelDropList" name="iModelList" style={{ fontFamily: "sans-serif" }} value="List of iModels" onChange={() => { this.handleSubmit()}}>{iModelDataWidget().map((iModelItem) => {
-            return <option key={iModelItem.key} /*onClick={() => this.handleSubmit()}*/ value={iModelItem.iModelValue}>{iModelItem.iModelName}</option>;
+            return <option key={iModelItem.key} value={iModelItem.iModelValue}>{iModelItem.iModelName}</option>;
           })}List of iModels</select>
         </label>
         </form>
@@ -367,7 +367,7 @@ export class DrawingList extends React.Component<{}, { value: string }> {
       <form onSubmit={() => this.handleSubmit}>
         <label className="drawingLabel">
           <select id="drawingDropList" name="drawingList" style={{ fontFamily: "sans-serif" }} value="List of Drawings" onChange={() => { this.handleSubmit()}}>{DrawingDataWidget().map((drawingItem) => {
-            return <option key={drawingItem.key} /*onClick={() => this.handleSubmit()}*/ value={drawingItem.drawingValue}>{drawingItem.drawingName}</option>;
+            return <option key={drawingItem.key} value={drawingItem.drawingValue}>{drawingItem.drawingName}</option>;
           })}List of Drawings</select>
         </label>
       </form>

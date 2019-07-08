@@ -28,6 +28,7 @@ import distinctColors = require("distinct-colors");
 import { ColorDef } from "@bentley/imodeljs-common";
 import TitleBar from "./Title";
 const setValue = require("set-value");
+//const iterateObject = require("iterate-object");
 // import { request } from "https";
 // import { ipcRenderer } from "electron";
 
@@ -117,8 +118,13 @@ export default class App extends React.Component<{}, AppState> {
 
   public getConfiguration() {
     if (configurationData) {
-      var test = configurationData;
+     // var test = configurationData;
+     // iterateObject("../../common/config.json", ((val: any, n: any) => {
+        // setValue(configurationData, n, val);
+   // }));
+      setValue(configurationData, "imodel_name", "dadasds");
       console.log("Ok?");
+      console.log("configuration is " + configurationData.imodel_name);
     }
     // const oldData = fs.readFile("../../");
   }
@@ -270,7 +276,6 @@ export default class App extends React.Component<{}, AppState> {
   // change the viewport to display a new drawing, by drawing id
   public async changeView(newDrawingId: string, vp: ScreenViewport, doFit?: boolean) {
     const view = vp.view;
-    console.log("NEWDRAWINGID: " + newDrawingId);
     if (!(view instanceof DrawingViewState)) // this only works if the viewport is showing a DrawingView
       return;
 
@@ -341,26 +346,6 @@ export default class App extends React.Component<{}, AppState> {
     }
   }
 
-  // private _drawingSelection = () => {
-  //   const drawingID = Config.App.get("imjs_test_drawing");
-  //   const temp = this.state.imodel;
-  //   if (temp) {
-
-  //   }
-  //   const selection = selectionProvider.getSelection(evt.imodel, evt.level);
-  //   if (!selection.isEmpty) {
-  //     selection.instanceKeys.forEach(async (ids, ecClass) => {
-  //       if (ecClass === "BisCore:Drawing") {
-  //         const viewport = IModelApp.viewManager.selectedView!;
-  //         const drawingId = ids.values().next().value;
-  //         console.log("DRAWINGID: " + drawingId);
-  //         await this.changeView(drawingId, viewport, true);
-  //         await this.setupDisplayByCategories(drawingId, viewport);
-  //       }
-  //     });
-  //   }
-  // }
-
   // Function for if there is no internet connection
   private _onOffline = () => {
     this.setState((prev) => ({ user: { ...prev.user, isLoading: false }, offlineIModel: true }));
@@ -396,7 +381,7 @@ export default class App extends React.Component<{}, AppState> {
       throw new Error("No valid view definitions for selected iModel. Please select another one.");
     }
 
-      // prioritises certain view definitions
+    // prioritises certain view definitions
     const sheetViews = acceptedViewSpecs.filter((v) => {
       return v.classFullName === "BisCore:DrawingViewDefinition";
     });
@@ -604,12 +589,10 @@ class IModelComponents extends React.PureComponent<IModelComponentsProps, IModel
   }
 
   public render() {
-    /*
-     <Button id="New iModel" title="Select new iModel" onClick = "">Select new iModel</Button>
-    */
     // ID of the presentation ruleset used by all of the controls; the ruleset
     // can be found at `assets/presentation_rules/Default.PresentationRuleSet.xml`
     const rulesetId = "Default";
+
     // open with Menu opened
     if (this.props.menuOpened) {
       return (
