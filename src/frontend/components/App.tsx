@@ -28,8 +28,9 @@ import distinctColors = require("distinct-colors");
 import { ColorDef } from "@bentley/imodeljs-common";
 import TitleBar from "./Title";
 import { ipcRenderer } from "electron";
+// tslint:disable-next-line: no-var-requires
 const setValue = require("set-value");
-//const iterateObject = require("iterate-object");
+// const iterateObject = require("iterate-object");
 // import { request } from "https";
 // import { ipcRenderer } from "electron";
 
@@ -201,7 +202,7 @@ export default class App extends React.Component<{}, AppState> {
       }
 
       // Fix to ensure that the dropdown for iModels displays the current iModel at the top
-      let otherList = (document.getElementById("iModelDropList")) as HTMLSelectElement;
+      const otherList = (document.getElementById("iModelDropList")) as HTMLSelectElement;
       otherList.options[0].innerHTML = otherList.options[1].innerHTML;
     }
 
