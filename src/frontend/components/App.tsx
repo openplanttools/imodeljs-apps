@@ -421,6 +421,7 @@ export default class App extends React.Component<{}, AppState> {
       alert(e.message);
     }
   }
+  // test change
 
   // grabs config redirect URI
   private get _signInRedirectUri() {
