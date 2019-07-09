@@ -15,7 +15,7 @@ setupEnv();
 
 // initialize logging
 Logger.initializeToConsole();
-
+//ipcMain.on("drawingSelection", () => {testingMethod()});
 // initialize imodeljs-backend
 IModelHost.startup();
 

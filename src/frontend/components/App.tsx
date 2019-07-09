@@ -14,7 +14,7 @@ import { SimpleViewerApp } from "../api/SimpleViewerApp";
 import PropertiesWidget from "./Properties";
 import GridWidget from "./Table";
 import TreeWidget from "./Tree";
-import * as configurationData from "../../common/config.json";
+import * as configurationData from "../../common/settings.json";
 import { setIModelsList, setProjectsList } from "../../backend/electron/main.js";
 import ViewportContentControl from "./Viewport";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
@@ -27,6 +27,7 @@ import chroma = require("chroma-js");
 import distinctColors = require("distinct-colors");
 import { ColorDef } from "@bentley/imodeljs-common";
 import TitleBar from "./Title";
+import { ipcRenderer } from "electron";
 const setValue = require("set-value");
 //const iterateObject = require("iterate-object");
 // import { request } from "https";
@@ -178,6 +179,7 @@ export default class App extends React.Component<{}, AppState> {
 
       // if statement checking that the project name and the current iModel are defined strings/objects
       if (currentProject.name && iModelContainer.currentIModel) {
+
         // opens a new iModel connection, then asynchronously uses a then call to apply that iModel connection to the state of this class, this change in state
         // propogates to all child class updates their states as well
         IModelConnection.open(currentProject.wsgId, iModelContainer.iModelObject.iModelValue, OpenMode.Readonly) // tslint:disable-line: no-floating-promises
@@ -199,11 +201,7 @@ export default class App extends React.Component<{}, AppState> {
       }
 
       // Fix to ensure that the dropdown for iModels displays the current iModel at the top
-<<<<<<< HEAD
       let otherList = (document.getElementById("iModelDropList")) as HTMLSelectElement;
-=======
-      const otherList = (document.getElementById("iModelDropList")) as HTMLSelectElement;
->>>>>>> f575a650ef1627ede905419d08c5547cb4e47bbf
       otherList.options[0].innerHTML = otherList.options[1].innerHTML;
     }
 
@@ -221,8 +219,10 @@ export default class App extends React.Component<{}, AppState> {
         projectName: projectContainer.projectObject.projectName,
         title: "Project: " + projectContainer.projectObject.projectName + ", iModel: " + iModelContainer.iModelObject.iModelName + ", Drawing: " + drawingContainer.drawingObject.drawingName,
       }));
+
       // if statement checking that the project name and the current iModel are defined strings/objects
       if (currentProject.name && iModelContainer.currentIModel) {
+
         // opens a new iModel connection, then asynchronously uses a then call to apply that iModel connection to the state of this class, this change in state
         // propogates to all child class updates their states as well
         IModelConnection.open(currentProject.wsgId, iModelContainer.iModelObject.iModelValue, OpenMode.Readonly) // tslint:disable-line: no-floating-promises
@@ -235,6 +235,8 @@ export default class App extends React.Component<{}, AppState> {
           else
             viewDefinition = "BisCore:DrawingViewDefinition";
 
+          ipcRenderer.send("drawingSelection", "testing");
+          // tempChangeiModel(iModelContainer.iModelObject.iModelValue);
           // sets a new iModel connection combined with view definition
           this.setState(() => ({
             imodel: newIModel,

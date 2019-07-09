@@ -6,10 +6,11 @@ import * as path from "path";
 import { RpcInterfaceDefinition, ElectronRpcManager } from "@bentley/imodeljs-common";
 import { IModelJsElectronManager } from "@bentley/electron-manager";
 import * as electron from "electron";
-import * as configurationData from "../../common/config.json";
+import * as configurationData from "../../common/settings.json";
 const electronFs = require("fs");
 
 /** Testing method for updating config.json */
+
 export let testingMethod = () => {
   const temp = {
     imodel_name : "testing",
@@ -17,12 +18,16 @@ export let testingMethod = () => {
     drawing_name : "testing",
   };
   const newTemp = JSON.stringify(temp);
- electronFs.writeFileSync(path.join(__dirname, "../../common/config.json"), newTemp);
+  electronFs.writeFileSync(path.join(__dirname, "../../common/settings.json"), newTemp);
 };
 
 /** Method to change the iModelName stored in the config.json
  * @param iModelName string wsgId of the new iModel
  */
+export const tempChangeiModel = (iModelName: string) => {
+  changeiModel(iModelName);
+};
+
 export const changeiModel = (iModelName: string) => {
 const newConfig = {
   imodel_name : iModelName,
@@ -30,7 +35,7 @@ const newConfig = {
   drawing_name : configurationData.drawing_name,
 };
 const stringifiedConfig = JSON.stringify(newConfig);
-electronFs.writeFileSync(path.join(__dirname, "../../common/config.json"), stringifiedConfig);
+electronFs.writeFileSync(path.join(__dirname, "../../common/settings.json"), stringifiedConfig);
 };
 
 /** Method to change the iModelName stored in the config.json
@@ -43,13 +48,13 @@ export const changeProject = (projectName: string) => {
     drawing_name : configurationData.drawing_name,
   };
   const stringifiedConfig = JSON.stringify(newConfig);
-  electronFs.writeFileSync(path.join(__dirname, "../../common/config.json"), stringifiedConfig);
+  electronFs.writeFileSync(path.join(__dirname, "../../common/settings.json"), stringifiedConfig);
 };
 
 /** Method to change the iModelName stored in the config.json
  * @param drawingName string wsgId of the new drawing
  */
-export const drawingName = (drawingName: string) => {
+export const changeDrawingName = (drawingName: string) => {
   const newConfig = {
     imodel_name : configurationData.imodel_name,
     project_name : configurationData.project_name,
@@ -154,6 +159,7 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
   testingMethod();
 }
 
+//This is a temporary change
 /* initialize the opening of a secondary window, parented by the main window */
 export function initializePopup() {
   (async () => { // tslint:disable-line:no-floating-promises
