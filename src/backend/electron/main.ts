@@ -159,6 +159,8 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
   testingMethod();
 }
 
+//Change in temp branch
+//Another change
 //This is a temporary change
 /* initialize the opening of a secondary window, parented by the main window */
 export function initializePopup() {
