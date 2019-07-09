@@ -134,28 +134,25 @@ You can add files to the gitignore simply by editting it manually, I'm not sure 
 ### Before using Git on windows command prompt or git bash, you will need to install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
 
 ## Setup local git repository
-1. Get a local copy of the repository (`` master `` branch): `` git clone https://bentleycs.visualstudio.com/beconnect/Structural%20Analysis/_git/AnalyticalInsights/ ``
-2. Switch to the `` development `` branch: `` git checkout development ``
+1. Get a local copy of the repository (`` master `` branch): `` git clone https://bentleycs@dev.azure.com/bentleycs/iModelTechnologies/_git/imodeljs-openplant-viewer ``
 
 If you already have a local git repository set up, then run the following to ensure that you are synchronized with VSTS: (check with a team member--this may be done for you already).
 
-`` git remote set-url origin https://bentleycs.visualstudio.com/beconnect/Structural%20Analysis/_git/AnalyticalInsights/ ``
+`` git remote set-url origin https://bentleycs@dev.azure.com/bentleycs/iModelTechnologies/_git/imodeljs-openplant-viewer ``
 
 You may verify your remote handles: `` git remote -v ``
 
-*IMPORTANT:* We never work directly off of the `` master `` or `` development `` branches on our local machines!
+*IMPORTANT:* We never work directly off of the `` master `` branches on our local machines!
 
 ## Regularly update your development branch
 *IMPORTANT:* It is recommended to do this twice a day!
 
-Pull changes from the remote `` development `` branch, and then fix any merge conflicts: `` git pull --rebase origin development ``
-
 Instead of the above, you may also do the following:
-   1. `` git fetch origin development ``
-   2. `` git merge origin/development ``
+   1. `` git fetch origin master ``
+   2. `` git merge origin/master ``
 
 ## Create a new feature branch for each work item
-1. Ensure that you are on the `` development `` branch: `` git checkout development ``
+1. Ensure that you are on the `` master `` branch: `` git checkout master ``
 2. Pull the latest changes: `` git pull ``
 3. Create a new feature branch for your work item: `` git checkout - b [UR-branch-name] ``
 
@@ -167,8 +164,8 @@ Use the following branch naming convention:
 2. Stage your changes that you intend to check in: `` git add [fileName1 fileName2 ...] ``
 3. Commit your changes with a descriptive message: `` git commit -m "[Commit message]" ``
 4. Push your changes: `` git push origin [UR-branch-name] ``
-5. Navigate over to view all branches via VSTS: https://bentleycs.visualstudio.com/beconnect/Design%20Insights/_git/AnalyticalInsights/branches?_a=all
-6. Set the `` development `` branch as the compare branch.
+5. Navigate over to view all branches via VSTS: https://bentleycs@dev.azure.com/bentleycs/iModelTechnologies/_git/imodeljs-openplant-viewer
+6. Set the `` master `` branch as the compare branch.
 7. Submit a pull request and be sure to add at least one team member to review your work.
-8. Once someone reviews your work and approves your changes, merge your changes to the `` development `` branch.
+8. Once someone reviews your work and approves your changes, merge your changes to the `` master `` branch.
 9. *IMPORTANT:* Please be sure to delete your feature branch after you merge your changes! (you can check the option to do this on the merge confirmation page)
