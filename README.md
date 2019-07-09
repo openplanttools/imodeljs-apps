@@ -1,4 +1,4 @@
-# Plant Viewer (in development)
+# **Plant Viewer (in development)**
 
 Stages in a task:
 
@@ -8,7 +8,7 @@ Stages in a task:
 4. *mostly done*
 5. **Done**
 
-## Current To-Do
+## **Current To-Do**
 
 1. Fix configuration reading, and comply with config.json. *mostly done* - Nick
 2. Fix CSS formatting. *mostly done* - Nick
@@ -52,7 +52,7 @@ Stages in a task:
 40. Add unified selection capability back into the tree. **Done** - Nick
 41. Fix scrolling issue with properties tool. **Done** - Nick
 
-## Development Setup
+## **Development Setup**
 
 1. If you do not have a ProjectWise Project, register a sample one. Otherwise, you can skip this step.
    - Select whether you are in [Production](https://imodeljs.github.io/iModelJs-docs-output/getting-started/registration-dashboard/) or [QA](http://builds.bentley.com/prgbuilds/AzureBuilds/iModelJsDocs/public/getting-started/registration-dashboard/).
@@ -81,7 +81,7 @@ Stages in a task:
 15. *To view other projects/models, repeat steps 6-10 & 12-14.*
     - *NOTE: Step 11 does not need to be repeated.*
 
-## Git Developer Guide
+## **Git Developer Guide**
 
 Before using Git on windows command prompt or git bash, you will need to install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
 
@@ -101,15 +101,6 @@ You may verify your remote handles:
 
 *IMPORTANT:* We never work directly off of the `master` branches on our local machines!
 
-### **Regularly update your development branch**
-
-*IMPORTANT:* It is recommended to do this twice a day!
-
-Instead of the above, you may also do the following:
-
-1. `git fetch origin master`
-2. `git merge origin/master`
-
 ### **Create a new feature branch for each work item**
 
 1. Ensure that you are on the `master` branch:
@@ -123,6 +114,15 @@ Use the following branch naming convention:
 
 - `{InitialsAllCaps}-{descriptive-name-of-branch-with-dashes}`
   - ex. `AM-this-is-a-sample`
+
+### **Regularly update your development branch**
+
+*IMPORTANT:* It is recommended to do this twice a day!
+
+Instead of the above, you may also do the following:
+
+1. `git fetch origin master`
+2. `git merge origin/master`
 
 ### **Check in your work**
 
