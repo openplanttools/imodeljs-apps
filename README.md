@@ -8,7 +8,7 @@ Stages in a task:
 4. *mostly done*
 5. **Done**
 
-## **Current To-Do**
+## **Current Tasks**
 
 1. Fix configuration reading, and comply with config.json. *mostly done* - Nick
 2. Fix CSS formatting. *mostly done* - Nick
@@ -52,40 +52,70 @@ Stages in a task:
 40. Add unified selection capability back into the tree. **Done** - Nick
 41. Fix scrolling issue with properties tool. **Done** - Nick
 
-## **Development Setup**
+## **User Guide**
 
-1. If you do not have a ProjectWise Project, register a sample one. Otherwise, you can skip this step.
-   - Select whether you are in [Production](https://imodeljs.github.io/iModelJs-docs-output/getting-started/registration-dashboard/) or [QA](http://builds.bentley.com/prgbuilds/AzureBuilds/iModelJsDocs/public/getting-started/registration-dashboard/).
-   - Go to **Registered Products**, and select **+ New Project**.
-   - Under **iModel Source**, use the sample **Bentley Example** with the **Retail Building Sample** selection
-2. Open the Command Prompt.
-3. Clone the rpeository from GitHub on your local machine with the following command:
-   - `git clone https://github.com/OpenPlantDev/PlantViewer`
-4. Navigate to the cloned directory with the following command:
-   - `cd PlantViewer`
-5. Open the directory in Visual Studio Code with the following command:
-   - `code .`
-6. Open **src/common/configuration.json** and scroll down to the bottom underneath the **CONFIGURATION SETTINGS** comment.
-7. Comment/uncomment the lines of code for production/QA (**Production** requires 1 line, and **QA** requires 2 lines).
-8. Set the names of the Project, iModel, and Drawing in the lines below.
-9. Save your changes.
-10. Type **CTRL+`** to open the terminal in Visual Studio Code.
-11. If you have not done so already, type the following command in the terminal to install the dependencies:
-    - `npm install`
-    - *NOTE: This only needs to be done one time even if you change the configuration settings.*
-12. Type the following command in the terminal to build the application:
-    - `npm run build`
-13. Type in the following command to run (and open) the application:
-    - `npm run electron`
-14. When prompted, sign-in and click on the **Open iModel** button.
-15. *To view other projects/models, repeat steps 6-10 & 12-14.*
-    - *NOTE: Step 11 does not need to be repeated.*
+### **About**
+
+- This is an electron application to view P&ID drawings of iModels.
+- Provide the credentials of the iModel to view.
+- An electron application opens up and presents the iModel.
+
+### **Install**
+
+1. If you do not already have a project, create a new project with the default settings by clicking [here for **Production**](https://imodeljs.github.io/iModelJs-docs-output/getting-started/registration-dashboard/) or [here for **QA**](http://builds.bentley.com/prgbuilds/AzureBuilds/iModelJsDocs/public/getting-started/registration-dashboard/).
+2. Open the Command Prompt and navigate to where you would like the repository to be created (it will create a new folder called **imodeljs-openplant-viewer**).
+3. Type the following command to clone the repository in the "imodeljs-openplant-viewer" folder.
+   - **`git clone https://bentleycs.visualstudio.com/iModelTechnologies/_git/imodeljs-openplant-viewer`**
+4. Type the following commands to open the repository in Visual Studio Code.
+   - **`cd imodeljs-openplant-viewer`**
+   - **`code .`**
+5. _Proceed to Build!_
+
+### **Build**
+
+1. Open the **src/common/configuration.json** file, and scroll down to the "**CONFIGURATION SETTINGS**" comment near the bottom of the file.
+2. Comment/uncomment the lines of code for which client you are in.
+   - **Production** requires 1 line, and **QA** requires 2 lines.
+   - Update the names of the **project**, **iModel**, and **drawing (optional)** to what you want the viewer to present.
+3. Save your changes.
+4. Type **[CTRL+`]** to open the terminal in Visual Studio Code.
+5. Type the following command in the terminal to install the dependencies (may take a few minutes).
+   - **`npm install`**
+   - **_This only has to be done once even if you make changes and build again!_**
+6. Type the following command in the terminal to build the applicaiton (should only take a few seconds).
+   - **`npm run build`**
+7. _Proceed to Run!_
+
+### **Run**
+
+1. Type the following command in the temrinal to run the application. An electron window will open within seconds.
+2. View the **Call Stack** section below to see how to use the application.
+3. Close the electron window to stop running the application.
+4. If you want to re-run the application without any changes to the program files, go back to step 1.
+5. If you want to re-run the application and make changes to the program files, go back to the **Build** section above to re-build the application.
+6. _Proceed to Workflow!_
+
+### **Call Stack**
+
+1. When prompted, **log-in** with your credentials. This grants access to the backend servers that contain the iModel information.
+2. When a blue button that reads "**Open iModel**" comes up, click on it. This will pull the iModel information from the web and display it.
+3. Click on "**Expand Menu**" (top-right of screen) to see options and properties, as well as the Tree. This can be collapsed by clicking on the same button.
+4. To change the **project**, **iModel**, and/or **drawing**, use the dropdown options (right-middle of screen). Tihs will update the viewer.
+5. To switch drawings, click on a **drawing** under the **Tree** (top-right of screen). This will update the viewer.
+6. To select a **graphic** in a drawing, either click on it in the viewer, or expand the drawing under **Tree** and select one under **PID Drawing Categories**. When a graphic is selected, it will be highlighted in the viewer and will have its information displayed in **Properties** (bottom of screen).
+7. _Return to Run!_
+
+### **Workflow**
+
+1. You can see all the program files (aside from the installed dependencies) on **Azure DevOps** by clicking [here](https://bentleycs.visualstudio.com/iModelTechnologies/_git/imodeljs-openplant-viewer).
+2. All updates are made via pull requests on **Azure DevOps**. Requests must be approved and pass unit and integration tests to build correctly.
+3. Development standards and help can be found in the "**Git Developer Guide**" below.
 
 ## **Git Developer Guide**
 
 Before using Git on windows command prompt or git bash, you will need to install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
 
-### **Setup local git repository**
+### **Set up local git repository**
 
 Get a local copy of the repository (`master` branch):
 
