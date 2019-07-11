@@ -40,13 +40,16 @@ IModelHost.startup();
 
 // initialize presentation-backend
 Presentation.initialize({
+
   // Specify location of where application's presentation rule sets are located.
   // May be omitted if application doesn't have any presentation rules.
   rulesetDirectories: [path.join("assets", "presentation_rules")],
 });
+
 // invoke platform-specific initialization
 // tslint:disable-next-line:no-floating-promises
 (async () => {
+
   // get platform-specific initialization function
   let init: (rpcs: RpcInterfaceDefinition[]) => void;
   if (electron) {

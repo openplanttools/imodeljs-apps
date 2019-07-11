@@ -136,7 +136,6 @@ export default class App extends React.Component<{}, AppState> {
       if (event) {
         console.log(configObject);
       }
-      console.log(configObject.imodel_name + "this is the config object imodel");
       var temp = configObject.imodel_name;
       if(configObject.imodel_name.length < 1) {
         temp = Config.App.get("imjs_test_imodel");

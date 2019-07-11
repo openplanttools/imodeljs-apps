@@ -78,17 +78,6 @@ export const changeDrawingName = (drawingName: string) => {
 import { HubIModel, Project } from "@bentley/imodeljs-clients";
 import { Drawing } from "@bentley/imodeljs-backend";
 
-// Console logging conditionals, that ensure that electron backend has loaded property, a problem with older versions of the application, that can arise
-// again when improperly importing and using electron modules
-// if (electron) {
-//   console.log("Electron is loaded");
-// } else {
-//   console.log("Electron not loaded");
-// }
-// if (electron.ipcMain) {
-//   console.log(electron.ipcMain + "electron ipc main loaded");
-// }
-
 // The following four variables are bound to functions, and serve as getters and settings for backend-frontend communication
 // This is because external components that require data gathered in App.tsx, are unable to import that file, due to security reasons.
 // Thus the data must travel App.tsx -> main.ts (backend) -> component that needs the data
@@ -159,15 +148,6 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
     }
   })();
 
-  /* This part of the code is a global shortcut, these allow you to apply key bdings to the window eg: f5 = refreshing the page
-  const globalShortcut = getGlobalShortcut();
-  if(globalShortcut) {
-  globalShortcut.register("f5", () => {
-    if (manager.mainWindow)
-      manager.mainWindow.reload();
-  });
-  } */
-  //testingMethod();
 }
 
 /* initialize the opening of a secondary window, parented by the main window */
