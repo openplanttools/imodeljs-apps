@@ -8,6 +8,7 @@ import { IModelJsElectronManager } from "@bentley/electron-manager";
 import * as electron from "electron";
 import * as configurationData from "../../common/settings.json";
 import * as electronFs from "fs";
+// tslint:disable: no-console
 
 /** Testing method for updating config.json */
 export let testingMethod = () => {
@@ -38,10 +39,10 @@ export const changeiModel = (iModelName: string) => {
  */
 
 export const readData = (event: electron.Event) => {
-  let configObject: any;
+  const configObject: any = "";
   electronFs.readFile(path.join(__dirname, "../../common/settings.json"), (error: Error | null, data: any) => {
     console.log("In the read data message 1 " + data);
-    if(error) {
+    if (error) {
     console.log("error " + error);
     }
     const object = JSON.parse(data);
@@ -167,7 +168,7 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
       manager.mainWindow.reload();
   });
   } */
-  //testingMethod();
+  // testingMethod();
 }
 
 /* initialize the opening of a secondary window, parented by the main window */

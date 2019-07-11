@@ -100,7 +100,7 @@ Use the following branch naming convention:
 Instead of the above, you may also do the following:
 
 1. `git fetch origin master`
-2. `git merge origin/master`
+2. `git merge origin master`
 
 ### **Check in your work**
 
