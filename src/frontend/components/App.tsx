@@ -474,7 +474,7 @@ export default class App extends React.Component<{}, AppState> {
       ui = (<OpenIModelButton accessToken={this.state.user.accessToken} offlineIModel={this.state.offlineIModel} onIModelSelected={this._onIModelSelected} imodelName = {this.state.iModelName} projectName = {this.state.projectName}/>);
     } else {
       // if we do have an imodel and view definition id - render imodel components
-      const titleName: string = "Project: " + this.state.projectName + ", iModel: " + this.state.iModelName + ", Drawing: " + Config.App.get("imjs_test_drawing");
+      const titleName: string = "Project: " + this.state.projectName + ", iModel: " + this.state.iModelName; // + ", Drawing: " + Config.App.get("imjs_test_drawing") (not working yet);
       ui = (<IModelComponents imodel={this.state.imodel} viewDefinitionId={this.state.viewDefinitionId} menuOpened={this.state.menuOpened} title={titleName} />);
     }
 
