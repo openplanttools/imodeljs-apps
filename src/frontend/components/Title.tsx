@@ -34,7 +34,7 @@ export default class TitleBar extends React.Component<TitleProps, TitleState> {
   public render() {
     return (
       <StyledWrapper id={this.state.iModelName} key = {this.state.iModelName}>
-        <StyledWrapper id = {this.state.iModelName + "1"}> {"Project: " + this.state.projectName + "   iModel: " + this.state.iModelName + " Drawing: " + this.state.drawingName} </StyledWrapper>
+        <StyledWrapper id = {this.state.iModelName + "1"}> {"Project: " + this.state.projectName + ", iModel: " + this.state.iModelName} </StyledWrapper>
       </StyledWrapper>
     );
   }

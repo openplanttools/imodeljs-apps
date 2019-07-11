@@ -12,3 +12,6 @@
 .env.production.local
 *.TileCache*
 *.Tiles
+
+# viewflow linker
+~$$ViewFlow.~vsdx
