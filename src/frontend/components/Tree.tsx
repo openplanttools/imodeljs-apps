@@ -41,21 +41,10 @@ export default class SimpleTreeComponent extends React.PureComponent<Props> {
       const imodelProps = props as IModelConnectionProps;
       const provider: PresentationTreeDataProvider = new PresentationTreeDataProvider(imodelProps.imodel, imodelProps.rulesetId);
       // tslint:disable-next-line: no-floating-promises
-      this.asyncTest(provider);
       return provider;
     }
   }
 
-  /** Temporary testing method to try to get a list of drawing labels and corresponding IDs */
-  private async asyncTest(provider: PresentationTreeDataProvider) {
-    const test = await provider.getNodes();
-    console.log("tree start");
-    for (const elem of test) {
-      console.log(elem.label);
-      console.log(elem);
-    }
-    console.log("tree end");
-  }
 
   /* Fills the tree using the data provider when the app is updated */
   public render() {
