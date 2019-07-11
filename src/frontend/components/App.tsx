@@ -26,9 +26,6 @@ import distinctColors = require("distinct-colors");
 import { ColorDef } from "@bentley/imodeljs-common";
 import TitleBar from "./Title";
 import { ipcRenderer, Event } from "electron";
-//const readJSON = require("r-json");
-//const setValue = require("set-value");
-//const iterateObject = require("iterate-object");
 
 // tslint:disable: no-console
 // cSpell:ignore imodels
@@ -57,14 +54,6 @@ export function getIModelsList() {
   return resolvedIModelList;
 }
 
-// export function getCurrentDrawing() {
-//   return currentDrawing;
-// }
-
-// export function getDrawingsList() {
-//   return drawingsList;
-// }
-
 /** React state of the App component */
 export interface AppState {
   user: {
@@ -81,9 +70,6 @@ export interface AppState {
   viewDefinitionId?: Id64String;
   menuOpened: boolean;
   menuName: string;
-  iModelDefault?: string;
-  projectDefault?: string;
-  drawingDefault?: string;
 }
 
 /** A component the renders the whole application UI */
@@ -111,39 +97,53 @@ export default class App extends React.Component<{}, AppState> {
     addEventListener("click", () => this.reloadIModelComponent());
   }
 
+  /** Gets the current desired project as saved either from the settings.json file or from the Config.App singleton */
   private _getCorrectProjectName() {
-    var othertemp = Config.App.get("imjs_test_project");
+    let initialVal = Config.App.get("imjs_test_project");
+
+    //Sets up listener for response back from main/server
     ipcRenderer.on("readConfigResults", (event: Event, configObject: any) => {
       if (event) {
         console.log(configObject);
       }
-      var temp = configObject.project_name;
+
+      //assigns correct config value, changes the state of the app accordingly
+      let configProject = configObject.project_name;
       if(configObject.project_name.length < 1) {
-        temp = Config.App.get("imjs_test_project");
+        configProject = Config.App.get("imjs_test_project");
       } else {
-        othertemp = configObject.project_name;
+        initialVal = configObject.project_name;
       }
       this.setState(() => ({
-        projectName: temp,
+        projectName: configProject,
       }));
     });
+
+    //sends signal that main app is ready for config values
     ipcRenderer.send("readConfig", "reading from the config");
-    return othertemp;
   }
 
+  /** Gets correct value for desired imodel from either the settings.json or from the Config.App object */
   private _getCorrectiModelName() {
-    ipcRenderer.on("readConfigResultsIModel", (event: Event, configObject: any) => {
+
+    //Sets up listener for response back from server
+    ipcRenderer.on("readConfigResultsIModel", (event: Event, jsonObject: any) => {
       if (event) {
-        console.log(configObject);
+        console.log(jsonObject);
       }
-      var temp = configObject.imodel_name;
-      if(configObject.imodel_name.length < 1) {
-        temp = Config.App.get("imjs_test_imodel");
+
+      //Configures the correct value, setting the state of the app, depending on what values currently exist
+      //values in the settings.json are prioritized
+      let configiModel = jsonObject.imodel_name;
+      if (jsonObject.imodel_name.length < 1) {
+        configiModel = Config.App.get("imjs_test_imodel");
       }
       this.setState(() => ({
-        iModelName: temp,
+        iModelName: configiModel,
       }));
     });
+
+    //sends event to server that app is ready to receive values
     ipcRenderer.send("readConfig", "reading from the config");
   }
 

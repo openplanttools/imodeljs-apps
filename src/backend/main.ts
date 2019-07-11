@@ -12,24 +12,24 @@ import { RpcInterfaceDefinition } from "@bentley/imodeljs-common";
 import setupEnv from "../common/configuration";
 import {changeiModel, changeProject, readData} from "./electron/main";
 
-// setup environment
+/* This block of listeners await the main app to be ready, and then listen for commands from the app dictating whether to read or write
+* to a locally stored JSON file (settings.json). This local file cannot be accessed from the main app, and neither can the methods to read or write a local file
+*/
 ipcMain.on("imodelSelection",  (event: Event, arg: any) => {
   console.log(event);
   changeiModel(arg);
 });
 
 ipcMain.on("projectSelection", (event: Event, arg: any) => {
-
   console.log(event);
   changeProject(arg);
 });
 
 ipcMain.on("readConfig", (event: Event, arg: any) => {
-if(event) {
+if (event) {
   console.log(arg);
 }
-const configObject = readData(event);
-console.log("this is the backend config " + configObject);
+readData(event);
 });
 
 setupEnv();
