@@ -5,6 +5,7 @@
 import { getIModelsList } from "../../backend/electron/main.js";
 import { Config, HubIModel } from "@bentley/imodeljs-clients";
 import * as configurationData from "../../common/settings.json";
+// tslint:disable: no-console
 
 // This method initializes the data structure that will store the the iModelData objects, it returns both a test data array, and an empty real data array
 const createiModelStorage = () => {
@@ -34,22 +35,22 @@ const createiModelStorage = () => {
 };
 
 export const getCorrectProjectName = () => {
-  if(configurationData.project_name.length > 0 && configurationData.imodel_name.length > 0){
+  if (configurationData.project_name.length > 0 && configurationData.imodel_name.length > 0) {
     return configurationData.project_name;
   }
   return Config.App.get("imjs_test_project") as string;
-}
+};
 
 export const getCorrectiModelName = () => {
-  let newJSON = configurationData as any as Array<any>;
+  const newJSON = configurationData as any as any[];
   console.log(newJSON);
-  console.log(newJSON[0])
-  if(configurationData.imodel_name.length > 0) {
-    console.log("returning configuration JSON name")
+  console.log(newJSON[0]);
+  if (configurationData.imodel_name.length > 0) {
+    console.log("returning configuration JSON name");
     return configurationData.imodel_name;
   }
   return Config.App.get("imjs_test_imodel") as string;
-}
+};
 
 /* Creates an iModel data widget, the translates data from the iModel hub, and stores it as an array of iModelData objects */
 const iModelDataWidget = () => {

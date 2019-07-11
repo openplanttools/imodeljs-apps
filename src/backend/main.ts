@@ -11,6 +11,7 @@ import getSupportedRpcs from "../common/rpcs";
 import { RpcInterfaceDefinition } from "@bentley/imodeljs-common";
 import setupEnv from "../common/configuration";
 import {changeiModel, changeProject, readData} from "./electron/main";
+// tslint:disable: no-console
 
 // setup environment
 ipcMain.on("imodelSelection",  (event: Event, arg: any) => {
@@ -25,7 +26,7 @@ ipcMain.on("projectSelection", (event: Event, arg: any) => {
 });
 
 ipcMain.on("readConfig", (event: Event, arg: any) => {
-if(event) {
+if (event) {
   console.log(arg);
 }
 const configObject = readData(event);

@@ -26,12 +26,12 @@ import distinctColors = require("distinct-colors");
 import { ColorDef } from "@bentley/imodeljs-common";
 import TitleBar from "./Title";
 import { ipcRenderer, Event } from "electron";
-//const readJSON = require("r-json");
-//const setValue = require("set-value");
-//const iterateObject = require("iterate-object");
-
+// const readJSON = require("r-json");
+// const setValue = require("set-value");
+// const iterateObject = require("iterate-object");
 // tslint:disable: no-console
 // cSpell:ignore imodels
+
 // Setting instance variables for multi-class usage
 let requestContext: AuthorizedFrontendRequestContext | undefined;
 let connectClient: ConnectClient | undefined;
@@ -112,13 +112,13 @@ export default class App extends React.Component<{}, AppState> {
   }
 
   private _getCorrectProjectName() {
-    var othertemp = Config.App.get("imjs_test_project");
+    let othertemp = Config.App.get("imjs_test_project");
     ipcRenderer.on("readConfigResults", (event: Event, configObject: any) => {
       if (event) {
         console.log(configObject);
       }
-      var temp = configObject.project_name;
-      if(configObject.project_name.length < 1) {
+      let temp = configObject.project_name;
+      if (configObject.project_name.length < 1) {
         temp = Config.App.get("imjs_test_project");
       } else {
         othertemp = configObject.project_name;
@@ -137,8 +137,8 @@ export default class App extends React.Component<{}, AppState> {
         console.log(configObject);
       }
       console.log(configObject.imodel_name + "this is the config object imodel");
-      var temp = configObject.imodel_name;
-      if(configObject.imodel_name.length < 1) {
+      let temp = configObject.imodel_name;
+      if (configObject.imodel_name.length < 1) {
         temp = Config.App.get("imjs_test_imodel");
       }
       this.setState(() => ({
@@ -516,8 +516,8 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
 
   /** Finds project and imodel ids using their names */
   private async getIModelInfo(): Promise<{ projectId: string, imodelId: string }> {
-    let projectName = this.props.projectName;
-    let imodelName = this.props.imodelName;
+    const projectName = this.props.projectName;
+    const imodelName = this.props.imodelName;
 
     // Requests a context and connection client to access the iModelHub, and retrieves a list of projects
     requestContext = await AuthorizedFrontendRequestContext.create();
