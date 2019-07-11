@@ -19,19 +19,17 @@ import { setIModelsList, setProjectsList } from "../../backend/electron/main.js"
 import ViewportContentControl from "./Viewport";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "./App.css";
-// import * as frontend from "./App";
 import "./Group.scss";
 import { Drawing } from "@bentley/imodeljs-backend";
-import { GroupWidget, iModelContainer, projectContainer, drawingContainer } from "./Group";
+import { GroupWidget, iModelContainer, projectContainer} from "./Group";
 import chroma = require("chroma-js");
 import distinctColors = require("distinct-colors");
 import { ColorDef } from "@bentley/imodeljs-common";
 import TitleBar from "./Title";
-import { ipcRenderer } from "electron";
-const setValue = require("set-value");
+import { ipcRenderer, Event } from "electron";
+//const readJSON = require("r-json");
+//const setValue = require("set-value");
 //const iterateObject = require("iterate-object");
-// import { request } from "https";
-// import { ipcRenderer } from "electron";
 
 // tslint:disable: no-console
 // cSpell:ignore imodels
@@ -42,8 +40,6 @@ let currentProject: Project;
 let projectsList: Project[];
 let currentIModel: string;
 let resolvedIModelList: HubIModel[];
-// let currentDrawing: Drawing;
-// let drawingsList: Drawing[];
 
 // Getters and setters
 export function getCurrentProject() {
@@ -86,7 +82,6 @@ export interface AppState {
   viewDefinitionId?: Id64String;
   menuOpened: boolean;
   menuName: string;
-  title: string;
   iModelDefault?: string;
   projectDefault?: string;
   drawingDefault?: string;
@@ -111,23 +106,47 @@ export default class App extends React.Component<{}, AppState> {
       offlineIModel: false,
       menuOpened: false,
       menuName: "Expand Menu",
-      title: "Project: " + Config.App.get("imjs_test_project") + ", iModel: " + Config.App.get("imjs_test_imodel") + ", Drawing: " + Config.App.get("imjs_test_drawing"),
     };
-    this.getConfiguration();
+    this._getCorrectiModelName();
+    this._getCorrectProjectName();
     addEventListener("click", () => this.reloadIModelComponent());
   }
 
-  public getConfiguration() {
-    if (configurationData) {
-     // var test = configurationData;
-     // iterateObject("../../common/config.json", ((val: any, n: any) => {
-        // setValue(configurationData, n, val);
-   // }));
-      setValue(configurationData, "imodel_name", "dadasds");
-      console.log("Ok?");
-      console.log("configuration is " + configurationData.imodel_name);
-    }
-    // const oldData = fs.readFile("../../");
+  private _getCorrectProjectName() {
+    var othertemp = Config.App.get("imjs_test_project");
+    ipcRenderer.on("readConfigResults", (event: Event, configObject: any) => {
+      if (event) {
+        console.log(configObject);
+      }
+      var temp = configObject.project_name;
+      if(configObject.project_name.length < 1) {
+        temp = Config.App.get("imjs_test_project");
+      } else {
+        othertemp = configObject.project_name;
+      }
+      this.setState(() => ({
+        projectName: temp,
+      }));
+    });
+    ipcRenderer.send("readConfig", "reading from the config");
+    return othertemp;
+  }
+
+  private _getCorrectiModelName() {
+    ipcRenderer.on("readConfigResultsIModel", (event: Event, configObject: any) => {
+      if (event) {
+        console.log(configObject);
+      }
+      console.log(configObject.imodel_name + "this is the config object imodel");
+      var temp = configObject.imodel_name;
+      if(configObject.imodel_name.length < 1) {
+        temp = Config.App.get("imjs_test_imodel");
+      }
+      this.setState(() => ({
+        iModelName: temp,
+      }));
+    });
+    ipcRenderer.send("readConfig", "reading from the config");
   }
 
   /* Function that reloads the iModel based on a new selection pased in an IModelContainer object */
@@ -152,7 +171,7 @@ export default class App extends React.Component<{}, AppState> {
         alert(`Project with name "${projectName}" does not exist.`);
         throw new Error(`Project with name "${projectName}" does not exist.`);
       }
-
+      // ipcRenderer.send("drawingSelection", iModelContainer.currentIModel);
       // creates a new iModelQuery to connect to the database, and queries with specified context and project
       // Then resolves that promise and sends that information to constiuent components that need the data
       const imodelQuery = new IModelQuery();
@@ -174,7 +193,6 @@ export default class App extends React.Component<{}, AppState> {
       this.setState(() => ({
         iModelName: iModelContainer.iModelObject.iModelName,
         projectName: projectContainer.projectObject.projectName,
-        title: "Project: " + projectContainer.projectObject.projectName + ", iModel: " + iModelContainer.iModelObject.iModelName + ", Drawing: " + drawingContainer.drawingObject.drawingName,
       }));
 
       // if statement checking that the project name and the current iModel are defined strings/objects
@@ -199,7 +217,7 @@ export default class App extends React.Component<{}, AppState> {
           }));
         });
       }
-
+      ipcRenderer.send("projectSelection", this.state.projectName);
       // Fix to ensure that the dropdown for iModels displays the current iModel at the top
       let otherList = (document.getElementById("iModelDropList")) as HTMLSelectElement;
       otherList.options[0].innerHTML = otherList.options[1].innerHTML;
@@ -210,14 +228,13 @@ export default class App extends React.Component<{}, AppState> {
 
       // fix while project box is still showing "Pick a Project"
       if (projectContainer.projectObject.projectName === "initial_value") {
-        projectContainer.projectObject.projectName = Config.App.get("imjs_test_project");
+        projectContainer.projectObject.projectName = this._getCorrectProjectName();
       }
 
       // if these conditions are met, begin by setting the state of the iModel and project, and updating the title, causing React to re call render processes
       this.setState(() => ({
         iModelName: iModelContainer.iModelObject.iModelName,
         projectName: projectContainer.projectObject.projectName,
-        title: "Project: " + projectContainer.projectObject.projectName + ", iModel: " + iModelContainer.iModelObject.iModelName + ", Drawing: " + drawingContainer.drawingObject.drawingName,
       }));
 
       // if statement checking that the project name and the current iModel are defined strings/objects
@@ -235,8 +252,7 @@ export default class App extends React.Component<{}, AppState> {
           else
             viewDefinition = "BisCore:DrawingViewDefinition";
 
-          ipcRenderer.send("drawingSelection", "testing");
-          // tempChangeiModel(iModelContainer.iModelObject.iModelValue);
+          ipcRenderer.send("imodelSelection", iModelContainer.iModelObject.iModelName);
           // sets a new iModel connection combined with view definition
           this.setState(() => ({
             imodel: newIModel,
@@ -271,7 +287,7 @@ export default class App extends React.Component<{}, AppState> {
     }
   }
 
-  // React method, activates when the component will be removed
+  /** React method, activates when the component will be removed  */
   public componentWillUnmount() {
     // unsubscribe from unified selection changes
     Presentation.selection.selectionChange.removeListener(this._onSelectionChanged);
@@ -344,7 +360,6 @@ export default class App extends React.Component<{}, AppState> {
         if (ecClass === "BisCore:Drawing") { // if we clicked on a row that is a drawing, switch the view to it.
           const viewport = IModelApp.viewManager.selectedView!;
           const drawingId = ids.values().next().value;
-          console.log("DRAWINGID: " + drawingId);
           await this.changeView(drawingId, viewport, true);
           await this.setupDisplayByCategories(drawingId, viewport);
         }
@@ -460,7 +475,7 @@ export default class App extends React.Component<{}, AppState> {
       ui = (<OpenIModelButton accessToken={this.state.user.accessToken} offlineIModel={this.state.offlineIModel} onIModelSelected={this._onIModelSelected} />);
     } else {
       // if we do have an imodel and view definition id - render imodel components
-      const titleName: string = "Project: " + Config.App.get("imjs_test_project") + ", iModel: " + Config.App.get("imjs_test_imodel") + ", Drawing: " + Config.App.get("imjs_test_drawing");
+      const titleName: string = "Project: " + this.state.projectName + ", iModel: " + this.state.iModelName + ", Drawing: " + Config.App.get("imjs_test_drawing");
       ui = (<IModelComponents imodel={this.state.imodel} viewDefinitionId={this.state.viewDefinitionId} menuOpened={this.state.menuOpened} title={titleName} />);
     }
 
@@ -500,8 +515,16 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
 
   /** Finds project and imodel ids using their names */
   private async getIModelInfo(): Promise<{ projectId: string, imodelId: string }> {
-    const projectName = Config.App.get("imjs_test_project");
-    const imodelName = Config.App.get("imjs_test_imodel");
+    let projectName = Config.App.get("imjs_test_project");
+    let imodelName = Config.App.get("imjs_test_imodel");
+    const configIModel = configurationData.imodel_name;
+    const configProject = configurationData.project_name;
+    if(configIModel.length > 0) {
+      imodelName = configIModel;
+    }
+    if (configProject.length > 0 && configIModel.length > 0) {
+      projectName = configProject;
+    }
 
     // Requests a context and connection client to access the iModelHub, and retrieves a list of projects
     requestContext = await AuthorizedFrontendRequestContext.create();

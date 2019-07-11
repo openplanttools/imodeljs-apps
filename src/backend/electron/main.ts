@@ -10,7 +10,6 @@ import * as configurationData from "../../common/settings.json";
 const electronFs = require("fs");
 
 /** Testing method for updating config.json */
-
 export let testingMethod = () => {
   const temp = {
     imodel_name : "testing",
@@ -24,23 +23,35 @@ export let testingMethod = () => {
 /** Method to change the iModelName stored in the config.json
  * @param iModelName string wsgId of the new iModel
  */
-export const tempChangeiModel = (iModelName: string) => {
-  changeiModel(iModelName);
-};
-
 export const changeiModel = (iModelName: string) => {
-const newConfig = {
+  const newConfig = {
   imodel_name : iModelName,
   project_name : configurationData.project_name,
   drawing_name : configurationData.drawing_name,
 };
-const stringifiedConfig = JSON.stringify(newConfig);
-electronFs.writeFileSync(path.join(__dirname, "../../common/settings.json"), stringifiedConfig);
+  const stringifiedConfig = JSON.stringify(newConfig);
+  electronFs.writeFileSync(path.join(__dirname, "../../common/settings.json"), stringifiedConfig);
 };
 
 /** Method to change the iModelName stored in the config.json
  * @param ProjectName string wsgId of the new Project
  */
+
+export const readData = (event: electron.Event) => {
+  let configObject: any;
+  electronFs.readFile(path.join(__dirname, "../../common/settings.json"), (error: Error, data: any) => {
+    console.log("In the read data message 1 " + data);
+  if(error) {
+    console.log("error " + error);
+  }
+  const object = JSON.parse(data);
+  console.log("In the read data message " + object.imodel_name);
+  event.sender.send("readConfigResults", object);
+  event.sender.send("readConfigResultsIModel", object);
+});
+  return configObject;
+};
+
 export const changeProject = (projectName: string) => {
   const newConfig = {
     imodel_name : configurationData.imodel_name,
@@ -156,7 +167,7 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
       manager.mainWindow.reload();
   });
   } */
-  testingMethod();
+  //testingMethod();
 }
 
 //This is a temporary change

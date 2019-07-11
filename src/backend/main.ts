@@ -3,20 +3,39 @@
 * Licensed under the MIT License. See LICENSE.md in the project root for license terms.
 *--------------------------------------------------------------------------------------------*/
 import * as path from "path";
-import { app as electron } from "electron";
+import { app as electron, ipcMain, Event } from "electron";
 import { Logger } from "@bentley/bentleyjs-core";
 import { IModelHost } from "@bentley/imodeljs-backend";
 import { Presentation } from "@bentley/presentation-backend";
 import getSupportedRpcs from "../common/rpcs";
 import { RpcInterfaceDefinition } from "@bentley/imodeljs-common";
 import setupEnv from "../common/configuration";
+import {changeiModel, changeProject, readData} from "./electron/main";
+
 // setup environment
+ipcMain.on("imodelSelection",  (event: Event, arg: any) => {
+  console.log(event);
+  changeiModel(arg);
+});
+
+ipcMain.on("projectSelection", (event: Event, arg: any) => {
+
+  console.log(event);
+  changeProject(arg);
+});
+
+ipcMain.on("readConfig", (event: Event, arg: any) => {
+if(event) {
+  console.log(arg);
+}
+const configObject = readData(event);
+console.log("this is the backend config " + configObject);
+});
+
 setupEnv();
 
 // initialize logging
 Logger.initializeToConsole();
-//ipcMain.on("drawingSelection", () => {testingMethod()});
-// initialize imodeljs-backend
 IModelHost.startup();
 
 // initialize presentation-backend
