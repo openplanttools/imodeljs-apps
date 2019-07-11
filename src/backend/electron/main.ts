@@ -39,15 +39,15 @@ export const changeiModel = (iModelName: string) => {
 
 export const readData = (event: electron.Event) => {
   let configObject: any;
-  electronFs.readFile(path.join(__dirname, "../../common/settings.json"), (error: Error, data: any) => {
+  electronFs.readFile(path.join(__dirname, "../../common/settings.json"), (error: Error | null, data: any) => {
     console.log("In the read data message 1 " + data);
-  if(error) {
+    if(error) {
     console.log("error " + error);
-  }
-  const object = JSON.parse(data);
-  console.log("In the read data message " + object.imodel_name);
-  event.sender.send("readConfigResults", object);
-  event.sender.send("readConfigResultsIModel", object);
+    }
+    const object = JSON.parse(data);
+    console.log("In the read data message " + object.imodel_name);
+    event.sender.send("readConfigResults", object);
+    event.sender.send("readConfigResultsIModel", object);
 });
   return configObject;
 };
