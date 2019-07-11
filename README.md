@@ -1,131 +1,171 @@
-# In Development PlantView application
+# **Plant Viewer (in development)**
 
-##### Stages in a task
+Stages in a task:
+
 1. *ongoing*
 2. *in progress*
 3. *partially done*
 4. *mostly done*
 5. **Done**
 
+## **Current Tasks**
 
-## Current TODO
-1. Manually view all projects ***Done*** - Nick
-2. Display only relevant documents in tree, and create new component to replace Tree View for plant document models. - Nick **DONE**
-3. Automatically update on changes. **Done** - Nick
-4. Be able to change the views in the viewer. **Done** - Nick
-5. Be able to edit properties in the viewer, **is done**
-6. Resolve all warnings/errors. *TBD*
-7. Fix initial button page.
-8. Add scrolling to property. - **Done** Nick
-9. Fix the sign-in button (lacking access to currently fix this). *TBD*
-10. Convert backend to be entirely electron/desktop based. - Nick **Done**
-11. Clean up code base **Done for now** - Nick
-12. Comment parts for explanations **Done** - Nick
-13. Fix CSS formatting *mostly done* - Nick
-14. Fix clashes with electron IPC and configuration of front-back communication. **Done** - Nick
-15. Determine the necessity of webpack in browser runtime environment. **Done** - Nick
-16. Modify dependencies list, strip unused pieces, keep only browser specific portions.
-17. If we end up keeping webpack, reconfigure its options to be better suited, right now its causing some problems on the backend. **Done** - Nick
-18. Add configurable options to options bar, have those be saved in a JSON.
-19. Determine whether/how to implement ipcMain - ipcRenderer communication **Done** - Nick
-20. Get viewport to successfully update **Done** - Nick
-21. Determine whether or not to migrate configuration.ts to a JSON **Done** - Nick
-22. Implement loading circle function upon switching views/imodels/projects. *possibly does not need to be done*
-23. Implement nicer loading functionality. *possibly does not need to be done*
-24. Move select new iModel button to project **done?**
-25. Fix weird character bug (e.g. Miscellaneous). - Nick *in progress*
-26. In bottom properties display widget, add functionality to click on category to display only that category, and click on it again to switch back to all categories
-27. Display both the 3D and 2D views in the Viewport.
-28. Only display and allow to pass in the project, iModel, and drawing names.
-29. Maybe move the Menu button to the window menu or in the Toolbar in the Viewport.
-30. Add unified selection capability back into the tree **Done** - Nick
-31. Pick which project to view. - Zach *in progress*
-32. Pick which drawing to view. - Zach *in progress*
-33. Move dropdown boxes for project, iModel, and drawing selections to the header. - Nick, Zach *pretty much done, just waiting on all the buttons to be fully functional*
-34. Move configuration.ts set-up into the Electron viewer instead. - Zach *in progress*
-35. In Production, fix the list of projects. - Zach *in progress*
-36. In Production, fix the briefcase id error (if this is not just a conncetion issue).
-37. Rework Titles - Nick *mostly done*
-38. Put button selections in the menu
-39. Fix scrolling issue with properties tool - Nick **Done**
-40. Look into token restoration after certain periods of time (eg does token expire after an hour even if using)
-41. Fix configuration reading, comply with config.json *mostly done* - Nick
+1. Fix configuration reading, and comply with config.json. *mostly done* - Nick
+2. Fix CSS formatting. *mostly done* - Nick
+3. Rework titles. *mostly done* - Nick
+4. Resolve all warnings/errors. *mostly done* - Zach
+5. Pick which project to view. *mostly done* - Zach
+6. Move dropdown boxes for project, iModel, and drawing selections to the header. *mostly done* (waiting for all buttons to be fully functional) - Nick/Zach
+7. Fix weird character bug (e.g. miscellaneous). *in progress* - Nick
+8. Resolve list of projects in production. *in progress* - Zach
+9. Pick which drawing to view. *in progress* - Zach
+10. Fix the broken log-in in QA (right now, no log-in is required, but lacking access to currently fix this).
+11. Move configuration.ts set-up into the electron viewer instead.
+12. Fix initial button page.
+13. Put button selection sin the menu.
+14. Fix the briefcase id error in production.
+15. Modify dependencies list, strip unused pieces, and keep only browser specific portions.
+16. Add configurable options to options bar, and have those be saved in a JSON.
+17. In the bottom properties display widget, add functionality to click on a category to display only that category, and click on it again to switch back to all categories.
+18. Display both the 3D and 2D views in the viewport.
+19. Only display and allow to pass in the projcet, iModel, and drawing names.
+20. Maybe move the menu button to the window menu or in the toolbar in the viewport.
+21. Look into token restoration after certain periods of time (i.e. does token expire after an hour even if using it?).
+22. Implement loading circle function upon switching views/iModels/projects (possibly does not need to be done...).
+23. Implement nicer loading functionality (possibly does no tneed to be done...).
+24. Fix the sign-in button (lacking access to currently fix this).
+25. Manually view all projects **Done** - Nick
+26. Display only relevant documents in tree, and create new component to replace tree view for plant document models. **Done** - Nick
+27. Automatically update on changes. **Done** - Nick
+28. Be able to change the views in the viewer. **Done** - Nick
+29. Be able to edit properties in the viewer. **Done** - Nick
+30. Add scrolling to property. **Done** - Nick
+31. Clean up code base. **Done** - Nick
+32. Comment parts for explanations. **Done** - Nick
+33. Convert backend to be entirely electron/desktop based. **Done** - Nick
+34. Fix clashes with electron IPC and configuration of front-back communication. **Done** - Nick
+35. Determine the necessity of webpack in browser runtime environment. **Done** - Nick
+36. If we end up keeping webpack, reconfigure its options to be better suited (right now, it's causing some problems on the backend). **Done** - Nick
+37. Determine whether/how to implement ipcMain-ipcRenderer communication. **Done** - Nick
+38. Get viewport to successfully update. **Done** - Nick
+39. Determine whether or not to migrate configuration.ts to a JSON. **Done** - Nick
+40. Add unified selection capability back into the tree. **Done** - Nick
+41. Fix scrolling issue with properties tool. **Done** - Nick
 
-## Development Setup
+## **User Guide**
 
-1.	If you do not have a ProjectWise Project, register a sample one. Otherwise, you can skip this step.
-	- For *Production*, go to https://imodeljs.github.io/iModelJs-docs-output/getting-started/registration-dashboard/.
-	- For *QA*, go to http://builds.bentley.com/prgbuilds/AzureBuilds/iModelJsDocs/public/getting-started/registration-dashboard/.
-	Go to [Registered Products], and select [+ New Project].
-	Under [iModel Source], use the sample [Bentley Example] with the [Retail Building Sample] selection.
+### **About**
 
-2.    Open the Command Prompt.
+- This is an electron application to view P&ID drawings of iModels.
+- Provide the credentials of the iModel to view.
+- An electron application opens up and presents the iModel.
 
-3.	Clone the rpeository from GitHub on your local machine with the following command:
-	*	git clone https://github.com/OpenPlantDev/PlantViewer
+### **Install**
 
-4.	Navigate to the cloned directory with the following command:
-	*	cd PlantViewer
+1. If you do not already have a project, create a new project with the default settings by clicking [here for **Production**](https://imodeljs.github.io/iModelJs-docs-output/getting-started/registration-dashboard/) or [here for **QA**](http://builds.bentley.com/prgbuilds/AzureBuilds/iModelJsDocs/public/getting-started/registration-dashboard/).
+2. Open the Command Prompt and navigate to where you would like the repository to be created (it will create a new folder called **imodeljs-openplant-viewer**).
+3. Type the following command to clone the repository in the "imodeljs-openplant-viewer" folder.
+   - **`git clone https://bentleycs.visualstudio.com/iModelTechnologies/_git/imodeljs-openplant-viewer`**
+4. Type the following commands to open the repository in Visual Studio Code.
+   - **`cd imodeljs-openplant-viewer`**
+   - **`code .`**
+5. _Proceed to Build!_
 
-5.	Open the directory in Visual Studio Code with the following command:
-	*	code .
+### **Build**
 
-6.	Complete step *(1)* in [src/common/configuration.json] by un-commenting one of the four blocks.
-	- The first block runs the viewer in the *browser* in *Production*.
-	- The second block runs the viewer in the *browser* in *QA*.
-	- The third block runs the viewer in *electron* in *Production*.
-	- The fourth block runs the viewer in *electron* in *QA*.
-	NOTE: Highlighting the block and using [Ctrl + /] will comment/un-comment that section of code.
+1. Open the **src/common/configuration.json** file, and scroll down to the "**CONFIGURATION SETTINGS**" comment near the bottom of the file.
+2. Comment/uncomment the lines of code for which client you are in.
+   - **Production** requires 1 line, and **QA** requires 2 lines.
+   - Update the names of the **project**, **iModel**, and **drawing (optional)** to what you want the viewer to present.
+3. Save your changes.
+4. Type **[CTRL+`]** to open the terminal in Visual Studio Code.
+5. Type the following command in the terminal to install the dependencies (may take a few minutes).
+   - **`npm install`**
+   - **_This only has to be done once even if you make changes and build again!_**
+6. Type the following command in the terminal to build the applicaiton (should only take a few seconds).
+   - **`npm run build`**
+7. _Proceed to Run!_
 
-7.  Complete step *(2)* in [src/common/configuration.json] by setting the project and iModel names.
+### **Run**
 
-8.	Save your changes.
+1. Type the following command in the temrinal to run the application. An electron window will open within seconds.
+2. View the **Call Stack** section below to see how to use the application.
+3. Close the electron window to stop running the application.
+4. If you want to re-run the application without any changes to the program files, go back to step 1.
+5. If you want to re-run the application and make changes to the program files, go back to the **Build** section above to re-build the application.
+6. _Proceed to Workflow!_
 
-9.	Type [Ctrl + `] to open the terminal in Visual Studio Code.
+### **Call Stack**
 
-10.	If you have not done so already, type the following command in the terminal to install the dependencies:
-	*	npm install
-	NOTE: This only needs to be done one time even if you change the configuration settings.
+1. When prompted, **log-in** with your credentials. This grants access to the backend servers that contain the iModel information.
+2. When a blue button that reads "**Open iModel**" comes up, click on it. This will pull the iModel information from the web and display it.
+3. Click on "**Expand Menu**" (top-right of screen) to see options and properties, as well as the Tree. This can be collapsed by clicking on the same button.
+4. To change the **project**, **iModel**, and/or **drawing**, use the dropdown options (right-middle of screen). Tihs will update the viewer.
+5. To switch drawings, click on a **drawing** under the **Tree** (top-right of screen). This will update the viewer.
+6. To select a **graphic** in a drawing, either click on it in the viewer, or expand the drawing under **Tree** and select one under **PID Drawing Categories**. When a graphic is selected, it will be highlighted in the viewer and will have its information displayed in **Properties** (bottom of screen).
+7. _Return to Run!_
 
-11.	Type the following command in the terminal to build the application:
-	*	npm run build
+### **Workflow**
 
-12.	Type one of the following commands in the terminal to run the applicaiton:
-	- To run in browser:
-		*	npm run start:servers
-	- To run in electron:
-		*	npm run electron
+1. You can see all the program files (aside from the installed dependencies) on **Azure DevOps** by clicking [here](https://bentleycs.visualstudio.com/iModelTechnologies/_git/imodeljs-openplant-viewer).
+2. All updates are made via pull requests on **Azure DevOps**. Requests must be approved and pass unit and integration tests to build correctly.
+3. Development standards and help can be found in the "**Git Developer Guide**" below.
 
-13.	To run in browser, open [localhost:3000] in a web browser.
-	To run in electron, a window will open automatically.
+## **Git Developer Guide**
 
-14.	*To view other projects/models, repeat steps 6, 7, 8, 9, 11, 12, and 13.*
-	NOTE: Step 10 does not need to be repeated.
+Before using Git on windows command prompt or git bash, you will need to install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
 
-## Git instructions
+### **Set up local git repository**
 
-### To Clone:
-   - type into any command line, in the directory you want to project to be git clone "urltoproject"
+Get a local copy of the repository (`master` branch):
 
-### To push changes
+- `git clone https://bentleycs@dev.azure.com/bentleycs/iModelTechnologies/_git/imodeljs-openplant-viewer`
 
-   - cd into your local copy of project
-   - type git add .
-   - type git commit -m "Your comment on commits"
-   - type git push
+If you already have a local git repository set up, then run the following to ensure that you are synchronized with VSTS (check with a team member - this may be done for you already):
 
-  It will then push changes, but be careful. If you get something called a merge conflict warning, type git stash, and google how to proceed. a merge conflict will change portions of the code. This is preferably avoided.
-  Git stash creates a local copy of your changes, but reverts your files to the main shared version. This is one way to deal with merge conflicts. To apply your changes simply type git stash pop.
-  **Warning** If you have a merge conflict, this will jumble the code, you should check what was changed before you commit.
+- `git remote set-url origin https://bentleycs@dev.azure.com/bentleycs/iModelTechnologies/_git/imodeljs-openplant-viewer`
 
-  If you would like to check the files you are about to commit, before you commit type git status.
+You may verify your remote handles:
 
-### To pull changes
+- `git remote -v`
 
-  - cd into your local copy of project
-  - type git pull
+*IMPORTANT:* We never work directly off of the `master` branches on our local machines!
 
-### Important
-Don't remove node_modules from your .gitignore file. This is the file listing everything git will ignore
-when looking for changes. This is because this file is very big, and everyone should have the same one, so its not necessary to upload it.
-You can add files to the gitignore simply by editting it manually, I'm not sure there's a command for that. If you want to remove files in your gitignore from your repository, you may type git clean.
+### **Create a new feature branch for each work item**
+
+1. Ensure that you are on the `master` branch:
+   - `git checkout master`
+2. Pull the latest changes:
+   - `git pull`
+3. Create a new feature branch for your work item:
+   - `git checkout - b [UR-branch-name]`
+
+Use the following branch naming convention:
+
+- `{InitialsAllCaps}-{descriptive-name-of-branch-with-dashes}`
+  - ex. `AM-this-is-a-sample`
+
+### **Regularly update your development branch**
+
+*IMPORTANT:* It is recommended to do this twice a day!
+
+Instead of the above, you may also do the following:
+
+1. `git fetch origin master`
+2. `git merge origin/master`
+
+### **Check in your work**
+
+1. Review your local changes (make sure you know what you're changing):
+   - `git status`
+2. Stage your changes that you intend to check in:
+   - `git add [fileName1 fileName2 ...]`
+3. Commit your changes with a descriptive message:
+   - `git commit -m "[Commit message]"`
+4. Push your changes:
+   - `git push origin [UR-branch-name]`
+5. Navigate over to view all branches via [VSTS](https://bentleycs@dev.azure.com/bentleycs/iModelTechnologies/_git/imodeljs-openplant-viewer).
+6. Set the `master` branch as the compare branch.
+7. Submit a pull request and be sure to add at least one team member to review your work.
+8. Once someone reviews your work and approves your changes, merge your changes to the `master` branch.
+9. *IMPORTANT:* Please be sure to delete your feature branch after you merge your changes! (you can check the option to do this on the merge confirmation page)

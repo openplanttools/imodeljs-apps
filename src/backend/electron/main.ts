@@ -7,7 +7,7 @@ import { RpcInterfaceDefinition, ElectronRpcManager } from "@bentley/imodeljs-co
 import { IModelJsElectronManager } from "@bentley/electron-manager";
 import * as electron from "electron";
 import * as configurationData from "../../common/settings.json";
-const electronFs = require("fs");
+import * as electronFs from "fs";
 
 /** Testing method for updating config.json */
 export let testingMethod = () => {
@@ -170,7 +170,6 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
   //testingMethod();
 }
 
-//This is a temporary change
 /* initialize the opening of a secondary window, parented by the main window */
 export function initializePopup() {
   (async () => { // tslint:disable-line:no-floating-promises

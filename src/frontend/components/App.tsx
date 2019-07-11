@@ -218,7 +218,7 @@ export default class App extends React.Component<{}, AppState> {
       }
       ipcRenderer.send("projectSelection", this.state.projectName);
       // Fix to ensure that the dropdown for iModels displays the current iModel at the top
-      let otherList = (document.getElementById("iModelDropList")) as HTMLSelectElement;
+      const otherList = (document.getElementById("iModelDropList")) as HTMLSelectElement;
       otherList.options[0].innerHTML = otherList.options[1].innerHTML;
     }
 
