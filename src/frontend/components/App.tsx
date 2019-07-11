@@ -14,7 +14,6 @@ import { SimpleViewerApp } from "../api/SimpleViewerApp";
 import PropertiesWidget from "./Properties";
 import GridWidget from "./Table";
 import TreeWidget from "./Tree";
-import * as configurationData from "../../common/settings.json";
 import { setIModelsList, setProjectsList } from "../../backend/electron/main.js";
 import ViewportContentControl from "./Viewport";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
@@ -472,7 +471,7 @@ export default class App extends React.Component<{}, AppState> {
       ui = (<SignIn onSignIn={this._onStartSignin} onOffline={this._onOffline} />);
     } else if (!this.state.imodel || !this.state.viewDefinitionId) {
       // if we don't have an imodel / view definition id - render a button that initiates imodel open
-      ui = (<OpenIModelButton accessToken={this.state.user.accessToken} offlineIModel={this.state.offlineIModel} onIModelSelected={this._onIModelSelected} />);
+      ui = (<OpenIModelButton accessToken={this.state.user.accessToken} offlineIModel={this.state.offlineIModel} onIModelSelected={this._onIModelSelected} imodelName = {this.state.iModelName} projectName = {this.state.projectName}/>);
     } else {
       // if we do have an imodel and view definition id - render imodel components
       const titleName: string = "Project: " + this.state.projectName + ", iModel: " + this.state.iModelName + ", Drawing: " + Config.App.get("imjs_test_drawing");
@@ -501,6 +500,8 @@ export default class App extends React.Component<{}, AppState> {
 
 /** React props for [[OpenIModelButton]] component */
 interface OpenIModelButtonProps {
+  imodelName: string;
+  projectName: string;
   accessToken: AccessToken | undefined;
   offlineIModel: boolean;
   onIModelSelected: (imodel: IModelConnection | undefined) => void;
@@ -515,16 +516,8 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
 
   /** Finds project and imodel ids using their names */
   private async getIModelInfo(): Promise<{ projectId: string, imodelId: string }> {
-    let projectName = Config.App.get("imjs_test_project");
-    let imodelName = Config.App.get("imjs_test_imodel");
-    const configIModel = configurationData.imodel_name;
-    const configProject = configurationData.project_name;
-    if(configIModel.length > 0) {
-      imodelName = configIModel;
-    }
-    if (configProject.length > 0 && configIModel.length > 0) {
-      projectName = configProject;
-    }
+    let projectName = this.props.projectName;
+    let imodelName = this.props.imodelName;
 
     // Requests a context and connection client to access the iModelHub, and retrieves a list of projects
     requestContext = await AuthorizedFrontendRequestContext.create();
