@@ -29,7 +29,7 @@ export const changeiModel = (iModelName: string) => {
  * @param event The event sent by the renderer processes back to the main
  */
 export const readData = (event: electron.Event) => {
-  let configObject: any;
+  const configObject: any = "";
   electronFs.readFile(path.join(__dirname, "../../common/settings.json"), (error: Error | null, data: any) => {
     if(error) {
     console.log("error " + error);

@@ -45,7 +45,6 @@ export default class SimpleTreeComponent extends React.PureComponent<Props> {
     }
   }
 
-
   /* Fills the tree using the data provider when the app is updated */
   public render() {
     return (

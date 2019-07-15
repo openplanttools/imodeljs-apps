@@ -26,9 +26,9 @@ import distinctColors = require("distinct-colors");
 import { ColorDef } from "@bentley/imodeljs-common";
 import TitleBar from "./Title";
 import { ipcRenderer, Event } from "electron";
-
 // tslint:disable: no-console
 // cSpell:ignore imodels
+
 // Setting instance variables for multi-class usage
 let requestContext: AuthorizedFrontendRequestContext | undefined;
 let connectClient: ConnectClient | undefined;
@@ -76,7 +76,6 @@ export interface AppState {
 export default class App extends React.Component<{}, AppState> {
 
   /** Creates an App instance */
-  // Onclick listener should be eventually changed, to function on click within only select element
   constructor(props?: any, context?: any) {
     super(props, context);
     this.state = {
@@ -174,7 +173,7 @@ export default class App extends React.Component<{}, AppState> {
       IModelConnection.open(currentProject.wsgId, iModelContainer.iModelObject.iModelValue, OpenMode.Readonly) // tslint:disable-line: no-floating-promises
         .then(async (newIModel: IModelConnection | undefined) => {
 
-          // gets a valid view definition, for our purpose is fine, but it is possible that viewDefinition is invalid for a given iModel on runtime
+          // Gets a valid view definition, for our purpose is fine, but it is possible that viewDefinition is invalid for a given iModel on runtime
           let viewDefinition: Id64String;
           if (newIModel)
             viewDefinition = await this.getFirstViewDefinitionId(newIModel);
@@ -242,14 +241,15 @@ export default class App extends React.Component<{}, AppState> {
       IModelConnection.open(currentProject.wsgId, iModelContainer.iModelObject.iModelValue, OpenMode.Readonly) // tslint:disable-line: no-floating-promises
         .then(async (newIModel: IModelConnection | undefined) => {
 
-          // gets a valid view definition, for our purpose is fine, but it is possible that viewDefinition is invalid for a given iModel on runtime
+          // Gets a valid view definition, for our purpose is fine, but it is possible that viewDefinition is invalid for a given iModel on runtime
           let viewDefinition: Id64String;
           if (newIModel)
             viewDefinition = await this.getFirstViewDefinitionId(newIModel);
           else
             viewDefinition = "BisCore:DrawingViewDefinition";
 
-          // sets a new iModel connection combined with view definition
+          ipcRenderer.send("imodelSelection", iModelContainer.iModelObject.iModelName);
+          // Sets a new iModel connection combined with view definition
           this.setState(() => ({
             imodel: newIModel,
             viewDefinitionId: viewDefinition,
@@ -262,7 +262,7 @@ export default class App extends React.Component<{}, AppState> {
     otherList.options[0].innerHTML = otherList.options[1].innerHTML;
   }
 
-  // returns an updated iModelConnection
+  /** Returns an updated iModelConnection */
   public async updateIModelConnection(updatedIModelId: string, updatedIModelProjectId: string) {
     if (updatedIModelId && updatedIModelProjectId) {
       const iModelConnection = await IModelConnection.open(updatedIModelProjectId, updatedIModelProjectId, OpenMode.Readonly);
@@ -271,9 +271,9 @@ export default class App extends React.Component<{}, AppState> {
     return "undefined";
   }
 
-  // React method, after a component mounted sets up non ui portions
+  /** React method, after a component mounted sets up non-ui portions */
   public componentDidMount() {
-    // subscribe for unified selection changes
+    // Subscribe for unified selection changes
     Presentation.selection.selectionChange.addListener(this._onSelectionChanged);
 
     // Initialize authorization state, and add listener to changes
@@ -288,28 +288,28 @@ export default class App extends React.Component<{}, AppState> {
 
   /** React method, activates when the component will be removed  */
   public componentWillUnmount() {
-    // unsubscribe from unified selection changes
+    // Unsubscribe from unified selection changes
     Presentation.selection.selectionChange.removeListener(this._onSelectionChanged);
-    // unsubscribe from user state changes
+    // Unsubscribe from user state changes
     SimpleViewerApp.oidcClient.onUserStateChanged.removeListener(this._onUserStateChanged);
   }
 
-  // change the viewport to display a new drawing, by drawing id
+  /** Changes the viewport to display a new drawing by drawing ID */
   public async changeView(newDrawingId: string, vp: ScreenViewport, doFit?: boolean) {
     const view = vp.view;
-    if (!(view instanceof DrawingViewState)) // this only works if the viewport is showing a DrawingView
+    if (!(view instanceof DrawingViewState)) // This only works if the viewport is showing a DrawingView
       return;
 
-    const newView = view.clone(); // make a copy of the current ViewState. This keeps the set of categories displayed and DisplayStyle
-    (newView.baseModelId as Id64String) = newDrawingId; // change the base model id (cast is necessary since it's marked as readonly after its been constructed)
+    const newView = view.clone(); // Make a copy of the current ViewState. This keeps the set of categories displayed and DisplayStyle
+    (newView.baseModelId as Id64String) = newDrawingId; // Change the base model id (cast is necessary since it's marked as readonly after its been constructed)
 
-    await newView.load(); // load the model
+    await newView.load(); // Load the model
     view.displayStyle.viewFlags.fill = false;
-    vp.changeView(newView); // and point the Viewport at the new drawing
+    vp.changeView(newView); // And point the Viewport at the new drawing
 
-    if (doFit) { // optionally, change the view to show the whole drawing
-      const range = await vp.iModel.models.queryModelRanges([newDrawingId]); // get the drawing's range
-      vp.zoomToVolume(Range3d.fromJSON(range[0]), { animateFrustumChange: false }); // don't bother to animate since starting point is not relevant
+    if (doFit) { // Optionally, change the view to show the whole drawing
+      const range = await vp.iModel.models.queryModelRanges([newDrawingId]); // Get the drawing's range
+      vp.zoomToVolume(Range3d.fromJSON(range[0]), { animateFrustumChange: false }); // Don't bother to animate since starting point is not relevant
     }
   }
 
@@ -351,12 +351,12 @@ export default class App extends React.Component<{}, AppState> {
     }
   }
 
-  // When drawing is changed, handle that change in selection, get a new drawing, update properties and viewings
+  /** When the drawing is changed, handle that change in selection, get a new drawing, and update properties and viewings */
   private _onSelectionChanged = (evt: SelectionChangeEventArgs, selectionProvider: ISelectionProvider) => {
     const selection = selectionProvider.getSelection(evt.imodel, evt.level);
     if (!selection.isEmpty) {
       selection.instanceKeys.forEach(async (ids, ecClass) => {
-        if (ecClass === "BisCore:Drawing") { // if we clicked on a row that is a drawing, switch the view to it.
+        if (ecClass === "BisCore:Drawing") { // If we clicked on a row that is a drawing, switch the view to it.
           const viewport = IModelApp.viewManager.selectedView!;
           const drawingId = ids.values().next().value;
           await this.changeView(drawingId, viewport, true);
@@ -366,23 +366,23 @@ export default class App extends React.Component<{}, AppState> {
     }
   }
 
-  // Function for if there is no internet connection
+  /** Function for if there is no internet connection */
   private _onOffline = () => {
     this.setState((prev) => ({ user: { ...prev.user, isLoading: false }, offlineIModel: true }));
   }
 
-  // Handles beginning of signin
+ /** Handles beginning of sign-in process */
   private _onStartSignin = async () => {
     this.setState((prev) => ({ user: { ...prev.user, isLoading: true } }));
     await SimpleViewerApp.oidcClient.signIn(new FrontendRequestContext());
   }
 
-  // Handles when the user state changes, quasi-react method
+  /** Handles when the user state changes, quasi-react method */
   private _onUserStateChanged = (accessToken: AccessToken | undefined) => {
     this.setState((prev) => ({ user: { ...prev.user, accessToken, isLoading: false } }));
   }
 
-  /** Pick the first available spatial view definition in the imodel */
+  /** Picks the first available spatial view definition in the iModel */
   private async getFirstViewDefinitionId(imodel: IModelConnection): Promise<Id64String> {
     const viewSpecs = await imodel.views.queryProps({});
 
@@ -401,7 +401,7 @@ export default class App extends React.Component<{}, AppState> {
       throw new Error("No valid view definitions for selected iModel. Please select another one.");
     }
 
-    // prioritises certain view definitions
+    // Prioritises certain view definitions
     const sheetViews = acceptedViewSpecs.filter((v) => {
       return v.classFullName === "BisCore:DrawingViewDefinition";
     });
@@ -412,20 +412,20 @@ export default class App extends React.Component<{}, AppState> {
     return acceptedViewSpecs[0].id!;
   }
 
-  /** Handle iModel open event */
+  /** Handles iModel open event */
   private _onIModelSelected = async (imodel: IModelConnection | undefined) => {
     if (!imodel) {
-      // reset the state when imodel is closed
+      // Reset the state when imodel is closed
       this.setState({ imodel: undefined, viewDefinitionId: undefined });
       return;
     }
     try {
-      // attempt to get a view definition
+      // Attempt to get a view definition
       // const viewDefinitionId = imodel ? await this.getSheetViews(imodel) : undefined;
       const viewDefinitionId = imodel ? await this.getFirstViewDefinitionId(imodel) : undefined;
       this.setState({ imodel, viewDefinitionId });
     } catch (e) {
-      // if failed, close the imodel and reset the state
+      // If failed, close the imodel and reset the state
       if (this.state.offlineIModel) {
         await imodel.closeSnapshot();
       } else {
@@ -436,13 +436,13 @@ export default class App extends React.Component<{}, AppState> {
     }
   }
 
-  // grabs config redirect URI
+  /** Grabs the configuration redirect URI */
   private get _signInRedirectUri() {
     const split = (Config.App.get("imjs_browser_test_redirect_uri") as string).split("://");
     return split[split.length - 1];
   }
 
-  // Handles full screen menu button state change
+  /** Handles full screen menu button state change */
   private _menuClick = async () => {
     this.setState({
       menuOpened: !this.state.menuOpened,
@@ -458,28 +458,26 @@ export default class App extends React.Component<{}, AppState> {
     }
   }
 
-  /** The component's render method */
+  /** Renders the app */
   public render() {
-
     let ui: React.ReactNode;
 
     if (this.state.user.isLoading || window.location.href.includes(this._signInRedirectUri)) {
-      // if user is currently being loaded, just tell that
+      // If user is currently being loaded, just tell that
       ui = `${IModelApp.i18n.translate("SimpleViewer:signing-in")}...`;
     } else if (!this.state.user.accessToken && !this.state.offlineIModel) {
-      // if user doesn't have and access token, show sign in page
+      // If user doesn't have and access token, show sign in page
       ui = (<SignIn onSignIn={this._onStartSignin} onOffline={this._onOffline} />);
     } else if (!this.state.imodel || !this.state.viewDefinitionId) {
       // if we don't have an imodel / view definition id - render a button that initiates imodel open
       ui = (<OpenIModelButton accessToken={this.state.user.accessToken} offlineIModel={this.state.offlineIModel} onIModelSelected={this._onIModelSelected} imodelName={this.state.iModelName} projectName={this.state.projectName} />);
     } else {
-      // if we do have an imodel and view definition id - render imodel components
-      const titleName: string = "Project: " + this.state.projectName + ", iModel: " + this.state.iModelName + ", Drawing: " + Config.App.get("imjs_test_drawing");
+      // If we do have an imodel and view definition id - render imodel components
+      const titleName: string = "Project: " + this.state.projectName + ", iModel: " + this.state.iModelName; // + ", Drawing: " + Config.App.get("imjs_test_drawing") (not working yet);
       ui = (<IModelComponents imodel={this.state.imodel} viewDefinitionId={this.state.viewDefinitionId} menuOpened={this.state.menuOpened} title={titleName} />);
     }
 
-    // render the app
-
+    // Render the app
     return (
       <div className="app">
         <div className="app-header">
@@ -498,7 +496,7 @@ export default class App extends React.Component<{}, AppState> {
   }
 }
 
-/** React props for [[OpenIModelButton]] component */
+/** React props for the open iModel button */
 interface OpenIModelButtonProps {
   imodelName: string;
   projectName: string;
@@ -506,18 +504,20 @@ interface OpenIModelButtonProps {
   offlineIModel: boolean;
   onIModelSelected: (imodel: IModelConnection | undefined) => void;
 }
-/** React state for [[OpenIModelButton]] component */
+
+/** React state for the open iModel button */
 interface OpenIModelButtonState {
   isLoading: boolean;
 }
+
 /** Renders a button that opens an iModel identified in configuration */
 export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps, OpenIModelButtonState> {
   public state = { isLoading: false };
 
-  /** Finds project and imodel ids using their names */
+  /** Finds project and iModel ID's using their names */
   private async getIModelInfo(): Promise<{ projectId: string, imodelId: string }> {
-    let projectName = this.props.projectName;
-    let imodelName = this.props.imodelName;
+    const projectName = this.props.projectName;
+    const imodelName = this.props.imodelName;
 
     // Requests a context and connection client to access the iModelHub, and retrieves a list of projects
     requestContext = await AuthorizedFrontendRequestContext.create();
@@ -525,7 +525,7 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
     projectsList = await connectClient.getProjects(requestContext);
     setProjectsList(projectsList);
 
-    // try catch block gets a project, if the project doesnt exist, throw an alert
+    // Try catch block gets a project, if the project doesnt exist, throw an alert
     try {
       currentProject = await connectClient.getProject(requestContext, { $filter: `Name+eq+'${projectName}'` });
     } catch (e) {
@@ -533,14 +533,14 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
       throw new Error(`Project with name "${projectName}" does not exist.`);
     }
 
-    // creates a new iModelQuery to connect to the database, and queries with specified context and project
+    // Creates a new iModelQuery to connect to the database, and queries with specified context and project
     // Then resolves that promise and sends that information to constiuent components that need the data
     const imodelQuery = new IModelQuery();
     resolvedIModelList = await IModelApp.iModelClient.iModels.get(requestContext, currentProject.wsgId, imodelQuery);
     imodelQuery.byName(imodelName);
     setIModelsList(resolvedIModelList);
 
-    // gets the specific imodel, returns the project and imodel wsdId's to the functions handling initial startup/rendering
+    // Gets the specific imodel, returns the project and imodel wsdId's to the functions handling initial startup/rendering
     const imodels = await IModelApp.iModelClient.iModels.get(requestContext, currentProject.wsgId, imodelQuery);
     if (imodels.length === 0) {
       alert(`iModel with name "${imodelName}" does not exist in project "${projectName}".`);
@@ -548,22 +548,22 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
     }
     currentIModel = imodels[0].wsgId;
 
-    // returns
+    // Returns
     return { projectId: currentProject.wsgId, imodelId: imodels[0].wsgId };
   }
 
-  /** Handle iModel open event */
+  /** Handles iModel open event */
   private async onIModelSelected(imodel: IModelConnection | undefined) {
     this.props.onIModelSelected(imodel);
     this.setState({ isLoading: false });
   }
 
-  // handles onclick for initial open iModel button
+  /** Handles on-click for initial open iModel button */
   private _onClick = async () => {
     this.setState({ isLoading: true });
     let imodel: IModelConnection | undefined;
     try {
-      // attempt to open the imodel
+      // Attempt to open the imodel
       if (this.props.offlineIModel) {
         const offlineIModel = Config.App.getString("imjs_offline_imodel");
         imodel = await IModelConnection.openSnapshot(offlineIModel);
@@ -577,6 +577,7 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
     await this.onIModelSelected(imodel);
   }
 
+  /** Renders the button */
   public render() {
     return (
       <Button size={ButtonSize.Large} buttonType={ButtonType.Primary} className="button-open-imodel" onClick={this._onClick}>
@@ -587,7 +588,7 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
   }
 }
 
-/** React props for [[IModelComponents]] component */
+/** React props for an iModel component */
 interface IModelComponentsProps {
   imodel: IModelConnection;
   viewDefinitionId: Id64String;
@@ -595,12 +596,15 @@ interface IModelComponentsProps {
   title: string;
 }
 
+/** The live state for an iModel component */
 interface IModelComponentState {
   iModel: IModelConnection;
 }
+
 /** Renders a viewport, a tree, a property grid and a table */
 class IModelComponents extends React.PureComponent<IModelComponentsProps, IModelComponentState> {
 
+  /** Creates an iModel component instance */
   constructor(props: IModelComponentsProps) {
     super(props);
     this.state = {
@@ -608,12 +612,13 @@ class IModelComponents extends React.PureComponent<IModelComponentsProps, IModel
     };
   }
 
+  /** Renders the iModel component */
   public render() {
     // ID of the presentation ruleset used by all of the controls; the ruleset
-    // can be found at `assets/presentation_rules/Default.PresentationRuleSet.xml`
+    // Can be found at `assets/presentation_rules/Default.PresentationRuleSet.xml`
     const rulesetId = "Default";
 
-    // open with Menu opened
+    // Open with Menu opened
     if (this.props.menuOpened) {
       return (
         <div className="app-content">
@@ -638,8 +643,7 @@ class IModelComponents extends React.PureComponent<IModelComponentsProps, IModel
           </div>
         </div>
       );
-    } else {
-      // open with Menu closed
+    } else { // Open with Menu closed
       return (
         <div className="app-content">
           <div className="top-left-expanded" id="viewport1">
