@@ -28,15 +28,17 @@ export const changeiModel = (iModelName: string) => {
  *  This method reads the config, parses it into a JSON object, and returns it back to the renderer
  * @param event The event sent by the renderer processes back to the main
  */
-export const readData = (event: electron.Event) => {
+export const readData = (event?: electron.Event) => {
   const configObject: any = "";
   electronFs.readFile(path.join(__dirname, "../../common/settings.json"), (error: Error | null, data: any) => {
     if(error) {
     console.log("error " + error);
     }
-    const object = JSON.parse(data);
-    event.sender.send("readConfigResults", object);
-    event.sender.send("readConfigResultsIModel", object);
+    const jsonObject = JSON.parse(data);
+    if (event) {
+    event.sender.send("readConfigResults", jsonObject);
+    event.sender.send("readConfigResultsIModel", jsonObject);
+    }
 });
   return configObject;
 };
