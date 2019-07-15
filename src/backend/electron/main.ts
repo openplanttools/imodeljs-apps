@@ -8,18 +8,8 @@ import { IModelJsElectronManager } from "@bentley/electron-manager";
 import * as electron from "electron";
 import * as configurationData from "../../common/settings.json";
 import * as electronFs from "fs";
-// tslint:disable: no-console
-
-/** Testing method for updating config.json */
-export let testingMethod = () => {
-  const temp = {
-    imodel_name : "testing",
-    project_name : "testing",
-    drawing_name : "testing",
-  };
-  const newTemp = JSON.stringify(temp);
-  electronFs.writeFileSync(path.join(__dirname, "../../common/settings.json"), newTemp);
-};
+import { HubIModel, Project } from "@bentley/imodeljs-clients";
+import { Drawing } from "@bentley/imodeljs-backend";
 
 /** Method to change the iModelName stored in the config.json
  * @param iModelName string wsgId of the new iModel
@@ -34,25 +24,27 @@ export const changeiModel = (iModelName: string) => {
   electronFs.writeFileSync(path.join(__dirname, "../../common/settings.json"), stringifiedConfig);
 };
 
-/** Method to change the iModelName stored in the config.json
- * @param ProjectName string wsgId of the new Project
+/**
+ *  This method reads the config, parses it into a JSON object, and returns it back to the renderer
+ * @param event The event sent by the renderer processes back to the main
  */
-
 export const readData = (event: electron.Event) => {
   const configObject: any = "";
   electronFs.readFile(path.join(__dirname, "../../common/settings.json"), (error: Error | null, data: any) => {
-    console.log("In the read data message 1 " + data);
-    if (error) {
+    if(error) {
     console.log("error " + error);
     }
     const object = JSON.parse(data);
-    console.log("In the read data message " + object.imodel_name);
     event.sender.send("readConfigResults", object);
     event.sender.send("readConfigResultsIModel", object);
 });
   return configObject;
 };
 
+/**
+ * This method sets the project name in the settings.json
+ * @param projectName The name of the desired project
+ */
 export const changeProject = (projectName: string) => {
   const newConfig = {
     imodel_name : configurationData.imodel_name,
@@ -75,20 +67,6 @@ export const changeDrawingName = (drawingName: string) => {
   const stringifiedConfig = JSON.stringify(newConfig);
   electronFs.writeFileSync(path.join(__dirname, "../../common/config.json"), stringifiedConfig);
 };
-
-import { HubIModel, Project } from "@bentley/imodeljs-clients";
-import { Drawing } from "@bentley/imodeljs-backend";
-
-// Console logging conditionals, that ensure that electron backend has loaded property, a problem with older versions of the application, that can arise
-// again when improperly importing and using electron modules
-// if (electron) {
-//   console.log("Electron is loaded");
-// } else {
-//   console.log("Electron not loaded");
-// }
-// if (electron.ipcMain) {
-//   console.log(electron.ipcMain + "electron ipc main loaded");
-// }
 
 // The following four variables are bound to functions, and serve as getters and settings for backend-frontend communication
 // This is because external components that require data gathered in App.tsx, are unable to import that file, due to security reasons.
@@ -160,15 +138,6 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
     }
   })();
 
-  /* This part of the code is a global shortcut, these allow you to apply key bdings to the window eg: f5 = refreshing the page
-  const globalShortcut = getGlobalShortcut();
-  if(globalShortcut) {
-  globalShortcut.register("f5", () => {
-    if (manager.mainWindow)
-      manager.mainWindow.reload();
-  });
-  } */
-  // testingMethod();
 }
 
 /* initialize the opening of a secondary window, parented by the main window */

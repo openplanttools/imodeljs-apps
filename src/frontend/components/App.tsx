@@ -20,7 +20,7 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "./App.css";
 import "./Group.scss";
 import { Drawing } from "@bentley/imodeljs-backend";
-import { GroupWidget, iModelContainer, projectContainer} from "./Group";
+import { GroupWidget, iModelContainer, projectContainer } from "./Group";
 import chroma = require("chroma-js");
 import distinctColors = require("distinct-colors");
 import { ColorDef } from "@bentley/imodeljs-common";
@@ -70,14 +70,10 @@ export interface AppState {
   viewDefinitionId?: Id64String;
   menuOpened: boolean;
   menuName: string;
-  iModelDefault?: string;
-  projectDefault?: string;
-  drawingDefault?: string;
 }
 
 /** A component the renders the whole application UI */
 export default class App extends React.Component<{}, AppState> {
-  // static imodel: any;
 
   /** Creates an App instance */
   constructor(props?: any, context?: any) {
@@ -96,101 +92,86 @@ export default class App extends React.Component<{}, AppState> {
     };
     this._getCorrectiModelName();
     this._getCorrectProjectName();
-    // Onclick listener should be eventually changed, to function on click within only select element
-    addEventListener("click", () => this.reloadIModelComponent());
+    addEventListener("click", () => this._reloadState());
   }
 
-  /** Updates the current project name */
+  /** Gets the current desired project as saved either from the settings.json file or from the Config.App singleton */
   private _getCorrectProjectName() {
-    let othertemp = Config.App.get("imjs_test_project");
+
+    //Sets up listener for response back from main/server
     ipcRenderer.on("readConfigResults", (event: Event, configObject: any) => {
       if (event) {
         console.log(configObject);
       }
-      let temp = configObject.project_name;
+
+      //assigns correct config value, changes the state of the app accordingly
+      let configProject = configObject.project_name;
       if (configObject.project_name.length < 1) {
-        temp = Config.App.get("imjs_test_project");
-      } else {
-        othertemp = configObject.project_name;
+        configProject = Config.App.get("imjs_test_project");
       }
       this.setState(() => ({
-        projectName: temp,
+        projectName: configProject,
       }));
     });
+
+    //sends signal that main app is ready for config values
     ipcRenderer.send("readConfig", "reading from the config");
-    return othertemp;
   }
 
-  /** Updates the current iModel name */
+  /** Gets correct value for desired imodel from either the settings.json or from the Config.App object */
   private _getCorrectiModelName() {
-    ipcRenderer.on("readConfigResultsIModel", (event: Event, configObject: any) => {
+
+    //Sets up listener for response back from server
+    ipcRenderer.on("readConfigResultsIModel", (event: Event, jsonObject: any) => {
       if (event) {
-        console.log(configObject);
+        console.log(jsonObject);
       }
-      console.log(configObject.imodel_name + "this is the config object imodel");
-      let temp = configObject.imodel_name;
-      if (configObject.imodel_name.length < 1) {
-        temp = Config.App.get("imjs_test_imodel");
+
+      //Configures the correct value, setting the state of the app, depending on what values currently exist
+      //values in the settings.json are prioritized
+      let configiModel = jsonObject.imodel_name;
+      if (jsonObject.imodel_name.length < 1) {
+        configiModel = Config.App.get("imjs_test_imodel");
       }
       this.setState(() => ({
-        iModelName: temp,
+        iModelName: configiModel,
       }));
     });
+
+    //sends event to server that app is ready to receive values
     ipcRenderer.send("readConfig", "reading from the config");
   }
 
-  /** Reloads the iModel based on a new selection passed in an IModelContainer object */
-  public async reloadIModelComponent() {
-    // Conditional checks to make sure that the current title is not the initial value or the same value currently being displayed
+  /* Function that reloads the iModel based on a new selection pased in an IModelContainer object */
+  private async _reloadState() {
     if (projectContainer.projectObject.projectName !== this.state.projectName && projectContainer.projectObject.projectName !== "initial_value") {
-
-      // Updates the current iModel and the list of iModels when a new project is selected
-      const projectName = projectContainer.projectObject.projectName;
-
-      // Requests a context and connection client to access the iModelHub, and retrieves a list of projects
-      requestContext = await AuthorizedFrontendRequestContext.create();
-      connectClient = new ConnectClient();
-      projectsList = await connectClient.getProjects(requestContext);
-      setProjectsList(projectsList);
-
-      // Try catch block gets a project, if the project doesnt exist, throw an alert
-      try {
-        currentProject = await connectClient.getProject(requestContext, { $filter: `Name+eq+'${projectName}'` });
-      } catch (e) {
-        alert(`Project with name "${projectName}" does not exist.`);
-        throw new Error(`Project with name "${projectName}" does not exist.`);
+      this._reloadProject();
+    } else // conditional checks to make sure that the current title is not the initial value or the same value currently being displayed
+      if (iModelContainer.iModelObject.iModelName !== this.state.iModelName && iModelContainer.iModelObject.iModelName !== "initial_value") {
+        this._reloadIModel();
       }
-      // ipcRenderer.send("drawingSelection", iModelContainer.currentIModel);
-      // Creates a new iModelQuery to connect to the database, and queries with specified context and project
-      // Then resolves that promise and sends that information to constiuent components that need the data
-      const imodelQuery = new IModelQuery();
-      resolvedIModelList = await IModelApp.iModelClient.iModels.get(requestContext, currentProject.wsgId, imodelQuery);
-      setIModelsList(resolvedIModelList);
-      const imodelName = getIModelsList()[0].name;
-      imodelQuery.byName(imodelName as string);
+  }
 
-      // Gets the specific imodel, returns the project and imodel wsdId's to the functions handling initial startup/rendering
-      const imodels = await IModelApp.iModelClient.iModels.get(requestContext, currentProject.wsgId, imodelQuery);
-      if (imodels.length === 0) {
-        alert(`iModel with name "${imodelName}" does not exist in project "${projectName}".`);
-        throw new Error(`iModel with name "${imodelName}" does not exist in project "${projectName}".`);
-      }
-      currentIModel = imodels[0].wsgId;
-      iModelContainer.iModelObject.iModelName = getIModelsList()[0].name as string;
+  private async _reloadIModel() {
 
-      // If these conditions are met, begin by setting the state of the iModel and project, and updating the title, causing React to re call render processes
-      this.setState(() => ({
-        iModelName: iModelContainer.iModelObject.iModelName,
-        projectName: projectContainer.projectObject.projectName,
-      }));
+    // fix while project box is still showing "Pick a Project"
+    if (projectContainer.projectObject.projectName === "initial_value") {
+      projectContainer.projectObject.projectName = this.state.projectName;
+    }
 
-      // If statement checking that the project name and the current iModel are defined strings/objects
-      if (currentProject.name && iModelContainer.currentIModel) {
+    // if these conditions are met, begin by setting the state of the iModel and project, and updating the title, causing React to re call render processes
+    this.setState(() => ({
+      iModelName: iModelContainer.iModelObject.iModelName,
+      projectName: projectContainer.projectObject.projectName,
+    }));
 
-        // Opens a new iModel connection, then asynchronously uses a then call to apply that iModel connection to the state of this class, this change in state
-        // Propogates to all child class updates their states as well
-        IModelConnection.open(currentProject.wsgId, iModelContainer.iModelObject.iModelValue, OpenMode.Readonly) // tslint:disable-line: no-floating-promises
-          .then(async (newIModel: IModelConnection | undefined) => {
+    // if statement checking that the project name and the current iModel are defined strings/objects
+    if (currentProject.name && iModelContainer.currentIModel) {
+
+      // opens a new iModel connection, then asynchronously uses a then call to apply that iModel connection to the state of this class, this change in state
+      // propogates to all child class updates their states as well
+      IModelConnection.open(currentProject.wsgId, iModelContainer.iModelObject.iModelValue, OpenMode.Readonly) // tslint:disable-line: no-floating-promises
+        .then(async (newIModel: IModelConnection | undefined) => {
 
           // Gets a valid view definition, for our purpose is fine, but it is possible that viewDefinition is invalid for a given iModel on runtime
           let viewDefinition: Id64String;
@@ -199,40 +180,66 @@ export default class App extends React.Component<{}, AppState> {
           else
             viewDefinition = "BisCore:DrawingViewDefinition";
 
-          // Sets a new iModel connection combined with view definition
+          ipcRenderer.send("imodelSelection", iModelContainer.iModelObject.iModelName);
+          // sets a new iModel connection combined with view definition
           this.setState(() => ({
             imodel: newIModel,
             viewDefinitionId: viewDefinition,
           }));
         });
-      }
-      ipcRenderer.send("projectSelection", this.state.projectName);
-      // Fix to ensure that the dropdown for iModels displays the current iModel at the top
-      const otherList = (document.getElementById("iModelDropList")) as HTMLSelectElement;
-      otherList.options[0].innerHTML = otherList.options[1].innerHTML;
     }
+  }
 
-    // Conditional checks to make sure that the current title is not the initial value or the same value currently being displayed
-    if (iModelContainer.iModelObject.iModelName !== this.state.iModelName && iModelContainer.iModelObject.iModelName !== "initial_value") {
+  private async _reloadProject() {
+    // conditional checks to make sure that the current title is not the initial value or the same value currently being displayed
 
-      // Fix while project box is still showing "Pick a Project"
-      if (projectContainer.projectObject.projectName === "initial_value") {
-        projectContainer.projectObject.projectName = this._getCorrectProjectName();
-      }
+    // Updates the current iModel and the list of iModels when a new project is selected
+    const projectName = projectContainer.projectObject.projectName;
 
-      // If these conditions are met, begin by setting the state of the iModel and project, and updating the title, causing React to re call render processes
-      this.setState(() => ({
-        iModelName: iModelContainer.iModelObject.iModelName,
-        projectName: projectContainer.projectObject.projectName,
-      }));
+    // Requests a context and connection client to access the iModelHub, and retrieves a list of projects
+    requestContext = await AuthorizedFrontendRequestContext.create();
+    connectClient = new ConnectClient();
+    projectsList = await connectClient.getProjects(requestContext);
+    setProjectsList(projectsList);
 
-      // If statement checking that the project name and the current iModel are defined strings/objects
-      if (currentProject.name && iModelContainer.currentIModel) {
+    // try catch block gets a project, if the project doesnt exist, throw an alert
+    try {
+      currentProject = await connectClient.getProject(requestContext, { $filter: `Name+eq+'${projectName}'` });
+    } catch (e) {
+      alert(`Project with name "${projectName}" does not exist.`);
+      throw new Error(`Project with name "${projectName}" does not exist.`);
+    }
+    // ipcRenderer.send("drawingSelection", iModelContainer.currentIModel);
+    // creates a new iModelQuery to connect to the database, and queries with specified context and project
+    // Then resolves that promise and sends that information to constiuent components that need the data
+    const imodelQuery = new IModelQuery();
+    resolvedIModelList = await IModelApp.iModelClient.iModels.get(requestContext, currentProject.wsgId, imodelQuery);
+    setIModelsList(resolvedIModelList);
+    const imodelName = getIModelsList()[0].name;
+    imodelQuery.byName(imodelName as string);
 
-        // Opens a new iModel connection, then asynchronously uses a then call to apply that iModel connection to the state of this class, this change in state
-        // Propogates to all child class updates their states as well
-        IModelConnection.open(currentProject.wsgId, iModelContainer.iModelObject.iModelValue, OpenMode.Readonly) // tslint:disable-line: no-floating-promises
-          .then(async (newIModel: IModelConnection | undefined) => {
+    // gets the specific imodel, returns the project and imodel wsdId's to the functions handling initial startup/rendering
+    const imodels = await IModelApp.iModelClient.iModels.get(requestContext, currentProject.wsgId, imodelQuery);
+    if (imodels.length === 0) {
+      alert(`iModel with name "${imodelName}" does not exist in project "${projectName}".`);
+      throw new Error(`iModel with name "${imodelName}" does not exist in project "${projectName}".`);
+    }
+    currentIModel = imodels[0].wsgId;
+    iModelContainer.iModelObject.iModelName = getIModelsList()[0].name as string;
+
+    // if these conditions are met, begin by setting the state of the iModel and project, and updating the title, causing React to re call render processes
+    this.setState(() => ({
+      iModelName: iModelContainer.iModelObject.iModelName,
+      projectName: projectContainer.projectObject.projectName,
+    }));
+
+    // if statement checking that the project name and the current iModel are defined strings/objects
+    if (currentProject.name && iModelContainer.currentIModel) {
+
+      // opens a new iModel connection, then asynchronously uses a then call to apply that iModel connection to the state of this class, this change in state
+      // propogates to all child class updates their states as well
+      IModelConnection.open(currentProject.wsgId, iModelContainer.iModelObject.iModelValue, OpenMode.Readonly) // tslint:disable-line: no-floating-promises
+        .then(async (newIModel: IModelConnection | undefined) => {
 
           // Gets a valid view definition, for our purpose is fine, but it is possible that viewDefinition is invalid for a given iModel on runtime
           let viewDefinition: Id64String;
@@ -248,8 +255,11 @@ export default class App extends React.Component<{}, AppState> {
             viewDefinitionId: viewDefinition,
           }));
         });
-      }
     }
+    ipcRenderer.send("projectSelection", this.state.projectName);
+    // Fix to ensure that the dropdown for iModels displays the current iModel at the top
+    const otherList = (document.getElementById("iModelDropList")) as HTMLSelectElement;
+    otherList.options[0].innerHTML = otherList.options[1].innerHTML;
   }
 
   /** Returns an updated iModelConnection */
@@ -459,8 +469,8 @@ export default class App extends React.Component<{}, AppState> {
       // If user doesn't have and access token, show sign in page
       ui = (<SignIn onSignIn={this._onStartSignin} onOffline={this._onOffline} />);
     } else if (!this.state.imodel || !this.state.viewDefinitionId) {
-      // If we don't have an imodel / view definition id - render a button that initiates imodel open
-      ui = (<OpenIModelButton accessToken={this.state.user.accessToken} offlineIModel={this.state.offlineIModel} onIModelSelected={this._onIModelSelected} imodelName = {this.state.iModelName} projectName = {this.state.projectName}/>);
+      // if we don't have an imodel / view definition id - render a button that initiates imodel open
+      ui = (<OpenIModelButton accessToken={this.state.user.accessToken} offlineIModel={this.state.offlineIModel} onIModelSelected={this._onIModelSelected} imodelName={this.state.iModelName} projectName={this.state.projectName} />);
     } else {
       // If we do have an imodel and view definition id - render imodel components
       const titleName: string = "Project: " + this.state.projectName + ", iModel: " + this.state.iModelName; // + ", Drawing: " + Config.App.get("imjs_test_drawing") (not working yet);
@@ -472,7 +482,7 @@ export default class App extends React.Component<{}, AppState> {
       <div className="app">
         <div className="app-header">
           <div className="text">
-            <TitleBar projectName = {this.state.projectName} drawingName = {this.state.drawingName} iModelName = {this.state.iModelName}/>
+            <TitleBar projectName={this.state.projectName} drawingName={this.state.drawingName} iModelName={this.state.iModelName} />
           </div>
           <div className="menu">
             <Button size={ButtonSize.Default} buttonType={ButtonType.Primary} className="expand-menu" onClick={this._menuClick}>

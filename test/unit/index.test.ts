@@ -12,7 +12,6 @@ import { Presentation, SelectionManager } from "@bentley/presentation-frontend";
 import { SelectionScopesManager } from "@bentley/presentation-frontend/lib/selection/SelectionScopesManager";
 import { I18NOptions } from "@bentley/imodeljs-i18n";
 
-
 function supplyI18NOptions(): I18NOptions {
   const urlTemplate = "file://" + path.join(path.resolve("lib/webresources/locales"), "{{lng}}/{{ns}}.json").replace(/\\/g, "/");
   return { urlTemplate };
