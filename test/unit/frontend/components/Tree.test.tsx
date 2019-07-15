@@ -34,6 +34,7 @@ describe("Tree", () => {
     expect(renderWrapper.container.querySelector(".components-tree-loader")).to.not.be.empty;
   });
 
+  //Strange
   describe("Tree content", () => {
 
     class DataProvider extends EmptyTreeDataProvider {
