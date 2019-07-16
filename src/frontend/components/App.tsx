@@ -83,9 +83,9 @@ export default class App extends React.Component<{}, AppState> {
         isLoading: false,
         accessToken: undefined,
       },
-      projectName: Config.App.get("imjs_test_project"),
-      iModelName: Config.App.get("imjs_test_imodel"),
-      drawingName: Config.App.get("imjs_test_drawing"),
+      projectName: "",
+      iModelName: "",
+      drawingName: "",
       offlineIModel: false,
       menuOpened: false,
       menuName: "Expand Menu",
@@ -98,56 +98,70 @@ export default class App extends React.Component<{}, AppState> {
   /** Gets the current desired project as saved either from the settings.json file or from the Config.App singleton */
   private _getCorrectProjectName() {
 
-    //Sets up listener for response back from main/server
+    // Sets up listener for response back from main/server
     ipcRenderer.on("readConfigResults", (event: Event, configObject: any) => {
       if (event) {
         console.log(configObject);
       }
 
-      //assigns correct config value, changes the state of the app accordingly
+      // assigns correct config value, changes the state of the app accordingly
       let configProject = configObject.project_name;
       if (configObject.project_name.length < 1) {
-        configProject = Config.App.get("imjs_test_project");
+        alert("Warning! Invalid settings, missing project name");
+        try {
+        throw new ReferenceError("No project id has been specified");
+        } catch (e) {
+          console.log((e as Error).message);
+          ipcRenderer.send("closeApplication", "Missing project");
+        }
       }
       this.setState(() => ({
         projectName: configProject,
       }));
     });
 
-    //sends signal that main app is ready for config values
-    ipcRenderer.send("readConfig", "reading from the config");
+    // sends signal that main app is ready for config values
+    ipcRenderer.send("readConfig", "project");
   }
 
   /** Gets correct value for desired imodel from either the settings.json or from the Config.App object */
   private _getCorrectiModelName() {
 
-    //Sets up listener for response back from server
+    // Sets up listener for response back from server
     ipcRenderer.on("readConfigResultsIModel", (event: Event, jsonObject: any) => {
       if (event) {
         console.log(jsonObject);
       }
 
-      //Configures the correct value, setting the state of the app, depending on what values currently exist
-      //values in the settings.json are prioritized
+      // Configures the correct value, setting the state of the app, depending on what values currently exist
+      // values in the settings.json are prioritized
       let configiModel = jsonObject.imodel_name;
       if (jsonObject.imodel_name.length < 1) {
-        configiModel = Config.App.get("imjs_test_imodel");
+        alert("Warning! Invalid settings, missing imodel name");
+        try {
+          throw new ReferenceError("No imodel id has been specified");
+          } catch (e) {
+            console.log((e as Error).message);
+            ipcRenderer.send("closeApplication", "Missing imodel");
+          }
       }
       this.setState(() => ({
         iModelName: configiModel,
       }));
     });
 
-    //sends event to server that app is ready to receive values
-    ipcRenderer.send("readConfig", "reading from the config");
+    // sends event to server that app is ready to receive values
+    ipcRenderer.send("readConfig", "imodel");
   }
 
   /* Function that reloads the iModel based on a new selection pased in an IModelContainer object */
   private async _reloadState() {
     if (projectContainer.projectObject.projectName !== this.state.projectName && projectContainer.projectObject.projectName !== "initial_value") {
+      // tslint:disable-next-line: no-floating-promises
       this._reloadProject();
     } else // conditional checks to make sure that the current title is not the initial value or the same value currently being displayed
       if (iModelContainer.iModelObject.iModelName !== this.state.iModelName && iModelContainer.iModelObject.iModelName !== "initial_value") {
+        // tslint:disable-next-line: no-floating-promises
         this._reloadIModel();
       }
   }

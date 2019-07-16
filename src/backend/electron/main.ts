@@ -16,10 +16,10 @@ import { Drawing } from "@bentley/imodeljs-backend";
  */
 export const changeiModel = (iModelName: string) => {
   const newConfig = {
-  imodel_name : iModelName,
-  project_name : configurationData.project_name,
-  drawing_name : configurationData.drawing_name,
-};
+    imodel_name: iModelName,
+    project_name: configurationData.project_name,
+    drawing_name: configurationData.drawing_name,
+  };
   const stringifiedConfig = JSON.stringify(newConfig);
   electronFs.writeFileSync(path.join(__dirname, "../../common/settings.json"), stringifiedConfig);
 };
@@ -28,18 +28,21 @@ export const changeiModel = (iModelName: string) => {
  *  This method reads the config, parses it into a JSON object, and returns it back to the renderer
  * @param event The event sent by the renderer processes back to the main
  */
-export const readData = (event?: electron.Event) => {
+export const readData = (event?: electron.Event, arg?: string) => {
   const configObject: any = "";
   electronFs.readFile(path.join(__dirname, "../../common/settings.json"), (error: Error | null, data: any) => {
-    if(error) {
-    console.log("error " + error);
+    if (error) {
+      console.log("error " + error);
     }
     const jsonObject = JSON.parse(data);
     if (event) {
-    event.sender.send("readConfigResults", jsonObject);
-    event.sender.send("readConfigResultsIModel", jsonObject);
+      if (arg === "imodel") {
+        event.sender.send("readConfigResultsIModel", jsonObject);
+      } else {
+        event.sender.send("readConfigResults", jsonObject);
+      }
     }
-});
+  });
   return configObject;
 };
 
@@ -49,9 +52,9 @@ export const readData = (event?: electron.Event) => {
  */
 export const changeProject = (projectName: string) => {
   const newConfig = {
-    imodel_name : configurationData.imodel_name,
-    project_name : projectName,
-    drawing_name : configurationData.drawing_name,
+    imodel_name: configurationData.imodel_name,
+    project_name: projectName,
+    drawing_name: configurationData.drawing_name,
   };
   const stringifiedConfig = JSON.stringify(newConfig);
   electronFs.writeFileSync(path.join(__dirname, "../../common/settings.json"), stringifiedConfig);
@@ -62,9 +65,9 @@ export const changeProject = (projectName: string) => {
  */
 export const changeDrawingName = (drawingName: string) => {
   const newConfig = {
-    imodel_name : configurationData.imodel_name,
-    project_name : configurationData.project_name,
-    drawing_name : drawingName,
+    imodel_name: configurationData.imodel_name,
+    project_name: configurationData.project_name,
+    drawing_name: drawingName,
   };
   const stringifiedConfig = JSON.stringify(newConfig);
   electronFs.writeFileSync(path.join(__dirname, "../../common/config.json"), stringifiedConfig);
