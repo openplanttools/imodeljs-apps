@@ -3,7 +3,7 @@
 * Licensed under the MIT License. See LICENSE.md in the project root for license terms.
 *--------------------------------------------------------------------------------------------*/
 import * as path from "path";
-import { app as electron, ipcMain, Event } from "electron";
+import { app as electron, ipcMain, Event, app } from "electron";
 import { Logger } from "@bentley/bentleyjs-core";
 import { IModelHost } from "@bentley/imodeljs-backend";
 import { Presentation } from "@bentley/presentation-backend";
@@ -21,6 +21,12 @@ ipcMain.on("imodelSelection",  (event: Event, arg: any) => {
   changeiModel(arg);
 });
 
+ipcMain.on("closeApplication", (event: Event, arg: any) => {
+  if(event)
+  console.log(arg);
+  app.quit();
+});
+
 ipcMain.on("projectSelection", (event: Event, arg: any) => {
   console.log(event);
   changeProject(arg);
@@ -30,7 +36,7 @@ ipcMain.on("readConfig", (event: Event, arg: any) => {
 if (event) {
   console.log(arg);
 }
-readData(event);
+readData(event, arg);
 });
 
 setupEnv();
