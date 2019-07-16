@@ -29,17 +29,14 @@ class EmptyPropertyDataProvider implements IPresentationPropertyDataProvider {
   };
 
   public dispose() { }
-
   public getContentDescriptor = async () => undefined;
   public getContentSetSize = async () => 0;
   public getContent = async () => undefined;
-
   public getData =  async () => this._data;
   public onDataChanged = new PropertyDataChangeEvent();
 }
 
 describe("Properties", () => {
-
   it("renders header", () => {
     const renderWrapper = render(<PropertiesComponent dataProvider={new EmptyPropertyDataProvider()}/>);
     const header = renderWrapper.getByTestId("property-pane-component-header");
