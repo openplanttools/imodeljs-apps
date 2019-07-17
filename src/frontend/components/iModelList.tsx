@@ -6,10 +6,9 @@ import { getIModelsList } from "../../backend/electron/main.js";
 import { HubIModel } from "@bentley/imodeljs-clients";
 import { ipcRenderer } from "electron";
 // tslint:disable: no-console
-export var correctIModelName: string;
+export const iModelData: any[] = [];
 // This method initializes the data structure that will store the the iModelData objects, it returns both a test data array, and an empty real data array
 const createiModelStorage = () => {
-  const iModelData = [];
 
   // Test data incase of offline usage or if iModel query is failing
   const testData = [];
@@ -23,13 +22,13 @@ const createiModelStorage = () => {
     iModelValue: "Testing 2",
     key: "Testing 2",
   };
-  getCorrectiModelName();
   const defaultData = {
-    iModelName: correctIModelName,
-    iModelValue: correctIModelName,
-    key: correctIModelName,
+    iModelName: "",
+    iModelValue: "",
+    key: "",
   };
   iModelData.push(defaultData);
+  getCorrectiModelName();
   testData.push(testData1);
   testData.push(testData2);
   return iModelData;
@@ -82,7 +81,11 @@ export const getCorrectiModelName = () => {
         ipcRenderer.send("closeApplication", "Missing imodel");
       }
     }
-    correctIModelName = configiModel;
+    iModelData[0] = {
+      iModelName: configiModel,
+      iModelValue: configiModel,
+      key: configiModel + 1,
+    };
   })};
 
-  export default iModelDataWidget;
+export default iModelDataWidget;
