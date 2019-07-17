@@ -17,7 +17,6 @@
 4. Type the following commands to open the repository in Visual Studio Code.
    - **`cd imodeljs-openplant-viewer`**
    - **`code .`**
-5. _Proceed to Build!_
 
 ### **Build**
 
@@ -32,18 +31,17 @@
    - **_This only has to be done once even if you make changes and build again!_**
 6. Type the following command in the terminal to build the applicaiton (should only take a few seconds).
    - **`npm run build`**
-7. _Proceed to Run!_
 
 ### **Run**
 
-1. Type the following command in the temrinal to run the application. An electron window will open within seconds.
-2. View the **Call Stack** section below to see how to use the application.
+1. Type the following command in the terminal to run the application. An electron window will open within seconds.
+   - **`npm run electron`**
+2. View the **Help** section below to see how to use the application.
 3. Close the electron window to stop running the application.
 4. If you want to re-run the application without any changes to the program files, go back to step 1.
 5. If you want to re-run the application and make changes to the program files, go back to the **Build** section above to re-build the application.
-6. _Proceed to Workflow!_
 
-### **Call Stack**
+### **Help**
 
 1. When prompted, **log-in** with your credentials. This grants access to the backend servers that contain the iModel information.
 2. When a blue button that reads "**Open iModel**" comes up, click on it. This will pull the iModel information from the web and display it.
@@ -51,13 +49,6 @@
 4. To change the **project**, **iModel**, and/or **drawing**, use the dropdown options (right-middle of screen). Tihs will update the viewer.
 5. To switch drawings, click on a **drawing** under the **Tree** (top-right of screen). This will update the viewer.
 6. To select a **graphic** in a drawing, either click on it in the viewer, or expand the drawing under **Tree** and select one under **PID Drawing Categories**. When a graphic is selected, it will be highlighted in the viewer and will have its information displayed in **Properties** (bottom of screen).
-7. _Return to Run!_
-
-### **Workflow**
-
-1. You can see all the program files (aside from the installed dependencies) on **Azure DevOps** by clicking [here](https://bentleycs.visualstudio.com/iModelTechnologies/_git/imodeljs-openplant-viewer).
-2. All updates are made via pull requests on **Azure DevOps**. Requests must be approved and pass unit and integration tests to build correctly.
-3. Development standards and help can be found in the "**Git Developer Guide**" below.
 
 ## **Git Developer Guide**
 
