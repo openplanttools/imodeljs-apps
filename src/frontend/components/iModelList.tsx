@@ -86,6 +86,6 @@ export const getCorrectiModelName = () => {
       iModelValue: configiModel,
       key: configiModel + 1,
     };
-  })};
+  }); };
 
 export default iModelDataWidget;
