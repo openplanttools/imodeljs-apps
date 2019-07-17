@@ -38,7 +38,7 @@ const createiModelStorage = () => {
 const iModelDataWidget = () => {
 
   // stores the iModels with their data in iModelData
-  const iModelData = createiModelStorage();
+  createiModelStorage();
   const listOfIModels: HubIModel[] = getIModelsList();
   if (listOfIModels) {
 

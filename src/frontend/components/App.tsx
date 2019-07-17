@@ -488,7 +488,7 @@ export default class App extends React.Component<{}, AppState> {
     } else {
       // If we do have an imodel and view definition id - render imodel components
       const titleName: string = "Project: " + this.state.projectName + ", iModel: " + this.state.iModelName; // + ", Drawing: " + Config.App.get("imjs_test_drawing") (not working yet);
-      ui = (<IModelComponents imodel={this.state.imodel} viewDefinitionId={this.state.viewDefinitionId} menuOpened={this.state.menuOpened} title={titleName} />);
+      ui = (<IModelComponents imodel={this.state.imodel} viewDefinitionId={this.state.viewDefinitionId} menuOpened={this.state.menuOpened} title={titleName} imodelName={this.state.iModelName}/>);
     }
 
     // Render the app
@@ -604,6 +604,7 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
 
 /** React props for an iModel component */
 interface IModelComponentsProps {
+  imodelName: string;
   imodel: IModelConnection;
   viewDefinitionId: Id64String;
   menuOpened: boolean;
@@ -645,7 +646,7 @@ class IModelComponents extends React.PureComponent<IModelComponentsProps, IModel
             </div>
             <div className="bottom">
               <div className="bottom-middle">
-                <GroupWidget />
+                <GroupWidget imodel={this.props.imodelName}/>
               </div>
               <div className="sub">
                 <PropertiesWidget imodel={this.props.imodel} rulesetId={rulesetId} />
