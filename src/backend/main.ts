@@ -40,7 +40,7 @@ readData(event, arg);
 });
 
 ipcMain.on("popupWarning", (event: Event, arg: any) => {
-  if(event){
+  if (event) {
     console.log("arg");
   }
   popupWarning(arg);
