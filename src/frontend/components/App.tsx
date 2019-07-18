@@ -107,9 +107,10 @@ export default class App extends React.Component<{}, AppState> {
       // assigns correct config value, changes the state of the app accordingly
       let configProject = configObject.project_name;
       if (configObject.project_name.length < 1) {
-        alert("Warning! Invalid settings, missing project name");
+        ipcRenderer.send("popupWarning", "project");
         try {
-        throw new ReferenceError("No project id has been specified");
+          ipcRenderer.send("configDataMissing", "testing from app");
+          throw new ReferenceError("No project id has been specified");
         } catch (e) {
           console.log((e as Error).message);
           ipcRenderer.send("closeApplication", "Missing project");
@@ -126,7 +127,7 @@ export default class App extends React.Component<{}, AppState> {
 
   /** Gets correct value for desired imodel from either the settings.json or from the Config.App object */
   private _getCorrectiModelName() {
-
+    ipcRenderer.send("configDataMissing", "testing from app");
     // Sets up listener for response back from server
     ipcRenderer.on("readConfigResultsIModel", (event: Event, jsonObject: any) => {
       if (event) {
@@ -137,8 +138,9 @@ export default class App extends React.Component<{}, AppState> {
       // values in the settings.json are prioritized
       let configiModel = jsonObject.imodel_name;
       if (jsonObject.imodel_name.length < 1) {
-        alert("Warning! Invalid settings, missing imodel name");
+        ipcRenderer.send("popupWarning", "project");
         try {
+
           throw new ReferenceError("No imodel id has been specified");
           } catch (e) {
             console.log((e as Error).message);
