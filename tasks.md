@@ -1,15 +1,6 @@
-# **Plant Viewer (in development)**
+## **MOVED [HERE](https://bentleycs.visualstudio.com/iModelTechnologies/_workitems/recentlyupdated/) (select "OpenPlant Viewer" in Area)**
 
-Stages in a task:
-
-1. *ongoing*
-2. *in progress*
-3. *partially done*
-4. *mostly done*
-5. **Done**
-
-## **Current Tasks**
-
+### *To be deleted...*
 1. Fix configuration reading, and comply with config.json (don't default to anything, use warnings). *mostly done* - Nick
 2. Fix CSS formatting. *mostly done* - Nick
 3. Rework titles. *mostly done* - Nick
@@ -35,20 +26,3 @@ Stages in a task:
 23. Implement loading circle function upon switching views/iModels/projects (possibly does not need to be done...).
 24. Implement nicer loading functionality (possibly does no tneed to be done...).
 25. Fix the sign-in button (lacking access to currently fix this).
-26. Manually view all projects **Done** - Nick
-27. Display only relevant documents in tree, and create new component to replace tree view for plant document models. **Done** - Nick
-28. Automatically update on changes. **Done** - Nick
-29. Be able to change the views in the viewer. **Done** - Nick
-30. Be able to edit properties in the viewer. **Done** - Nick
-31. Add scrolling to property. **Done** - Nick
-32. Clean up code base. **Done** - Nick
-33. Comment parts for explanations. **Done** - Nick
-34. Convert backend to be entirely electron/desktop based. **Done** - Nick
-35. Fix clashes with electron IPC and configuration of front-back communication. **Done** - Nick
-36. Determine the necessity of webpack in browser runtime environment. **Done** - Nick
-37. If we end up keeping webpack, reconfigure its options to be better suited (right now, it's causing some problems on the backend). **Done** - Nick
-38. Determine whether/how to implement ipcMain-ipcRenderer communication. **Done** - Nick
-39. Get viewport to successfully update. **Done** - Nick
-40. Determine whether or not to migrate configuration.ts to a JSON. **Done** - Nick
-41. Add unified selection capability back into the tree. **Done** - Nick
-42. Fix scrolling issue with properties tool. **Done** - Nick
