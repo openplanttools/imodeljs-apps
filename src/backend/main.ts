@@ -10,7 +10,8 @@ import { Presentation } from "@bentley/presentation-backend";
 import getSupportedRpcs from "../common/rpcs";
 import { RpcInterfaceDefinition } from "@bentley/imodeljs-common";
 import setupEnv from "../common/configuration";
-import {changeiModel, changeProject, readData} from "./electron/main";
+import {changeiModel, changeProject, readData, newWindow} from "./electron/main";
+import console = require("console");
 // tslint:disable: no-console
 
 /* This block of listeners await the main app to be ready, and then listen for commands from the app dictating whether to read or write
@@ -39,6 +40,12 @@ if (event) {
 readData(event, arg);
 });
 
+ipcMain.on("configDataMissing", (event: Event, arg: any) => {
+if (event) {
+  console.log(arg);
+}
+newWindow();
+});
 setupEnv();
 
 // initialize logging

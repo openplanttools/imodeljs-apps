@@ -145,6 +145,20 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
 
 }
 
+export function newWindow() {
+  if (manager.mainWindow) {
+  electron.dialog.showOpenDialog(manager.mainWindow, {
+    title: "Select configuration File",
+    properties: ["openFile", "multiSelections"],
+
+  }, (filePaths) => {
+    if (!filePaths) {
+      electron.app.quit();
+    }
+  });
+  }
+}
+
 /* initialize the opening of a secondary window, parented by the main window */
 export function initializePopup() {
   (async () => { // tslint:disable-line:no-floating-promises

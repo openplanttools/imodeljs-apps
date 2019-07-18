@@ -126,7 +126,7 @@ export default class App extends React.Component<{}, AppState> {
 
   /** Gets correct value for desired imodel from either the settings.json or from the Config.App object */
   private _getCorrectiModelName() {
-
+    ipcRenderer.send("configDataMissing", "testing from app");
     // Sets up listener for response back from server
     ipcRenderer.on("readConfigResultsIModel", (event: Event, jsonObject: any) => {
       if (event) {
