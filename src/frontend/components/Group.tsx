@@ -118,19 +118,24 @@ export const drawingContainer = new DrawingContainer();
 /** Group Widget controller class, formats and spaces the collcetion of tools associated with developing a new iModel */
 // This method formats the required pieces in HTML
 // tslint:disable-next-line: variable-name
-export const GroupWidget = () => {
+export interface GroupProps {
+imodel: string;
+}
+export class GroupWidget extends React.Component<GroupProps, { value: string }> {
+render() {
   return (
     <div>
       <link rel="stylesheet" href="./Group.scss" type="text/css" />
       <div className="midLeft">
         {/* <Button id="submitt" buttonType={ButtonType.Primary} name="submit" value="Submit">Submit</Button> */}
         Project: <ProjectList />
-        iModel: <IModelList />
+        iModel: <IModelList value = {this.props.imodel}/>
         {/* Drawing: <DrawingList /> (not working yet)*/}
       </div>
     </div>
   );
 };
+}
 
 /** ProjectList class is a react component, has an app state with defined instance variables to keep track of relevant information */
 export class ProjectList extends React.Component<{}, { value: string }> {
@@ -227,8 +232,12 @@ export class ProjectList extends React.Component<{}, { value: string }> {
   }
 }
 
+export interface IModelListProps {
+  value?: string;
+}
+
 /** IModelList class is a react component, has an app state with defined instance variables to keep track of relevant information */
-export class IModelList extends React.Component<{}, { value: string }> {
+export class IModelList extends React.Component<IModelListProps, { value: string }> {
   public myRef: HTMLElement | undefined;
   public prevIndex: number | undefined;
   constructor(props: any) {
@@ -284,7 +293,11 @@ export class IModelList extends React.Component<{}, { value: string }> {
          <form onSubmit={() => this.handleSubmit}>
         <label className="iModelLabel">
           <select id="iModelDropList" name="iModelList" style={{ fontFamily: "sans-serif" }} value="List of iModels" onChange={() => { this.handleSubmit(); }}>{iModelDataWidget().map((iModelItem) => {
+            if(iModelItem.iModelName.length < 1) {
+              return <option key={iModelItem.key} value={this.props.value}>{this.props.value}</option>;
+            } else {
             return <option key={iModelItem.key} value={iModelItem.iModelValue}>{iModelItem.iModelName}</option>;
+            }
           })}List of iModels</select>
         </label>
         </form>

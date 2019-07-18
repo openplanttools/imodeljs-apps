@@ -66,7 +66,6 @@ describe("Tree", () => {
     it("renders all nodes from data provider when it's not empty", async () => {
       const renderWrapper = render(<TreeComponent dataProvider={new DataProvider()} />);
       expect(renderWrapper.container.querySelector(".components-tree-loader")).to.not.be.empty;
-
       const nodes = await waitForElement(() => renderWrapper.getAllByTestId("tree-node"));
       expect(nodes.length).to.equal(2);
       expect(renderWrapper.getByText("Node 1")).to.not.be.undefined;

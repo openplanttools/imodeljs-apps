@@ -14,6 +14,7 @@ import setupEnv from "../common/configuration";
 setupEnv();
 
 // initialize the application
+// works
 SimpleViewerApp.startup();
 
 // tslint:disable-next-line:no-floating-promises

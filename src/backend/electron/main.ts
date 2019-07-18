@@ -166,9 +166,6 @@ export function initializePopup() {
     // once the secondary window has been initialized, low its relative files, send messages across the main window
     if (manager.mainWindow)
       manager.mainWindow.addTabbedWindow(secondaryWindow);
-    secondaryWindow.webContents.send("currentProject", currentProject);
-    secondaryWindow.webContents.send("projectsList", projectsList);
-    secondaryWindow.webContents.send("iModelsList", iModelsList);
     secondaryWindow.loadFile("../../../../../src/frontend/iModelList.html");
   })();
 }
