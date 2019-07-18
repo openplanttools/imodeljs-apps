@@ -73,6 +73,7 @@ export const changeDrawingName = (drawingName: string) => {
   electronFs.writeFileSync(path.join(__dirname, "../../common/config.json"), stringifiedConfig);
 };
 
+
 // The following four variables are bound to functions, and serve as getters and settings for backend-frontend communication
 // This is because external components that require data gathered in App.tsx, are unable to import that file, due to security reasons.
 // Thus the data must travel App.tsx -> main.ts (backend) -> component that needs the data
@@ -156,6 +157,13 @@ export function newWindow() {
       electron.app.quit();
     }
   });
+  }
+}
+
+export function popupWarning(typeOfError?: string) {
+  const errorMessage = "Warning! The " + typeOfError + " is missing from the settings file!";
+  if(manager.mainWindow) {
+electron.dialog.showMessageBox(manager.mainWindow, {type: "error", message: errorMessage, title: "Error"});
   }
 }
 
