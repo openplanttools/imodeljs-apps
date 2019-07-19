@@ -1,6 +1,7 @@
-## **MOVED [HERE](https://bentleycs.visualstudio.com/iModelTechnologies/_workitems/recentlyupdated/) (select "OpenPlant Viewer" in Area)**
+# **MOVED [HERE](https://bentleycs.visualstudio.com/iModelTechnologies/_workitems/recentlyupdated/) (select "OpenPlant Viewer" in Area)**
 
-### *To be deleted...*
+## *To be deleted...*
+
 1. Fix configuration reading, and comply with config.json (don't default to anything, use warnings). *mostly done* - Nick
 2. Fix CSS formatting. *mostly done* - Nick
 3. Rework titles. *mostly done* - Nick

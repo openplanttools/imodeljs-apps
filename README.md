@@ -44,8 +44,8 @@
 1. When prompted, **log-in** with your credentials. This grants access to the backend servers that contain the iModel information.
 2. When a blue button that reads "**Open iModel**" comes up, click on it. This will pull the iModel information from the web and display it.
 3. Click on "**Expand Menu**" (top-right of screen) to see options and properties, as well as the Tree. This can be collapsed by clicking on the same button.
-5. To switch drawings, click on a **drawing** under the **Tree** (top-right of screen). This will update the viewer.
-6. To select a **graphic** in a drawing, either click on it in the viewer, or expand the drawing under **Tree** and select one under **PID Drawing Categories**. When a graphic is selected, it will be highlighted in the viewer and will have its information displayed in **Properties** (bottom of screen).
+4. To switch drawings, click on a **drawing** under the **Tree** (top-right of screen). This will update the viewer.
+5. To select a **graphic** in a drawing, either click on it in the viewer, or expand the drawing under **Tree** and select one under **PID Drawing Categories**. When a graphic is selected, it will be highlighted in the viewer and will have its information displayed in **Properties** (bottom of screen).
 
 ## **Git Developer Guide**
 
