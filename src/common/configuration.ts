@@ -25,43 +25,16 @@ export enum UseBackend {
  */
 export default function setupEnv() {
   Config.App.merge({
-    // -----------------------------------------------------------------------------------------------------------
-    // Client registration (RECOMMENDED but OPTIONAL)
-    // Must set these variables before deployment, but the supplied defaults can be used for testing on localhost.
-    // Create a client registration using the procedure here - https://git.io/fx8YP (Developer registration). For the purpose
-    // of running this sample on localhost, ensure your registration includes http://localhost:3000/signin-callback as a
-    // valid redirect URI.
-    // -----------------------------------------------------------------------------------------------------------
-    // imjs_browser_test_client_id: "spa-QtBqEiXs0Pj9lLoiTWhMnkvjz",
-    // imjs_browser_test_client_id: "spa-MBQFbO5ABzMeXkahkOslOJhs7",
-    // imjs_test_project: "testing27",
-    // imjs_test_imodel: "testing27",
-    // imjs_buddi_resolve_url_using_region: "102",
-    // imjs_browser_test_scope: "openid email profile organization imodelhub context-registry-service reality-data:read",
-    // use to view in BROWSER (PRODUCTION only):
-    // imjs_browser_test_redirect_uri: "http://localhost:3000/signin-callback",
-    // imjs_browser_test_client_id: "imodeljs-spa-test-2686",
-    // use to view in BROWSER (QA only):
-    // imjs_browser_test_redirect_uri: "http://localhost:3000/signin-callback",
-    // imjs_browser_test_client_id: "imodeljs-spa-test-2686",
-    // imjs_buddi_resolve_url_using_region: "102",
-
-    // * CONFIGURATION SETTINGS: *
+    // starts up the electron window with the sign-in
     imjs_browser_test_redirect_uri: "electron://frontend/signin-callback",
-   //imjs_browser_test_client_id: "spa-TndE76P2OLOLZMumh7nx5yHjR", // Un-comment if in Production
-    imjs_browser_test_client_id: "spa-r2eFZFCkkth19yr8R2Ei4oTk1", // Un-comment if in QA
-    imjs_buddi_resolve_url_using_region: "102", // Un-comment if in QA
-
-    // imjs_test_project: "OP_CE_VIEW", // Set this to the name of the Project
-    // imjs_test_imodel: "MistyMountainTop", // Set this to the name of the iModel
-    // imjs_test_drawing: "Pid001_MT", // Set this to the name of the Drawing
-
-    // alternative:
-    imjs_test_project: "opbimdev01",
-    imjs_test_imodel: "OpDev_IPL_Baytown_YII",
-    imjs_test_drawing: "PIDP301",
-
     // default permissions that allow the application to function
     imjs_browser_test_scope: "openid email profile organization imodelhub context-registry-service reality-data:read imodeljs-router",
+
+    /** CLIENT SELECTION */
+    // USE/UN-COMMENT 1ST LINE IF IN PRODUCTION
+    // USE/UN-COMMENT 2ND & 3RD LINES IF IN QA
+    imjs_browser_test_client_id: "spa-TndE76P2OLOLZMumh7nx5yHjR", // Use/un-comment if in Production
+    // imjs_browser_test_client_id: "spa-r2eFZFCkkth19yr8R2Ei4oTk1", // Use/un-comment if in QA
+    // imjs_buddi_resolve_url_using_region: "102", // Use/un-comment if in QA
   });
 }
