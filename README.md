@@ -20,10 +20,8 @@
 
 ### **Build**
 
-1. Open the **src/common/configuration.json** file, and scroll down to the "**CONFIGURATION SETTINGS**" comment near the bottom of the file.
-2. Comment/uncomment the lines of code for which client you are in.
-   - **Production** requires 1 line, and **QA** requires 2 lines.
-   - Update the names of the **project**, **iModel**, and **drawing (optional)** to what you want the viewer to present.
+1. Open the src/common/settings.json, and put the names of the project, iModel, and drawing (optional).
+2. Open src/common/configuration.json, scroll down to the very bottom, and comment/uncomment the lines for your client (Production or QA).
 3. Save your changes.
 4. Type **[CTRL+`]** to open the terminal in Visual Studio Code.
 5. Type the following command in the terminal to install the dependencies (may take a few minutes).
@@ -46,7 +44,6 @@
 1. When prompted, **log-in** with your credentials. This grants access to the backend servers that contain the iModel information.
 2. When a blue button that reads "**Open iModel**" comes up, click on it. This will pull the iModel information from the web and display it.
 3. Click on "**Expand Menu**" (top-right of screen) to see options and properties, as well as the Tree. This can be collapsed by clicking on the same button.
-4. To change the **project**, **iModel**, and/or **drawing**, use the dropdown options (right-middle of screen). Tihs will update the viewer.
 5. To switch drawings, click on a **drawing** under the **Tree** (top-right of screen). This will update the viewer.
 6. To select a **graphic** in a drawing, either click on it in the viewer, or expand the drawing under **Tree** and select one under **PID Drawing Categories**. When a graphic is selected, it will be highlighted in the viewer and will have its information displayed in **Properties** (bottom of screen).
 
@@ -58,11 +55,11 @@ Before using Git on windows command prompt or git bash, you will need to install
 
 Get a local copy of the repository (`master` branch):
 
-- `git clone https://bentleycs@dev.azure.com/bentleycs/iModelTechnologies/_git/imodeljs-openplant-viewer`
+- `git clone https://bentleycs.visualstudio.com/iModelTechnologies/_git/imodeljs-openplant-viewer`
 
 If you already have a local git repository set up, then run the following to ensure that you are synchronized with VSTS (check with a team member - this may be done for you already):
 
-- `git remote set-url origin https://bentleycs@dev.azure.com/bentleycs/iModelTechnologies/_git/imodeljs-openplant-viewer`
+- `git remote set-url origin https://bentleycs.visualstudio.com/iModelTechnologies/_git/imodeljs-openplant-viewer`
 
 You may verify your remote handles:
 
@@ -103,7 +100,7 @@ Instead of the above, you may also do the following:
    - `git commit -m "[Commit message]"`
 4. Push your changes:
    - `git push origin [UR-branch-name]`
-5. Navigate over to view all branches via [VSTS](https://bentleycs@dev.azure.com/bentleycs/iModelTechnologies/_git/imodeljs-openplant-viewer).
+5. Navigate over to view all branches via [VSTS](https://bentleycs.visualstudio.com/iModelTechnologies/_git/imodeljs-openplant-viewer).
 6. Set the `master` branch as the compare branch.
 7. Submit a pull request and be sure to add at least one team member to review your work.
 8. Once someone reviews your work and approves your changes, merge your changes to the `master` branch.
