@@ -22,8 +22,9 @@ ipcMain.on("imodelSelection",  (event: Event, arg: any) => {
 });
 
 ipcMain.on("closeApplication", (event: Event, arg: any) => {
-  if(event)
-  console.log(arg);
+  if (event) {
+    console.log(arg);
+  }
   app.quit();
 });
 

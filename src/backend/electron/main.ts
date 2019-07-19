@@ -8,8 +8,6 @@ import { IModelJsElectronManager } from "@bentley/electron-manager";
 import * as electron from "electron";
 import * as configurationData from "../../common/settings.json";
 import * as electronFs from "fs";
-import { HubIModel, Project } from "@bentley/imodeljs-clients";
-import { Drawing } from "@bentley/imodeljs-backend";
 
 /** Method to change the iModelName stored in the config.json
  * @param iModelName string wsgId of the new iModel
@@ -32,6 +30,7 @@ export const readData = (event?: electron.Event, arg?: string) => {
   const configObject: any = "";
   electronFs.readFile(path.join(__dirname, "../../common/settings.json"), (error: Error | null, data: any) => {
     if (error) {
+      // tslint:disable-next-line:no-console
       console.log("error " + error);
     }
     const jsonObject = JSON.parse(data);
@@ -73,48 +72,9 @@ export const changeDrawingName = (drawingName: string) => {
   electronFs.writeFileSync(path.join(__dirname, "../../common/config.json"), stringifiedConfig);
 };
 
-
 // The following four variables are bound to functions, and serve as getters and settings for backend-frontend communication
 // This is because external components that require data gathered in App.tsx, are unable to import that file, due to security reasons.
 // Thus the data must travel App.tsx -> main.ts (backend) -> component that needs the data
-// This data is stored here as instance variables
-let iModelsList: HubIModel[];
-let projectsList: Project[];
-let currentProject: Project;
-let drawingsList: Drawing[];
-
-// Getters and setters for instance variables, that provide frontend <-> backend communication
-export let getIModelsList = () => {
-  return iModelsList;
-};
-
-export let getProjectsList = () => {
-  return projectsList;
-};
-
-export let getCurrentProject = () => {
-  return currentProject;
-};
-
-export let getDrawingsList = () => {
-  return drawingsList;
-};
-
-export let setCurrentProject = (theProject: Project) => {
-  currentProject = theProject;
-};
-
-export let setProjectsList = (listOfProjects: Project[]) => {
-  projectsList = listOfProjects;
-};
-
-export let setIModelsList = (listOfModels: HubIModel[]) => {
-  iModelsList = listOfModels;
-};
-
-export let setDrawingsList = (listOfDrawings: Drawing[]) => {
-  drawingsList = listOfDrawings;
-};
 
 /**
  * Initializes Electron backend
@@ -127,23 +87,43 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
     await manager.initialize({
       width: 1280,
       height: 800,
-      title: "Plant View",
+      title: "Plant Viewer",
 
       // Web preferences deal with the paths the main electron window will use
       webPreferences: {
         preload: path.resolve("preload.js"),
         experimentalFeatures: true, // Needed for CSS Grid support
       },
-      autoHideMenuBar: true,
+      autoHideMenuBar: false,
       show: false,
     });
     // tell ElectronRpcManager which RPC interfaces to handle
     ElectronRpcManager.initializeImpl({}, rpcs);
     if (manager.mainWindow) {
       manager.mainWindow.show();
+      const menuBar: electron.Menu = electron.Menu.getApplicationMenu() as electron.Menu;
+      const refreshButtonOptions: MenuBarOptions = new MenuBarOptions("Refresh", undefined);
+      const refreshButton: electron.MenuItem = new electron.MenuItem(refreshButtonOptions);
+      menuBar.append(refreshButton);
+      const drawingsButtonOptionsSubmenu0: MenuBarOptions = new MenuBarOptions("drawing0", undefined);
+      const drawingsButtonOptionsSubmenu1: MenuBarOptions = new MenuBarOptions("drawing1", undefined);
+      const drawingsButtonOptionsSubmenu2: MenuBarOptions = new MenuBarOptions("drawing2", undefined);
+      const drawingsButtonOptionsSubmenu: MenuBarOptions[] = [drawingsButtonOptionsSubmenu0, drawingsButtonOptionsSubmenu1, drawingsButtonOptionsSubmenu2];
+      const drawingsButtonOptions: MenuBarOptions = new MenuBarOptions("Drawings", drawingsButtonOptionsSubmenu);
+      const drawingsMenu: electron.MenuItem = new electron.MenuItem(drawingsButtonOptions);
+      menuBar.append(drawingsMenu);
+      manager.mainWindow.setMenu(menuBar);
     }
   })();
+}
 
+class MenuBarOptions implements electron.MenuItemConstructorOptions {
+  public label: string;
+  public submenu?: MenuBarOptions[];
+  constructor(label: string, submenu?: MenuBarOptions[]) {
+    this.label = label;
+    this.submenu = submenu;
+  }
 }
 
 export function newWindow() {
@@ -162,32 +142,7 @@ export function newWindow() {
 
 export function popupWarning(typeOfError?: string) {
   const errorMessage = "Warning! The " + typeOfError + " is missing from the settings file!";
-  if(manager.mainWindow) {
-electron.dialog.showMessageBox(manager.mainWindow, {type: "error", message: errorMessage, title: "Error"});
+  if (manager.mainWindow) {
+    electron.dialog.showMessageBox(manager.mainWindow, {type: "error", message: errorMessage, title: "Error"});
   }
-}
-
-/* initialize the opening of a secondary window, parented by the main window */
-export function initializePopup() {
-  (async () => { // tslint:disable-line:no-floating-promises
-    const secondaryWindow = new electron.remote.BrowserWindow(
-      {
-        width: 640,
-        height: 400,
-
-        // establishes this windows relation to its parent window
-        parent: manager.mainWindow,
-        resizable: true,
-        title: "List of iModels",
-        webPreferences: {
-          experimentalFeatures: true,
-        },
-      },
-    );
-
-    // once the secondary window has been initialized, low its relative files, send messages across the main window
-    if (manager.mainWindow)
-      manager.mainWindow.addTabbedWindow(secondaryWindow);
-    secondaryWindow.loadFile("../../../../../src/frontend/iModelList.html");
-  })();
 }
