@@ -127,7 +127,6 @@ export default class App extends React.Component<{}, AppState> {
 
   /** Gets correct value for desired imodel from either the settings.json or from the Config.App object */
   private _getCorrectiModelName() {
-    ipcRenderer.send("configDataMissing", "testing from app");
     // Sets up listener for response back from server
     ipcRenderer.on("readConfigResultsIModel", (event: Event, jsonObject: any) => {
       if (event) {
@@ -140,7 +139,7 @@ export default class App extends React.Component<{}, AppState> {
       if (jsonObject.imodel_name.length < 1) {
         ipcRenderer.send("popupWarning", "project");
         try {
-
+          ipcRenderer.send("configDataMissing", "testing from app");
           throw new ReferenceError("No imodel id has been specified");
           } catch (e) {
             console.log((e as Error).message);
@@ -486,6 +485,8 @@ export default class App extends React.Component<{}, AppState> {
       ui = (<SignIn onSignIn={this._onStartSignin} onOffline={this._onOffline} />);
     } else if (!this.state.imodel || !this.state.viewDefinitionId) {
       // if we don't have an imodel / view definition id - render a button that initiates imodel open
+
+      /**  TODO can move this  into the other else, automatically call on click?, ore just move the methods*/
       ui = (<OpenIModelButton accessToken={this.state.user.accessToken} offlineIModel={this.state.offlineIModel} onIModelSelected={this._onIModelSelected} imodelName={this.state.iModelName} projectName={this.state.projectName} />);
     } else {
       // If we do have an imodel and view definition id - render imodel components
