@@ -483,9 +483,10 @@ export default class App extends React.Component<{}, AppState> {
     } else if (!this.state.user.accessToken && !this.state.offlineIModel) {
       // If user doesn't have and access token, show sign in page
       ui = (<SignIn onSignIn={this._onStartSignin} onOffline={this._onOffline} />);
-    } else if (!this.state.imodel || !this.state.viewDefinitionId) {
+     } else if (!this.state.imodel || !this.state.viewDefinitionId) {
       // if we don't have an imodel / view definition id - render a button that initiates imodel open
 
+      // tslint:disable-next-line: jsdoc-format
       /**  TODO can move this  into the other else, automatically call on click?, ore just move the methods*/
       ui = (<OpenIModelButton accessToken={this.state.user.accessToken} offlineIModel={this.state.offlineIModel} onIModelSelected={this._onIModelSelected} imodelName={this.state.iModelName} projectName={this.state.projectName} />);
     } else {
