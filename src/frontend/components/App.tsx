@@ -128,10 +128,10 @@ export default class App extends React.Component<{}, AppState> {
         try {
           ipcRenderer.send("configDataMissing", "testing from app");
           throw new ReferenceError("No imodel id has been specified");
-          } catch (e) {
-            console.log((e as Error).message);
-            ipcRenderer.send("closeApplication", "Missing imodel");
-          }
+        } catch (e) {
+          console.log((e as Error).message);
+          ipcRenderer.send("closeApplication", "Missing imodel");
+        }
       }
       this.setState(() => ({
         iModelName: configiModel,
@@ -251,7 +251,7 @@ export default class App extends React.Component<{}, AppState> {
     this.setState((prev) => ({ user: { ...prev.user, isLoading: false }, offlineIModel: true }));
   }
 
- /** Handles beginning of sign-in process */
+  /** Handles beginning of sign-in process */
   private _onStartSignin = async () => {
     this.setState((prev) => ({ user: { ...prev.user, isLoading: true } }));
     await SimpleViewerApp.oidcClient.signIn(new FrontendRequestContext());
@@ -353,11 +353,11 @@ export default class App extends React.Component<{}, AppState> {
       console.log(this.state.iModelName);
       console.log(this.state.projectName);
       ui = (<SignIn onSignIn={this._onStartSignin} onOffline={this._onOffline} />);
-     } else if (!this.state.imodel || !this.state.viewDefinitionId) {
+    } else if (!this.state.imodel || !this.state.viewDefinitionId) {
       // if we don't have an imodel / view definition id - render a button that initiates imodel open
       console.log(this.state.iModelName);
       console.log(this.state.projectName);
-      ui = (<OpenIModelButton accessToken={this.state.user.accessToken} offlineIModel={this.state.offlineIModel} onIModelSelected={this._onIModelSelected} imodelName={this.state.iModelName} projectName={this.state.projectName} initialButton={true}/>);
+      ui = (<OpenIModelButton accessToken={this.state.user.accessToken} offlineIModel={this.state.offlineIModel} onIModelSelected={this._onIModelSelected} imodelName={this.state.iModelName} projectName={this.state.projectName} initialButton={true} />);
     } else {
       // If we do have an imodel and view definition id - render imodel components
       const titleName: string = "Project: " + this.state.projectName + ", iModel: " + this.state.iModelName; // + ", Drawing: " + Config.App.get("imjs_test_drawing") (not working yet);
@@ -409,9 +409,9 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
 
   /** Finds project and iModel ID's using their names */
   private async getIModelInfo(): Promise<{ projectId: string, imodelId: string }> {
-    const projectName = this.props.projectName;
-    const imodelName = this.props.imodelName;
 
+    const imodelName = this.props.imodelName;
+    const projectName = this.props.projectName;
     // Requests a context and connection client to access the iModelHub, and retrieves a list of projects
     requestContext = await AuthorizedFrontendRequestContext.create();
     connectClient = new ConnectClient();
@@ -468,7 +468,7 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
     }
   }
 
- public componentWillMount() {
+  public componentWillMount() {
 
     // tslint:disable-next-line: no-floating-promises
     this._onClick();
@@ -478,7 +478,7 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
   public render() {
     if (this.props.initialButton) {
       return (
-          <span className="open-imodel"><Spinner size={SpinnerSize.XLarge}/></span>
+        <span className="open-imodel"><Spinner size={SpinnerSize.XLarge} /></span>
       );
     } else {
       return (
