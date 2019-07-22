@@ -103,7 +103,13 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
     if (manager.mainWindow) {
       manager.mainWindow.show();
       const menuBar: electron.Menu = electron.Menu.getApplicationMenu() as electron.Menu;
-      const refreshButtonOptions: MenuBarOptions = new MenuBarOptions("Refresh", undefined);
+      function refreshButtonClick(menuItem: electron.MenuItem, browserWindow: electron.BrowserWindow, event: Event): void {
+        menuItem;
+        browserWindow;
+        event;
+        return;
+      }
+      const refreshButtonOptions: MenuBarOptions = new MenuBarOptions("Refresh", undefined, refreshButtonClick);
       const refreshButton: electron.MenuItem = new electron.MenuItem(refreshButtonOptions);
       menuBar.append(refreshButton);
       const drawingsButtonOptionsSubmenu0: MenuBarOptions = new MenuBarOptions("drawing0", undefined);
@@ -121,9 +127,11 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
 class MenuBarOptions implements electron.MenuItemConstructorOptions {
   public label: string;
   public submenu?: MenuBarOptions[];
-  constructor(label: string, submenu?: MenuBarOptions[]) {
+  public click?: (menuItem: electron.MenuItem, browserWindow: electron.BrowserWindow, event: Event) => void;
+  constructor(label: string, submenu?: MenuBarOptions[], click?: (menuItem: electron.MenuItem, browserWindow: electron.BrowserWindow, event: Event) => void) {
     this.label = label;
     this.submenu = submenu;
+    this.click = click;
   }
 }
 

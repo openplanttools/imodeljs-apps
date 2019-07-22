@@ -23,7 +23,7 @@ import distinctColors = require("distinct-colors");
 import { ColorDef } from "@bentley/imodeljs-common";
 import TitleBar from "./Title";
 import { ipcRenderer, Event } from "electron";
-import console = require("console");
+
 // tslint:disable: no-console
 // cSpell:ignore imodels
 
@@ -344,27 +344,34 @@ export default class App extends React.Component<{}, AppState> {
 
     if (this.state.user.isLoading || window.location.href.includes(this._signInRedirectUri)) {
       // If user is currently being loaded, just tell that
+      console.log("1");
+      console.log(this.state.iModelName);
+      console.log(this.state.projectName);
       ui = `${IModelApp.i18n.translate("SimpleViewer:signing-in")}...`;
     } else if (!this.state.user.accessToken && !this.state.offlineIModel) {
       // If user doesn't have and access token, show sign in page
+      console.log(this.state.iModelName);
+      console.log(this.state.projectName);
       ui = (<SignIn onSignIn={this._onStartSignin} onOffline={this._onOffline} />);
      } else if (!this.state.imodel || !this.state.viewDefinitionId) {
       // if we don't have an imodel / view definition id - render a button that initiates imodel open
-
-      // tslint:disable-next-line: jsdoc-format
-      ui = (<OpenIModelButton accessToken={this.state.user.accessToken} offlineIModel={this.state.offlineIModel} onIModelSelected={this._onIModelSelected} imodelName={this.state.iModelName} projectName={this.state.projectName} />);
+      console.log(this.state.iModelName);
+      console.log(this.state.projectName);
+      ui = (<OpenIModelButton accessToken={this.state.user.accessToken} offlineIModel={this.state.offlineIModel} onIModelSelected={this._onIModelSelected} imodelName={this.state.iModelName} projectName={this.state.projectName} initialButton={true}/>);
     } else {
       // If we do have an imodel and view definition id - render imodel components
       const titleName: string = "Project: " + this.state.projectName + ", iModel: " + this.state.iModelName; // + ", Drawing: " + Config.App.get("imjs_test_drawing") (not working yet);
-      ui = (<IModelComponents imodel={this.state.imodel} viewDefinitionId={this.state.viewDefinitionId} menuOpened={this.state.menuOpened} title={titleName} imodelName={this.state.iModelName}/>);
+      ui = (<IModelComponents imodel={this.state.imodel} viewDefinitionId={this.state.viewDefinitionId} menuOpened={this.state.menuOpened} title={titleName} />);
     }
-
     // Render the app
     return (
       <div className="app">
         <div className="app-header">
           <div className="text">
             <TitleBar projectName={this.state.projectName} drawingName={this.state.drawingName} iModelName={this.state.iModelName} />
+          </div>
+          <div className="reload">
+            <OpenIModelButton accessToken={this.state.user.accessToken} offlineIModel={this.state.offlineIModel} onIModelSelected={this._onIModelSelected} imodelName={this.state.iModelName} projectName={this.state.projectName} initialButton={false} />
           </div>
           <div className="menu">
             <Button size={ButtonSize.Default} buttonType={ButtonType.Primary} className="expand-menu" onClick={this._menuClick}>
@@ -386,6 +393,7 @@ interface OpenIModelButtonProps {
   offlineIModel: boolean;
   onIModelSelected: (imodel: IModelConnection | undefined) => void;
   getConfigData?: () => void;
+  initialButton?: boolean;
 }
 
 /** React state for the open iModel button */
@@ -395,7 +403,9 @@ interface OpenIModelButtonState {
 
 /** Renders a button that opens an iModel identified in configuration */
 export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps, OpenIModelButtonState> {
-  public state = { isLoading: false };
+  public state = {
+    isLoading: false,
+  };
 
   /** Finds project and iModel ID's using their names */
   private async getIModelInfo(): Promise<{ projectId: string, imodelId: string }> {
@@ -439,39 +449,50 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
 
   /** Handles on-click for initial open iModel button */
   private _onClick = async () => {
-    this.setState({ isLoading: true });
-    let imodel: IModelConnection | undefined;
-    try {
-      // Attempt to open the imodel
-      if (this.props.offlineIModel) {
-        const offlineIModel = Config.App.getString("imjs_offline_imodel");
-        imodel = await IModelConnection.openSnapshot(offlineIModel);
-      } else {
-        const info = await this.getIModelInfo();
-        imodel = await IModelConnection.open(info.projectId, info.imodelId, OpenMode.Readonly);
+    if (this.props.initialButton || !this.state.isLoading) {
+      this.setState({ isLoading: true });
+      let imodel: IModelConnection | undefined;
+      try {
+        // Attempt to open the imodel
+        if (this.props.offlineIModel) {
+          const offlineIModel = Config.App.getString("imjs_offline_imodel");
+          imodel = await IModelConnection.openSnapshot(offlineIModel);
+        } else {
+          const info = await this.getIModelInfo();
+          imodel = await IModelConnection.open(info.projectId, info.imodelId, OpenMode.Readonly);
+        }
+      } catch (e) {
+        alert(e.message);
       }
-    } catch (e) {
-      alert(e.message);
+      await this.onIModelSelected(imodel);
     }
-    await this.onIModelSelected(imodel);
   }
 
- public componentDidMount() {
+ public componentWillMount() {
+
     // tslint:disable-next-line: no-floating-promises
     this._onClick();
   }
 
   /** Renders the button */
   public render() {
-    return (
-        <span className="open-imode"><Spinner size={SpinnerSize.XLarge}/></span>
-    );
+    if (this.props.initialButton) {
+      return (
+          <span className="open-imodel"><Spinner size={SpinnerSize.XLarge}/></span>
+      );
+    } else {
+      return (
+        <Button size={ButtonSize.Default} buttonType={ButtonType.Primary} className="button-reload-imodel" onClick={this._onClick} >
+          <span>Reload iModel</span>
+          {this.state.isLoading ? <span style={{ marginLeft: "8px" }}><Spinner size={SpinnerSize.Small} /></span> : undefined}
+        </Button>
+      );
+    }
   }
 }
 
 /** React props for an iModel component */
 interface IModelComponentsProps {
-  imodelName: string;
   imodel: IModelConnection;
   viewDefinitionId: Id64String;
   menuOpened: boolean;
