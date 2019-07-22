@@ -4,6 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { IOidcFrontendClient, AccessToken, OidcClient, UserInfo } from "@bentley/imodeljs-clients";
 import { BeEvent, ClientRequestContext } from "@bentley/bentleyjs-core";
+// tslint:disable: no-console
 
 export class OidcIOSClient extends OidcClient implements IOidcFrontendClient {
   private _accessToken: AccessToken | undefined;

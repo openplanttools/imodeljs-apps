@@ -20,8 +20,8 @@
 
 ### **Build**
 
-1. Open the src/common/settings.json, and put the names of the project, iModel, and drawing (optional).
-2. Open src/common/configuration.json, scroll down to the very bottom, and comment/uncomment the lines for your client (Production or QA).
+1. Open src/common/configuration.json, scroll down to the very bottom, and comment/uncomment the lines for your client (Production or QA).
+2. Open the src/common/settings.json, and put the names of the project, iModel, and drawing (optional).
 3. Save your changes.
 4. Type **[CTRL+`]** to open the terminal in Visual Studio Code.
 5. Type the following command in the terminal to install the dependencies (may take a few minutes).
