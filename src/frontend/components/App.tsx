@@ -350,11 +350,11 @@ export default class App extends React.Component<{}, AppState> {
       ui = (<SignIn onSignIn={this._onStartSignin} onOffline={this._onOffline} />);
     } else if (!this.state.imodel || !this.state.viewDefinitionId) {
       // if we don't have an imodel / view definition id - render a button that initiates imodel open
-      ui = (<OpenIModelButton accessToken={this.state.user.accessToken} offlineIModel={this.state.offlineIModel} onIModelSelected={this._onIModelSelected} imodelName={this.state.iModelName} projectName={this.state.projectName} />);
+      ui = (<OpenIModelButton accessToken={this.state.user.accessToken} offlineIModel={this.state.offlineIModel} onIModelSelected={this._onIModelSelected} imodelName={this.state.iModelName} projectName={this.state.projectName} initialButton={true} />);
     } else {
       // If we do have an imodel and view definition id - render imodel components
       const titleName: string = "Project: " + this.state.projectName + ", iModel: " + this.state.iModelName; // + ", Drawing: " + Config.App.get("imjs_test_drawing") (not working yet);
-      ui = (<IModelComponents imodel={this.state.imodel} viewDefinitionId={this.state.viewDefinitionId} menuOpened={this.state.menuOpened} title={titleName} imodelName={this.state.iModelName}/>);
+      ui = (<IModelComponents imodel={this.state.imodel} viewDefinitionId={this.state.viewDefinitionId} menuOpened={this.state.menuOpened} title={titleName} />);
     }
 
     // Render the app
@@ -365,6 +365,7 @@ export default class App extends React.Component<{}, AppState> {
             <TitleBar projectName={this.state.projectName} drawingName={this.state.drawingName} iModelName={this.state.iModelName} />
           </div>
           <div className="menu">
+            <OpenIModelButton accessToken={this.state.user.accessToken} offlineIModel={this.state.offlineIModel} onIModelSelected={this._onIModelSelected} imodelName={this.state.iModelName} projectName={this.state.projectName} initialButton={false} />
             <Button size={ButtonSize.Default} buttonType={ButtonType.Primary} className="expand-menu" onClick={this._menuClick}>
               <span>{this.state.menuName}</span>
             </Button>
@@ -383,6 +384,7 @@ interface OpenIModelButtonProps {
   accessToken: AccessToken | undefined;
   offlineIModel: boolean;
   onIModelSelected: (imodel: IModelConnection | undefined) => void;
+  initialButton: boolean;
 }
 
 /** React state for the open iModel button */
@@ -455,18 +457,25 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
 
   /** Renders the button */
   public render() {
-    return (
-      <Button size={ButtonSize.Large} buttonType={ButtonType.Primary} className="button-open-imodel" onClick={this._onClick}>
-        <span>{IModelApp.i18n.translate("SimpleViewer:components.imodel-picker.open-imodel")}</span>
-        {this.state.isLoading ? <span style={{ marginLeft: "8px" }}><Spinner size={SpinnerSize.Small} /></span> : undefined}
-      </Button>
-    );
+    if (this.props.initialButton) {
+      return (
+        <Button size={ButtonSize.Large} buttonType={ButtonType.Primary} className="button-open-imodel" onClick={this._onClick}>
+          <span>{IModelApp.i18n.translate("SimpleViewer:components.imodel-picker.open-imodel")}</span>
+          {this.state.isLoading ? <span style={{ marginLeft: "8px" }}><Spinner size={SpinnerSize.Small} /></span> : undefined}
+        </Button>
+      );
+    } else {
+      return (
+        <Button size={ButtonSize.Default} buttonType={ButtonType.Primary} className="button-refresh-imodel" onClick={this._onClick}>
+          <span>Refresh iModel</span>
+        </Button>
+      );
+    }
   }
 }
 
 /** React props for an iModel component */
 interface IModelComponentsProps {
-  imodelName: string;
   imodel: IModelConnection;
   viewDefinitionId: Id64String;
   menuOpened: boolean;
