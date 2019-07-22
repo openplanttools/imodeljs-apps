@@ -24,15 +24,22 @@
   left: 20px;
 }
 
+.app-header .reload {
+  position: absolute;
+  width: 150px;
+  right: 150px;
+  padding-top: 5px;
+}
+
 .app-header .menu {
   position: absolute;
-  width: 400px;
+  width: 125px;
   right: 0px;
   padding-top: 5px;
 }
 
 .app .button-open-imodel {
-  width: 200px;
+  width: 500px;
   margin: 30vh auto auto auto;
   padding-left: 0;
   padding-right: 0;

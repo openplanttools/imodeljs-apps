@@ -350,13 +350,12 @@ export default class App extends React.Component<{}, AppState> {
       ui = (<SignIn onSignIn={this._onStartSignin} onOffline={this._onOffline} />);
     } else if (!this.state.imodel || !this.state.viewDefinitionId) {
       // if we don't have an imodel / view definition id - render a button that initiates imodel open
-      ui = (<OpenIModelButton accessToken={this.state.user.accessToken} offlineIModel={this.state.offlineIModel} onIModelSelected={this._onIModelSelected} imodelName={this.state.iModelName} projectName={this.state.projectName} initialButton={true} />);
+      ui = (<OpenIModelButton accessToken={this.state.user.accessToken} offlineIModel={this.state.offlineIModel} onIModelSelected={this._onIModelSelected} imodelName={this.state.iModelName} projectName={this.state.projectName} initialButton={true}/>);
     } else {
       // If we do have an imodel and view definition id - render imodel components
       const titleName: string = "Project: " + this.state.projectName + ", iModel: " + this.state.iModelName; // + ", Drawing: " + Config.App.get("imjs_test_drawing") (not working yet);
       ui = (<IModelComponents imodel={this.state.imodel} viewDefinitionId={this.state.viewDefinitionId} menuOpened={this.state.menuOpened} title={titleName} />);
     }
-
     // Render the app
     return (
       <div className="app">
@@ -364,8 +363,10 @@ export default class App extends React.Component<{}, AppState> {
           <div className="text">
             <TitleBar projectName={this.state.projectName} drawingName={this.state.drawingName} iModelName={this.state.iModelName} />
           </div>
-          <div className="menu">
+          <div className="reload">
             <OpenIModelButton accessToken={this.state.user.accessToken} offlineIModel={this.state.offlineIModel} onIModelSelected={this._onIModelSelected} imodelName={this.state.iModelName} projectName={this.state.projectName} initialButton={false} />
+          </div>
+          <div className="menu">
             <Button size={ButtonSize.Default} buttonType={ButtonType.Primary} className="expand-menu" onClick={this._menuClick}>
               <span>{this.state.menuName}</span>
             </Button>
@@ -394,7 +395,9 @@ interface OpenIModelButtonState {
 
 /** Renders a button that opens an iModel identified in configuration */
 export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps, OpenIModelButtonState> {
-  public state = { isLoading: false };
+  public state = {
+    isLoading: false,
+  };
 
   /** Finds project and iModel ID's using their names */
   private async getIModelInfo(): Promise<{ projectId: string, imodelId: string }> {
@@ -438,21 +441,23 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
 
   /** Handles on-click for initial open iModel button */
   private _onClick = async () => {
-    this.setState({ isLoading: true });
-    let imodel: IModelConnection | undefined;
-    try {
-      // Attempt to open the imodel
-      if (this.props.offlineIModel) {
-        const offlineIModel = Config.App.getString("imjs_offline_imodel");
-        imodel = await IModelConnection.openSnapshot(offlineIModel);
-      } else {
-        const info = await this.getIModelInfo();
-        imodel = await IModelConnection.open(info.projectId, info.imodelId, OpenMode.Readonly);
+    if (this.props.initialButton || !this.state.isLoading) {
+      this.setState({ isLoading: true });
+      let imodel: IModelConnection | undefined;
+      try {
+        // Attempt to open the imodel
+        if (this.props.offlineIModel) {
+          const offlineIModel = Config.App.getString("imjs_offline_imodel");
+          imodel = await IModelConnection.openSnapshot(offlineIModel);
+        } else {
+          const info = await this.getIModelInfo();
+          imodel = await IModelConnection.open(info.projectId, info.imodelId, OpenMode.Readonly);
+        }
+      } catch (e) {
+        alert(e.message);
       }
-    } catch (e) {
-      alert(e.message);
+      await this.onIModelSelected(imodel);
     }
-    await this.onIModelSelected(imodel);
   }
 
   /** Renders the button */
@@ -460,14 +465,15 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
     if (this.props.initialButton) {
       return (
         <Button size={ButtonSize.Large} buttonType={ButtonType.Primary} className="button-open-imodel" onClick={this._onClick}>
-          <span>{IModelApp.i18n.translate("SimpleViewer:components.imodel-picker.open-imodel")}</span>
+          <span>Open {this.props.imodelName}</span>
           {this.state.isLoading ? <span style={{ marginLeft: "8px" }}><Spinner size={SpinnerSize.Small} /></span> : undefined}
         </Button>
       );
     } else {
       return (
-        <Button size={ButtonSize.Default} buttonType={ButtonType.Primary} className="button-refresh-imodel" onClick={this._onClick}>
-          <span>Refresh iModel</span>
+        <Button size={ButtonSize.Default} buttonType={ButtonType.Primary} className="button-reload-imodel" onClick={this._onClick} >
+          <span>Reload iModel</span>
+          {this.state.isLoading ? <span style={{ marginLeft: "8px" }}><Spinner size={SpinnerSize.Small} /></span> : undefined}
         </Button>
       );
     }
