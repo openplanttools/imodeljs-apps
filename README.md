@@ -48,6 +48,26 @@
 5. To switch drawings, click on a **drawing** under the **Tree** (top-right of screen). This will update the viewer.
 6. To select a **graphic** in a drawing, either click on it in the viewer, or expand the drawing under **Tree** and select one under **PID Drawing Categories**. When a graphic is selected, it will be highlighted in the viewer and will have its information displayed in **Properties** (bottom of screen).
 
+### **Workflow**
+
+- The [**Azure DevOps repository**](https://dev.azure.com/bentleycs/Plant%20Design/_git/imodeljs-openplant-viewer) contains all up-to-date revisions.
+- The [**GitHub repository**](https://github.com/openplanttools/ElectronPlantViewer) contains only the published, operational, user-friendly revisions.
+
+1. To push changes to either repository, type the following command in the terminal to create a new branch.
+   - **`git checkout -b [branch name]`**
+2. Type in the following command to stage your changes to the new branch.
+   - **`git add .`**
+3. Type in the following command to commit your changes to the new branch.
+   - **`git commit -m "[comment describing changes]"`**
+4. Type in the following command to push your changes to the new branch.
+   - **`git push origin [branch name]`**
+5. Open the repository in the browser ([**Azure DevOps**](https://dev.azure.com/bentleycs/Plant%20Design/_git/imodeljs-openplant-viewer) or [**GitHub**](https://github.com/openplanttools/ElectronPlantViewer)).
+6. Create a pull request for the new branch, and then approve and complete it.
+7. The master branch has now been updated with the pushed changes.
+8. Remember to type the following commands in your terminal to get the updated master branch.
+   - **`git checkout master`**
+   - **`git pull origin master`**
+
 ## **Git Developer Guide**
 
 Before using Git on windows command prompt or git bash, you will need to install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
