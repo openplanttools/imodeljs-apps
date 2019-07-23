@@ -13,7 +13,7 @@
 1. If you do not already have a project, create a new project with the default settings by clicking [here for **Production**](https://imodeljs.github.io/iModelJs-docs-output/getting-started/registration-dashboard/) or [here for **QA**](http://builds.bentley.com/prgbuilds/AzureBuilds/iModelJsDocs/public/getting-started/registration-dashboard/).
 2. Open the Command Prompt and navigate to where you would like the repository to be created (it will create a new folder called **imodeljs-openplant-viewer**).
 3. Type the following command to clone the repository in the "imodeljs-openplant-viewer" folder.
-   - **`git clone https://bentleycs.visualstudio.com/iModelTechnologies/_git/imodeljs-openplant-viewer`**
+   - **`git clone https://dev.azure.com/bentleycs/Plant%20Design/_git/imodeljs-openplant-viewer`**
 4. Type the following commands to open the repository in Visual Studio Code.
    - **`cd imodeljs-openplant-viewer`**
    - **`code .`**
