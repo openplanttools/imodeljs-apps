@@ -393,6 +393,7 @@ interface OpenIModelButtonState {
   isLoading: boolean;
 }
 
+//test
 /** Renders a button that opens an iModel identified in configuration */
 export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps, OpenIModelButtonState> {
   public state = {
