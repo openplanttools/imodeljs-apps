@@ -30,9 +30,10 @@ export default function setupEnv() {
     // default permissions that allow the application to function
     imjs_browser_test_scope: "openid email profile organization imodelhub context-registry-service reality-data:read imodeljs-router",
 
-    /** CLIENT SELECTION */
-    // USE/UN-COMMENT 1ST LINE IF IN PRODUCTION
-    // USE/UN-COMMENT 2ND & 3RD LINES IF IN QA
+    /** CLIENT SELECTION
+     * USE/UN-COMMENT 1ST LINE IF IN PRODUCTION
+     * USE/UN-COMMENT 2ND & 3RD LINES IF IN QA
+     */
     imjs_browser_test_client_id: "spa-TndE76P2OLOLZMumh7nx5yHjR", // Use/un-comment if in Production
     // imjs_browser_test_client_id: "spa-r2eFZFCkkth19yr8R2Ei4oTk1", // Use/un-comment if in QA
     // imjs_buddi_resolve_url_using_region: "102", // Use/un-comment if in QA
