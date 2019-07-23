@@ -78,15 +78,14 @@ export default class App extends React.Component<{}, AppState> {
       menuOpened: false,
       menuName: "Expand Menu",
     };
-    this._getCorrectiModelName();
-    this._getCorrectProjectName();
+    this.makeCalls();
   }
 
   /** Gets the current desired project as saved either from the settings.json file or from the Config.App singleton */
-  private _getCorrectProjectName() {
+  private async _getCorrectProjectName() {
 
     // Sets up listener for response back from main/server
-    ipcRenderer.once("readConfigResults", (event: Event, configObject: any) => {
+    ipcRenderer.once("readConfigResults", async (event: Event, configObject: any) => {
       if (event) {
         console.log(configObject);
       }
@@ -105,41 +104,15 @@ export default class App extends React.Component<{}, AppState> {
       }
       this.setState(() => ({
         projectName: configProject,
+        iModelName: configObject.imodel_name,
       }));
+      if(configProject && configObject.imodel_name) {
+     await this.startProcess(configProject, configObject.imodel_name);
+      }
     });
 
     // sends signal that main app is ready for config values
     ipcRenderer.send("readConfig", "project");
-  }
-
-  /** Gets correct value for desired imodel from either the settings.json or from the Config.App object */
-  private _getCorrectiModelName() {
-    // Sets up listener for response back from server
-    ipcRenderer.once("readConfigResultsIModel", (event: Event, jsonObject: any) => {
-      if (event) {
-        console.log(jsonObject);
-      }
-
-      // Configures the correct value, setting the state of the app, depending on what values currently exist
-      // values in the settings.json are prioritized
-      const configiModel = jsonObject.imodel_name;
-      if (jsonObject.imodel_name.length < 1) {
-        ipcRenderer.send("popupWarning", "project");
-        try {
-          ipcRenderer.send("configDataMissing", "testing from app");
-          throw new ReferenceError("No imodel id has been specified");
-        } catch (e) {
-          console.log((e as Error).message);
-          ipcRenderer.send("closeApplication", "Missing imodel");
-        }
-      }
-      this.setState(() => ({
-        iModelName: configiModel,
-      }));
-    });
-
-    // sends event to server that app is ready to receive values
-    ipcRenderer.send("readConfig", "imodel");
   }
 
   /** Returns an updated iModelConnection */
@@ -338,15 +311,68 @@ export default class App extends React.Component<{}, AppState> {
     }
   }
 
+  /** Finds project and iModel ID's using their names */
+  private async getIModelInfo(projectName: string, imodelName: string): Promise<{ projectId: string, imodelId: string }> {
+    // Requests a context and connection client to access the iModelHub, and retrieves a list of projects
+    requestContext = await AuthorizedFrontendRequestContext.create();
+    connectClient = new ConnectClient();
+
+    // Try catch block gets a project, if the project doesnt exist, throw an alert
+    try {
+      currentProject = await connectClient.getProject(requestContext, { $filter: `Name+eq+'${projectName}'` });
+    } catch (e) {
+      alert(`Project with name "${projectName}" does not exist.`);
+      throw new Error(`Project with name "${projectName}" does not exist.`);
+    }
+
+    // Creates a new iModelQuery to connect to the database, and queries with specified context and project
+    // Then resolves that promise and sends that information to constiuent components that need the data
+    const imodelQuery = new IModelQuery();
+    imodelQuery.byName(imodelName);
+
+    // Gets the specific imodel, returns the project and imodel wsdId's to the functions handling initial startup/rendering
+    const imodels = await IModelApp.iModelClient.iModels.get(requestContext, currentProject.wsgId, imodelQuery);
+    if (imodels.length === 0) {
+      alert(`iModel with name "${imodelName}" does not exist in project "${projectName}".`);
+      throw new Error(`iModel with name "${imodelName}" does not exist in project "${projectName}".`);
+    }
+    currentIModel = imodels[0].wsgId;
+
+    // Returns
+    return { projectId: currentProject.wsgId, imodelId: imodels[0].wsgId };
+  }
+
+  /** Handles iModel open event */
+  private async onIModelSelected(imodel: IModelConnection | undefined) {
+    this._onIModelSelected(imodel);
+  }
+
+  /** Handles on-click for initial open iModel button */
+  private startProcess = async (projectName: string, imodelName: string) => {
+    console.log(projectName + "PORJECT");
+    console.log("IMODELNAME" + imodelName);
+    console.log(this.state.iModelName + " PROJECT in start of process" + this.state.projectName);
+    let imodel: IModelConnection | undefined;
+    try {
+      // Attempt to open the imodel
+      const info = await this.getIModelInfo(projectName, imodelName);
+      imodel = await IModelConnection.open(info.projectId, info.imodelId, OpenMode.Readonly);
+    } catch (e) {
+      alert(e.message);
+    }
+    await this.onIModelSelected(imodel);
+  }
+
+  private async makeCalls() {
+    await this._getCorrectProjectName();
+  }
+
   /** Renders the app */
   public render() {
     let ui: React.ReactNode;
 
     if (this.state.user.isLoading || window.location.href.includes(this._signInRedirectUri)) {
       // If user is currently being loaded, just tell that
-      console.log("1");
-      console.log(this.state.iModelName);
-      console.log(this.state.projectName);
       ui = `${IModelApp.i18n.translate("SimpleViewer:signing-in")}...`;
     } else if (!this.state.user.accessToken && !this.state.offlineIModel) {
       // If user doesn't have and access token, show sign in page
@@ -355,9 +381,8 @@ export default class App extends React.Component<{}, AppState> {
       ui = (<SignIn onSignIn={this._onStartSignin} onOffline={this._onOffline} />);
     } else if (!this.state.imodel || !this.state.viewDefinitionId) {
       // if we don't have an imodel / view definition id - render a button that initiates imodel open
-      console.log(this.state.iModelName);
-      console.log(this.state.projectName);
-      ui = (<OpenIModelButton accessToken={this.state.user.accessToken} offlineIModel={this.state.offlineIModel} onIModelSelected={this._onIModelSelected} imodelName={this.state.iModelName} projectName={this.state.projectName} initialButton={true} />);
+      // tslint:disable-next-line: no-floating-promises
+      ui = (<span className="open-imodel"><Spinner size={SpinnerSize.XLarge} /></span>);
     } else {
       // If we do have an imodel and view definition id - render imodel components
       const titleName: string = "Project: " + this.state.projectName + ", iModel: " + this.state.iModelName; // + ", Drawing: " + Config.App.get("imjs_test_drawing") (not working yet);
@@ -371,7 +396,7 @@ export default class App extends React.Component<{}, AppState> {
             <TitleBar projectName={this.state.projectName} drawingName={this.state.drawingName} iModelName={this.state.iModelName} />
           </div>
           <div className="reload">
-            <OpenIModelButton accessToken={this.state.user.accessToken} offlineIModel={this.state.offlineIModel} onIModelSelected={this._onIModelSelected} imodelName={this.state.iModelName} projectName={this.state.projectName} initialButton={false} />
+            <OpenIModelButton accessToken={this.state.user.accessToken} offlineIModel={this.state.offlineIModel} onIModelSelected={this._onIModelSelected} imodelName={this.state.iModelName} projectName={this.state.projectName} initialButton={true} />
           </div>
           <div className="menu">
             <Button size={ButtonSize.Default} buttonType={ButtonType.Primary} className="expand-menu" onClick={this._menuClick}>
@@ -476,18 +501,12 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
 
   /** Renders the button */
   public render() {
-    if (this.props.initialButton) {
-      return (
-        <span className="open-imodel"><Spinner size={SpinnerSize.XLarge} /></span>
-      );
-    } else {
-      return (
-        <Button size={ButtonSize.Default} buttonType={ButtonType.Primary} className="button-reload-imodel" onClick={this._onClick} >
-          <span>Reload iModel</span>
-          {this.state.isLoading ? <span style={{ marginLeft: "8px" }}><Spinner size={SpinnerSize.Small} /></span> : undefined}
-        </Button>
-      );
-    }
+    return (
+      <Button size={ButtonSize.Default} buttonType={ButtonType.Primary} className="button-reload-imodel" onClick={this._onClick} >
+        <span>Reload iModel</span>
+        {this.state.isLoading ? <span style={{ marginLeft: "8px" }}><Spinner size={SpinnerSize.Small} /></span> : undefined}
+      </Button>
+    );
   }
 }
 
