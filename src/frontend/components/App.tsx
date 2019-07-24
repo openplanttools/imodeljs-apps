@@ -23,7 +23,6 @@ import distinctColors = require("distinct-colors");
 import { ColorDef } from "@bentley/imodeljs-common";
 import TitleBar from "./Title";
 import { ipcRenderer, Event } from "electron";
-import console = require("console");
 
 // tslint:disable: no-console
 // cSpell:ignore imodels
@@ -79,9 +78,6 @@ export default class App extends React.Component<{}, AppState> {
       menuOpened: false,
       menuName: "Expand Menu",
     };
-
-    // tslint:disable-next-line: no-floating-promises
-    this.makeCalls();
   }
 
   /** Gets the current desired project as saved either from the settings.json file or from the Config.App singleton */
@@ -129,6 +125,7 @@ export default class App extends React.Component<{}, AppState> {
 
   /** React method, after a component mounted sets up non-ui portions */
   public componentDidMount() {
+    this.makeCalls();
     // Subscribe for unified selection changes
     Presentation.selection.selectionChange.addListener(this._onSelectionChanged);
 
@@ -144,10 +141,8 @@ export default class App extends React.Component<{}, AppState> {
 
   /** React method, activates when the component will be removed  */
   public componentWillUnmount() {
-
     // Unsubscribe from unified selection changes
     Presentation.selection.selectionChange.removeListener(this._onSelectionChanged);
-
     // Unsubscribe from user state changes
     SimpleViewerApp.oidcClient.onUserStateChanged.removeListener(this._onUserStateChanged);
   }
@@ -180,6 +175,8 @@ export default class App extends React.Component<{}, AppState> {
     // Setup default appearance for "background" elements
     const emphasize = EmphasizeElements.getOrCreate(vp);
     emphasize.createDefaultAppearance();
+    // Note: Starting with 0.192.0 (expected to be available June 3, 2019), you can customize defaultAppearance with this call
+    // e.g., emphasize.defaultAppearance = FeatureSymbology.Appearance.fromRgb(new ColorDef(ColorByName.lightGray));
 
     // Determine all distinct categories in the model
     const categoryIds = new Array<Id64String>();
@@ -253,7 +250,6 @@ export default class App extends React.Component<{}, AppState> {
     // Filters the possible view definitions of the imodel down to the accepted onces we provide
     const acceptedViewSpecs = viewSpecs.filter((spec) => (-1 !== acceptedViewClasses.indexOf(spec.classFullName)));
     if (0 === acceptedViewSpecs.length) {
-      alert("No valid view definitions for selected iModel. Please select another one.");
       throw new Error("No valid view definitions for selected iModel. Please select another one.");
     }
 
@@ -270,9 +266,9 @@ export default class App extends React.Component<{}, AppState> {
 
   /** Handles iModel open event */
   private _onIModelSelected = async (imodel: IModelConnection | undefined) => {
+    console.log("In _onIMODEL" + imodel + " THIS IS THE IMODEL CONNECTION");
     if (!imodel) {
       // Reset the state when imodel is closed
-      this.setState({ imodel: undefined, viewDefinitionId: undefined });
       return;
     }
     try {
@@ -287,8 +283,9 @@ export default class App extends React.Component<{}, AppState> {
       } else {
         await imodel.close();
       }
-      this.setState({ imodel: undefined, viewDefinitionId: undefined });
-      alert(e.message);
+     // this.setState({ imodel: undefined, viewDefinitionId: undefined });
+      console.log(e + "IN ONIMODEL");
+      console.log(e.message);
     }
   }
 
@@ -316,6 +313,8 @@ export default class App extends React.Component<{}, AppState> {
 
   /** Finds project and iModel ID's using their names */
   private async getIModelInfo(projectName: string, imodelName: string): Promise<{ projectId: string, imodelId: string }> {
+    console.log(projectName + "PORJECT" + 2);
+    console.log("IMODELNAME" + imodelName + 2);
     // Requests a context and connection client to access the iModelHub, and retrieves a list of projects
     requestContext = await AuthorizedFrontendRequestContext.create();
     connectClient = new ConnectClient();
@@ -324,6 +323,9 @@ export default class App extends React.Component<{}, AppState> {
     try {
       currentProject = await connectClient.getProject(requestContext, { $filter: `Name+eq+'${projectName}'` });
     } catch (e) {
+      // alert(`Project with name "${projectName}" does not exist.`);
+      console.log("in there");
+      throw new Error(`Project with name "${projectName}" does not exist.`);
     }
 
     // Creates a new iModelQuery to connect to the database, and queries with specified context and project
@@ -334,6 +336,8 @@ export default class App extends React.Component<{}, AppState> {
     // Gets the specific imodel, returns the project and imodel wsdId's to the functions handling initial startup/rendering
     const imodels = await IModelApp.iModelClient.iModels.get(requestContext, currentProject.wsgId, imodelQuery);
     if (imodels.length === 0) {
+      // alert(`iModel with name "${imodelName}" does not exist in project "${projectName}".`);
+      throw new Error(`iModel with name "${imodelName}" does not exist in project "${projectName}".`);
     }
     currentIModel = imodels[0].wsgId;
 
@@ -349,17 +353,23 @@ export default class App extends React.Component<{}, AppState> {
 
   /** Handles on-click for initial open iModel button */
   private startProcess = async (projectName: string, imodelName: string) => {
+    console.log(projectName + "PORJECT");
+    console.log("IMODELNAME" + imodelName);
+    console.log(this.state.iModelName + " PROJECT in start of process" + this.state.projectName);
     let imodel: IModelConnection | undefined;
     try {
-      console.log(projectName);
-      console.log(imodelName);
+
       // Attempt to open the imodel
+      console.log(projectName + "PORJECT" + 3);
+      console.log("IMODELNAME" + imodelName + 3);
       const info = await this.getIModelInfo(projectName, imodelName);
       imodel = await IModelConnection.open(info.projectId, info.imodelId, OpenMode.Readonly);
+      await this.onIModelSelected(imodel);
     } catch (e) {
-      alert(e.message);
+      console.log(e);
+      console.log("start Process");
+      console.log(e.message);
     }
-    await this.onIModelSelected(imodel);
   }
 
   private async makeCalls() {
@@ -442,7 +452,7 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
     try {
       currentProject = await connectClient.getProject(requestContext, { $filter: `Name+eq+'${projectName}'` });
     } catch (e) {
-      alert(`Project with name "${projectName}" does not exist.`);
+      // alert(`Project with name "${projectName}" does not exist.`);
       throw new Error(`Project with name "${projectName}" does not exist.`);
     }
 
@@ -454,7 +464,7 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
     // Gets the specific imodel, returns the project and imodel wsdId's to the functions handling initial startup/rendering
     const imodels = await IModelApp.iModelClient.iModels.get(requestContext, currentProject.wsgId, imodelQuery);
     if (imodels.length === 0) {
-      alert(`iModel with name "${imodelName}" does not exist in project "${projectName}".`);
+      // alert(`iModel with name "${imodelName}" does not exist in project "${projectName}".`);
       throw new Error(`iModel with name "${imodelName}" does not exist in project "${projectName}".`);
     }
     currentIModel = imodels[0].wsgId;
@@ -484,7 +494,7 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
           imodel = await IModelConnection.open(info.projectId, info.imodelId, OpenMode.Readonly);
         }
       } catch (e) {
-        alert(e.message);
+        // alert(e.message);
       }
       await this.onIModelSelected(imodel);
     }
