@@ -23,7 +23,6 @@ import distinctColors = require("distinct-colors");
 import { ColorDef } from "@bentley/imodeljs-common";
 import TitleBar from "./Title";
 import { ipcRenderer, Event } from "electron";
-
 // tslint:disable: no-console
 // cSpell:ignore imodels
 
@@ -149,6 +148,8 @@ export default class App extends React.Component<{}, AppState> {
 
   /** Changes the viewport to display a new drawing by drawing ID */
   public async changeView(newDrawingId: string, vp: ScreenViewport, doFit?: boolean) {
+    console.log("DRAWING ID");
+    console.log(newDrawingId);
     const view = vp.view;
     if (!(view instanceof DrawingViewState)) // This only works if the viewport is showing a DrawingView
       return;
