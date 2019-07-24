@@ -4,15 +4,14 @@
 *--------------------------------------------------------------------------------------------*/
 import styled from "styled-components";
 import * as React from "react";
-import viewDataWidget from "./viewList";
+import viewDataWidget from "./ViewList";
 import "../../common/configuration.js";
-import { Config } from "@bentley/imodeljs-clients";
 
 // WIP, event emitter bound function to be called from App.tsx and create changes in the AppState
-// WIP, class to contain the current iModel chosen and return it to App.tsx
+// WIP, class to contain the current view chosen and return it to App.tsx
 export class ViewContainer {
 
-  // instance variables, storing imodel name as a string and an object, the object is useful because it can be assigned
+  // instance variables, storing view name as a string and an object, the object is useful because it can be assigned
   // as a property and dynamically allocated in react components
   public currentView: string;
   public viewObject: {
@@ -35,7 +34,6 @@ export class ViewContainer {
   public setNewView(view: string) {
     this.currentView = view;
   }
-
   public updateView() {
     return this.currentView;
   }
@@ -43,7 +41,7 @@ export class ViewContainer {
 
 export const viewContainer = new ViewContainer();
 
-/** Group Widget controller class, formats and spaces the collcetion of tools associated with developing a new iModel */
+/** Group Widget controller class, formats and spaces the collcetion of tools associated with developing a new view */
 // This method formats the required pieces in HTML
 // tslint:disable-next-line: variable-name
 export interface GroupProps {
@@ -66,7 +64,7 @@ export interface ViewListProps {
   value?: string;
 }
 
-/** IModelList class is a react component, has an app state with defined instance variables to keep track of relevant information */
+/** ViewList class is a react component, has an app state with defined instance variables to keep track of relevant information */
 export class ViewList extends React.Component<ViewListProps, { value: string }> {
   public myRef: HTMLElement | undefined;
   public prevIndex: number | undefined;
@@ -105,11 +103,9 @@ export class ViewList extends React.Component<ViewListProps, { value: string }> 
       // updates the primary node of the select element
       mainList.options[0].innerHTML = mainList.options[mainList.selectedIndex].innerText;
 
-      // this config setting line should be changed, as we transition to reading and writing from a JSON file for smoother integration
-      Config.App.set("imjs_test_imodel", mainList.options[mainList.selectedIndex].innerText);
       viewContainer.setNewView(mainList.options[mainList.selectedIndex].innerText);
 
-      // stores an IModelData object representing the imodel selected
+      // stores an view data object representing the view selected
       viewContainer.viewObject = {
         viewName: mainList.options[mainList.selectedIndex].innerHTML,
         viewValue: mainList.options[mainList.selectedIndex].value,
