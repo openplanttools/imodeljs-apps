@@ -10,7 +10,7 @@ import { Presentation } from "@bentley/presentation-backend";
 import getSupportedRpcs from "../common/rpcs";
 import { RpcInterfaceDefinition } from "@bentley/imodeljs-common";
 import setupEnv from "../common/configuration";
-import {changeiModel, changeProject, readData, newWindow, popupWarning} from "./electron/main";
+import { changeiModel, changeProject, readData, newWindow, popupWarning } from "./electron/main";
 // tslint:disable: no-console
 
 /* This block of listeners await the main app to be ready, and then listen for commands from the app dictating whether to read or write

@@ -4,9 +4,8 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
-import { Tree } from "@bentley/ui-components";
+import { Tree, TreeNodeItem } from "@bentley/ui-components";
 import { IPresentationTreeDataProvider, PresentationTreeDataProvider, treeWithUnifiedSelection } from "@bentley/presentation-components";
-// tslint:disable: no-console
 
 // create a HOC tree component that supports unified selection
 // tslint:disable-next-line:variable-name
@@ -41,8 +40,16 @@ export default class SimpleTreeComponent extends React.PureComponent<Props> {
       const imodelProps = props as IModelConnectionProps;
       const provider: PresentationTreeDataProvider = new PresentationTreeDataProvider(imodelProps.imodel, imodelProps.rulesetId);
       // tslint:disable-next-line: no-floating-promises
+      this.getNodes(provider);
+      // tslint:disable-next-line: no-floating-promises
       return provider;
     }
+  }
+
+  public async getNodes(provider: PresentationTreeDataProvider) {
+    const nodes: TreeNodeItem[] = await provider.getNodes();
+    // tslint:disable-next-line: no-console
+    console.log(nodes);
   }
 
   /* Fills the tree using the data provider when the app is updated */
