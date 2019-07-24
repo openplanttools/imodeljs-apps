@@ -37,6 +37,7 @@ export const readData = (event?: electron.Event, arg?: string) => {
     if (event) {
       if (arg === "imodel") {
         event.sender.send("readConfigResultsIModel", jsonObject);
+        displayConfig(jsonObject);
       } else {
         event.sender.send("readConfigResults", jsonObject);
       }
@@ -134,23 +135,34 @@ class MenuBarOptions implements electron.MenuItemConstructorOptions {
   }
 }
 
+export function displayConfig(jsonObject: any) {
+  if (manager.mainWindow) {
+    const configData = "Project: " + jsonObject.project_name + " iModel: " + jsonObject.imodel_name;
+    electron.dialog.showMessageBox(manager.mainWindow, {
+      title: "Current Configuration",
+      message: configData,
+    });
+  }
+}
+
+
 export function newWindow() {
   if (manager.mainWindow) {
-  electron.dialog.showOpenDialog(manager.mainWindow, {
-    title: "Select configuration File",
-    properties: ["openFile", "multiSelections"],
+    electron.dialog.showOpenDialog(manager.mainWindow, {
+      title: "Select configuration File",
+      properties: ["openFile", "multiSelections"],
 
-  }, (filePaths) => {
-    if (!filePaths) {
-      electron.app.quit();
-    }
-  });
+    }, (filePaths) => {
+      if (!filePaths) {
+        electron.app.quit();
+      }
+    });
   }
 }
 
 export function popupWarning(typeOfError?: string) {
   const errorMessage = "Warning! The " + typeOfError + " is missing from the settings file!";
   if (manager.mainWindow) {
-    electron.dialog.showMessageBox(manager.mainWindow, {type: "error", message: errorMessage, title: "Error"});
+    electron.dialog.showMessageBox(manager.mainWindow, { type: "error", message: errorMessage, title: "Error" });
   }
 }
