@@ -23,6 +23,7 @@ import distinctColors = require("distinct-colors");
 import { ColorDef } from "@bentley/imodeljs-common";
 import TitleBar from "./Title";
 import { ipcRenderer, Event } from "electron";
+import console = require("console");
 
 // tslint:disable: no-console
 // cSpell:ignore imodels
@@ -78,6 +79,8 @@ export default class App extends React.Component<{}, AppState> {
       menuOpened: false,
       menuName: "Expand Menu",
     };
+
+    // tslint:disable-next-line: no-floating-promises
     this.makeCalls();
   }
 
@@ -141,8 +144,10 @@ export default class App extends React.Component<{}, AppState> {
 
   /** React method, activates when the component will be removed  */
   public componentWillUnmount() {
+
     // Unsubscribe from unified selection changes
     Presentation.selection.selectionChange.removeListener(this._onSelectionChanged);
+
     // Unsubscribe from user state changes
     SimpleViewerApp.oidcClient.onUserStateChanged.removeListener(this._onUserStateChanged);
   }
@@ -175,8 +180,6 @@ export default class App extends React.Component<{}, AppState> {
     // Setup default appearance for "background" elements
     const emphasize = EmphasizeElements.getOrCreate(vp);
     emphasize.createDefaultAppearance();
-    // Note: Starting with 0.192.0 (expected to be available June 3, 2019), you can customize defaultAppearance with this call
-    // e.g., emphasize.defaultAppearance = FeatureSymbology.Appearance.fromRgb(new ColorDef(ColorByName.lightGray));
 
     // Determine all distinct categories in the model
     const categoryIds = new Array<Id64String>();
@@ -321,8 +324,6 @@ export default class App extends React.Component<{}, AppState> {
     try {
       currentProject = await connectClient.getProject(requestContext, { $filter: `Name+eq+'${projectName}'` });
     } catch (e) {
-      alert(`Project with name "${projectName}" does not exist.`);
-      throw new Error(`Project with name "${projectName}" does not exist.`);
     }
 
     // Creates a new iModelQuery to connect to the database, and queries with specified context and project
@@ -333,8 +334,6 @@ export default class App extends React.Component<{}, AppState> {
     // Gets the specific imodel, returns the project and imodel wsdId's to the functions handling initial startup/rendering
     const imodels = await IModelApp.iModelClient.iModels.get(requestContext, currentProject.wsgId, imodelQuery);
     if (imodels.length === 0) {
-      alert(`iModel with name "${imodelName}" does not exist in project "${projectName}".`);
-      throw new Error(`iModel with name "${imodelName}" does not exist in project "${projectName}".`);
     }
     currentIModel = imodels[0].wsgId;
 
@@ -344,16 +343,16 @@ export default class App extends React.Component<{}, AppState> {
 
   /** Handles iModel open event */
   private async onIModelSelected(imodel: IModelConnection | undefined) {
+    // tslint:disable-next-line: no-floating-promises
     this._onIModelSelected(imodel);
   }
 
   /** Handles on-click for initial open iModel button */
   private startProcess = async (projectName: string, imodelName: string) => {
-    console.log(projectName + "PORJECT");
-    console.log("IMODELNAME" + imodelName);
-    console.log(this.state.iModelName + " PROJECT in start of process" + this.state.projectName);
     let imodel: IModelConnection | undefined;
     try {
+      console.log(projectName);
+      console.log(imodelName);
       // Attempt to open the imodel
       const info = await this.getIModelInfo(projectName, imodelName);
       imodel = await IModelConnection.open(info.projectId, info.imodelId, OpenMode.Readonly);
@@ -376,8 +375,6 @@ export default class App extends React.Component<{}, AppState> {
       ui = `${IModelApp.i18n.translate("SimpleViewer:signing-in")}...`;
     } else if (!this.state.user.accessToken && !this.state.offlineIModel) {
       // If user doesn't have and access token, show sign in page
-      console.log(this.state.iModelName);
-      console.log(this.state.projectName);
       ui = (<SignIn onSignIn={this._onStartSignin} onOffline={this._onOffline} />);
     } else if (!this.state.imodel || !this.state.viewDefinitionId) {
       // if we don't have an imodel / view definition id - render a button that initiates imodel open
@@ -426,7 +423,6 @@ interface OpenIModelButtonState {
   isLoading: boolean;
 }
 
-//test
 /** Renders a button that opens an iModel identified in configuration */
 export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps, OpenIModelButtonState> {
   public state = {
