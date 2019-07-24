@@ -33,12 +33,14 @@ export default function setupEnv() {
     /** CLIENT SELECTION
      * USE/UN-COMMENT 1ST LINE IF IN PRODUCTION
      * USE/UN-COMMENT 2ND & 3RD LINES IF IN QA
-     *   // imjs_test_project: "opbimdev01", // Set this to the name of the Project
-    // imjs_test_imodel: "OpDev_IPL_Baytown_YII", // Set this to the name of the iModel
-    // imjs_test_drawing: "PIDP301", // Set this to the name of the Drawing
      */
-   // imjs_browser_test_client_id: "spa-TndE76P2OLOLZMumh7nx5yHjR", // Use/un-comment if in Production
+    // imjs_browser_test_client_id: "spa-TndE76P2OLOLZMumh7nx5yHjR", // Use/un-comment if in Production
     imjs_browser_test_client_id: "spa-r2eFZFCkkth19yr8R2Ei4oTk1", // Use/un-comment if in QA
     imjs_buddi_resolve_url_using_region: "102", // Use/un-comment if in QA
+
+    /* TESTING */
+    // imjs_test_project: "opbimdev01", // Set this to the name of the Project
+    // imjs_test_imodel: "OpDev_IPL_Baytown_YII", // Set this to the name of the iModel
+    // imjs_test_drawing: "PIDP301", // Set this to the name of the Drawing
   });
 }
