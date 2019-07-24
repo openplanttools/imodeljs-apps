@@ -20,9 +20,10 @@ import "./App.css";
 import { Drawing } from "@bentley/imodeljs-backend";
 import chroma = require("chroma-js");
 import distinctColors = require("distinct-colors");
-import { ColorDef } from "@bentley/imodeljs-common";
+import { ColorDef, ViewDefinitionProps } from "@bentley/imodeljs-common";
 import TitleBar from "./Title";
 import { ipcRenderer, Event } from "electron";
+import { GroupWidget } from "./Group";
 // tslint:disable: no-console
 // cSpell:ignore imodels
 
@@ -31,14 +32,21 @@ let requestContext: AuthorizedFrontendRequestContext | undefined;
 let connectClient: ConnectClient | undefined;
 let currentProject: Project;
 let currentIModel: string;
+let views3D: ViewDefinitionProps[];
+let views2D: ViewDefinitionProps[];
 
-// Getters and setters
+// Getters for instance variables
 export function getCurrentProject() {
   return currentProject;
 }
-
 export function getCurrentIModel() {
   return currentIModel;
+}
+export function get3DViews() {
+  return views3D;
+}
+export function get2DViews() {
+  return views2D;
 }
 
 /** React state of the App component */
@@ -104,8 +112,8 @@ export default class App extends React.Component<{}, AppState> {
         projectName: configProject,
         iModelName: configObject.imodel_name,
       }));
-      if(configProject && configObject.imodel_name) {
-     await this.startProcess(configProject, configObject.imodel_name);
+      if (configProject && configObject.imodel_name) {
+        await this._startProcess(configProject, configObject.imodel_name);
       }
     });
 
@@ -124,6 +132,7 @@ export default class App extends React.Component<{}, AppState> {
 
   /** React method, after a component mounted sets up non-ui portions */
   public componentDidMount() {
+    // tslint:disable-next-line: no-floating-promises
     this.makeCalls();
     // Subscribe for unified selection changes
     Presentation.selection.selectionChange.addListener(this._onSelectionChanged);
@@ -242,27 +251,37 @@ export default class App extends React.Component<{}, AppState> {
 
     // Array of view definitions, eventually, all 3D view definitions could be changed
     const acceptedViewClasses = [
-      "BisCore:SheetViewDefinition",
-      "BisCore:DrawingViewDefinition",
-      "BisCore:SpatialViewDefinition",
-      "BisCore:OrthographicViewDefinition",
+      "BisCore:OrthographicViewDefinition", // 3D view
+      "BisCore:DrawingViewDefinition", // 2D view
     ];
 
     // Filters the possible view definitions of the imodel down to the accepted onces we provide
     const acceptedViewSpecs = viewSpecs.filter((spec) => (-1 !== acceptedViewClasses.indexOf(spec.classFullName)));
     if (0 === acceptedViewSpecs.length) {
+      alert("No valid view definitions for selected iModel. Please select another one.");
       throw new Error("No valid view definitions for selected iModel. Please select another one.");
     }
 
-    // Prioritises certain view definitions
-    const sheetViews = acceptedViewSpecs.filter((v) => {
-      return v.classFullName === "BisCore:DrawingViewDefinition";
-    });
-
-    if (sheetViews.length > 0)
-      return sheetViews[0].id!;
-
-    return acceptedViewSpecs[0].id!;
+    views3D = [];
+    views2D = [];
+    for (const elem of acceptedViewSpecs) {
+      if (elem.classFullName === "BisCore:OrthographicViewDefinition") {
+        views3D[views3D.length] = elem;
+      } else if (elem.classFullName === "BisCore:DrawingViewDefinition") {
+        views2D[views2D.length] = elem;
+      }
+    }
+    for (let idx = 1; idx < acceptedViewSpecs.length; idx++) {
+      console.log(acceptedViewSpecs[idx]);
+      views2D[idx - 1] = acceptedViewSpecs[idx];
+    }
+    console.log("VIEWS3D");
+    console.log(views3D);
+    console.log("VIEWS2D");
+    console.log(views2D);
+    // views2D[0].code.value;
+    // return acceptedViewSpecs[0].id!;
+    return views2D[0].id!;
   }
 
   /** Handles iModel open event */
@@ -353,7 +372,7 @@ export default class App extends React.Component<{}, AppState> {
   }
 
   /** Handles on-click for initial open iModel button */
-  private startProcess = async (projectName: string, imodelName: string) => {
+  private _startProcess = async (projectName: string, imodelName: string) => {
     console.log(projectName + "PORJECT");
     console.log("IMODELNAME" + imodelName);
     console.log(this.state.iModelName + " PROJECT in start of process" + this.state.projectName);
@@ -561,6 +580,7 @@ class IModelComponents extends React.PureComponent<IModelComponentsProps, IModel
             </div>
             <div className="bottom">
               <div className="sub">
+                <GroupWidget view={"test"}/>
                 <PropertiesWidget imodel={this.props.imodel} rulesetId={rulesetId} />
               </div>
             </div>
