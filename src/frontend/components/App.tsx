@@ -28,6 +28,7 @@ import { GroupWidget } from "./Group";
 // cSpell:ignore imodels
 
 // Setting instance variables for multi-class usage
+let thisApp: App;
 let requestContext: AuthorizedFrontendRequestContext | undefined;
 let connectClient: ConnectClient | undefined;
 let currentProject: Project;
@@ -47,6 +48,11 @@ export function get3DViews() {
 }
 export function get2DViews() {
   return views2D;
+}
+
+// Changes the App's view definition
+export function changeView(viewId: string) {
+  thisApp.updateView(viewId);
 }
 
 /** React state of the App component */
@@ -85,6 +91,7 @@ export default class App extends React.Component<{}, AppState> {
       menuOpened: false,
       menuName: "Expand Menu",
     };
+    thisApp = this;
   }
 
   /** Gets the current desired project as saved either from the settings.json file or from the Config.App singleton */
@@ -246,7 +253,7 @@ export default class App extends React.Component<{}, AppState> {
   }
 
   /** Picks the first available spatial view definition in the iModel */
-  private async getFirstViewDefinitionId(imodel: IModelConnection): Promise<Id64String> {
+  private async getFirstViewDefinitionId(imodel: IModelConnection, viewId?: string): Promise<Id64String> {
     const viewSpecs = await imodel.views.queryProps({});
 
     // Array of view definitions, eventually, all 3D view definitions could be changed
@@ -262,30 +269,40 @@ export default class App extends React.Component<{}, AppState> {
       throw new Error("No valid view definitions for selected iModel. Please select another one.");
     }
 
-    views3D = [];
-    views2D = [];
-    for (const elem of acceptedViewSpecs) {
-      if (elem.classFullName === "BisCore:OrthographicViewDefinition") {
-        views3D[views3D.length] = elem;
-      } else if (elem.classFullName === "BisCore:DrawingViewDefinition") {
-        views2D[views2D.length] = elem;
+    if (!views3D || !views2D) {
+      views3D = [];
+      views2D = [];
+      for (const elem of acceptedViewSpecs) {
+        if (elem.classFullName === "BisCore:OrthographicViewDefinition") {
+          views3D[views3D.length] = elem;
+        } else if (elem.classFullName === "BisCore:DrawingViewDefinition") {
+          views2D[views2D.length] = elem;
+        }
       }
+      for (let idx = 1; idx < acceptedViewSpecs.length; idx++) {
+        console.log(acceptedViewSpecs[idx]);
+        views2D[idx - 1] = acceptedViewSpecs[idx];
+      }
+      console.log("VIEWS3D");
+      console.log(views3D);
+      console.log("VIEWS2D");
+      console.log(views2D);
+      // views2D[0].code.value;
+      // return acceptedViewSpecs[0].id!;
+      return views2D[0].id!;
+    } else {
+      return viewId!;
     }
-    for (let idx = 1; idx < acceptedViewSpecs.length; idx++) {
-      console.log(acceptedViewSpecs[idx]);
-      views2D[idx - 1] = acceptedViewSpecs[idx];
-    }
-    console.log("VIEWS3D");
-    console.log(views3D);
-    console.log("VIEWS2D");
-    console.log(views2D);
-    // views2D[0].code.value;
-    // return acceptedViewSpecs[0].id!;
-    return views2D[0].id!;
+  }
+
+  /** Updates the App's view definition */
+  public updateView(viewId: string) {
+    // tslint:disable-next-line: no-floating-promises
+    this._onIModelSelected(this.state.imodel, viewId);
   }
 
   /** Handles iModel open event */
-  private _onIModelSelected = async (imodel: IModelConnection | undefined) => {
+  private _onIModelSelected = async (imodel: IModelConnection | undefined, viewId?: string) => {
     console.log("In _onIMODEL" + imodel + " THIS IS THE IMODEL CONNECTION");
     if (!imodel) {
       // Reset the state when imodel is closed
@@ -294,7 +311,7 @@ export default class App extends React.Component<{}, AppState> {
     try {
       // Attempt to get a view definition
       // const viewDefinitionId = imodel ? await this.getSheetViews(imodel) : undefined;
-      const viewDefinitionId = imodel ? await this.getFirstViewDefinitionId(imodel) : undefined;
+      const viewDefinitionId = imodel ? await this.getFirstViewDefinitionId(imodel, viewId) : undefined;
       this.setState({ imodel, viewDefinitionId });
     } catch (e) {
       // If failed, close the imodel and reset the state
@@ -380,7 +397,7 @@ export default class App extends React.Component<{}, AppState> {
     try {
 
       // Attempt to open the imodel
-      console.log(projectName + "PORJECT" + 3);
+      console.log(projectName + "PROJECT" + 3);
       console.log("IMODELNAME" + imodelName + 3);
       const info = await this.getIModelInfo(projectName, imodelName);
       imodel = await IModelConnection.open(info.projectId, info.imodelId, OpenMode.Readonly);

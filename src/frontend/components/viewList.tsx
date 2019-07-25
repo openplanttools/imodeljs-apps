@@ -2,46 +2,38 @@
 * Copyright (c) 2019 Bentley Systems, Incorporated. All rights reserved.
 * Licensed under the MIT License. See LICENSE.md in the project root for license terms.
 *--------------------------------------------------------------------------------------------*/
-import { getViewList } from "../../backend/electron/main.js";
-import { ViewDefinitionProps } from "@bentley/imodeljs-common";
+import { get3DViews, get2DViews } from "./App.js";
 
-// ADD COMMENTS
+// Stores the list of view definitions
+export const viewList: any[] = [];
 
-export const viewData: any[] = [];
-
-const createViewStorage = () => {
-  const defaultData = {
-    viewName: "",
-    viewValue: "",
-    key: "",
+/** Creates and exports widget with list of view definitions */
+const viewWidget = () => {
+  // Sets the initial (displayed) option in dropdown list
+  const initVal = get3DViews()[0];
+  viewList[0] = {
+    viewName: initVal.code.value,
+    viewValue: initVal.id,
+    key: initVal.id,
   };
-  viewData.push(defaultData);
-  getCorrectViewName();
-  return viewData;
-};
-
-const viewDataWidget = () => {
-  createViewStorage();
-  const listOfViews: ViewDefinitionProps[] = getViewList();
-  if (listOfViews) {
-    for (const elem of listOfViews) {
-      const viewInfo = {
-        viewName: elem.code.value,
-        viewValue: elem.id,
-        key: elem.id,
-      };
-      viewData.push(viewInfo);
-    }
+  // Adds the 3D views in the dropdown list
+  const views3D = get3DViews();
+  for (let i = 0; i < views3D.length; i++) {
+    viewList[i + 1] = {
+      viewName: views3D[i].code.value,
+      viewValue: views3D[i].id,
+      key: views3D[i].id,
+    };
   }
-  return viewData;
+  // Adds the 2D views in the dropdown list
+  const views2D = get2DViews();
+  for (let i = 0; i < views2D.length; i++) {
+    viewList[i + 1 + views3D.length] = {
+      viewName: views2D[i].code.value,
+      viewValue: views2D[i].id,
+      key: views2D[i].id,
+    };
+  }
+  return viewList;
 };
-
-export const getCorrectViewName = () => {
-  viewData[0] = {
-    viewName: "testName",
-    viewValue: "testValue",
-    key: "testKey",
-  };
-}
-
-export default viewDataWidget;
+export default viewWidget;

@@ -3,18 +3,11 @@
 * Licensed under the MIT License. See LICENSE.md in the project root for license terms.
 *--------------------------------------------------------------------------------------------*/
 import * as path from "path";
-import { RpcInterfaceDefinition, ElectronRpcManager, ViewDefinitionProps } from "@bentley/imodeljs-common";
+import { RpcInterfaceDefinition, ElectronRpcManager } from "@bentley/imodeljs-common";
 import { IModelJsElectronManager } from "@bentley/electron-manager";
 import * as electron from "electron";
 import * as configurationData from "../../common/settings.json";
 import * as electronFs from "fs";
-
-/** Gets the list of views for the iModel */
-// tslint:disable-next-line: prefer-const
-let viewList: ViewDefinitionProps[];
-export let getViewList = () => {
-  return viewList;
-};
 
 /** Method to change the iModelName stored in the config.json
  * @param iModelName string wsgId of the new iModel
