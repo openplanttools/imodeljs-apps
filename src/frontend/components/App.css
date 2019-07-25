@@ -24,6 +24,13 @@
   left: 20px;
 }
 
+.app-header .test {
+  position: absolute;
+  width: 150px;
+  right: 300px;
+  padding-top: 5px;
+}
+
 .app-header .reload {
   position: absolute;
   width: 150px;

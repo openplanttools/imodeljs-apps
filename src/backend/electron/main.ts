@@ -102,38 +102,16 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
     ElectronRpcManager.initializeImpl({}, rpcs);
     if (manager.mainWindow) {
       manager.mainWindow.show();
-      const menuBar: electron.Menu = electron.Menu.getApplicationMenu() as electron.Menu;
-      function refreshButtonClick(menuItem: electron.MenuItem, browserWindow: electron.BrowserWindow, event: Event): void {
-        menuItem;
-        browserWindow;
-        event;
-        return;
-      }
-      const refreshButtonOptions: MenuBarOptions = new MenuBarOptions("Refresh", undefined, refreshButtonClick);
-      const refreshButton: electron.MenuItem = new electron.MenuItem(refreshButtonOptions);
-      menuBar.append(refreshButton);
-      const drawingsButtonOptionsSubmenu0: MenuBarOptions = new MenuBarOptions("drawing0", undefined);
-      const drawingsButtonOptionsSubmenu1: MenuBarOptions = new MenuBarOptions("drawing1", undefined);
-      const drawingsButtonOptionsSubmenu2: MenuBarOptions = new MenuBarOptions("drawing2", undefined);
-      const drawingsButtonOptionsSubmenu: MenuBarOptions[] = [drawingsButtonOptionsSubmenu0, drawingsButtonOptionsSubmenu1, drawingsButtonOptionsSubmenu2];
-      const drawingsButtonOptions: MenuBarOptions = new MenuBarOptions("Drawings", drawingsButtonOptionsSubmenu);
-      const drawingsMenu: electron.MenuItem = new electron.MenuItem(drawingsButtonOptions);
-      menuBar.append(drawingsMenu);
-      manager.mainWindow.setMenu(menuBar);
+      // const menuBar: electron.Menu = electron.Menu.getApplicationMenu() as electron.Menu;
+      // const menuItem: electron.Menu = menuBar.items[2];
+      // getReloadIModelClick(menuItem);
     }
   })();
 }
 
-class MenuBarOptions implements electron.MenuItemConstructorOptions {
-  public label: string;
-  public submenu?: MenuBarOptions[];
-  public click?: (menuItem: electron.MenuItem, browserWindow: electron.BrowserWindow, event: Event) => void;
-  constructor(label: string, submenu?: MenuBarOptions[], click?: (menuItem: electron.MenuItem, browserWindow: electron.BrowserWindow, event: Event) => void) {
-    this.label = label;
-    this.submenu = submenu;
-    this.click = click;
-  }
-}
+// export function getReloadIModelClick(menuItem: electron.MenuItem) {
+//   return menuItem.click;
+// }
 
 export function displayConfig(jsonObject: any) {
   if (manager.mainWindow) {
