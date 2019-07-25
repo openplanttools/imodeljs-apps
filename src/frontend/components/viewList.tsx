@@ -10,7 +10,7 @@ export const viewList: any[] = [];
 /** Creates and exports widget with list of view definitions */
 const viewWidget = () => {
   // Sets the initial (displayed) option in dropdown list
-  const initVal = get3DViews()[0];
+  const initVal = get2DViews()[0];
   viewList[0] = {
     viewName: initVal.code.value,
     viewValue: initVal.id,
