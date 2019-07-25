@@ -91,20 +91,20 @@ export default class App extends React.Component<{}, AppState> {
   private async _getCorrectProjectName() {
 
     // Sets up listener for response back from main/server
-    ipcRenderer.once("readConfigResults", async (event: Event, configObject: any) => {
+    ipcRenderer.on("readConfigResults", async (event: Event, configObject: any) => {
       if (event) {
       }
 
       // assigns correct config value, changes the state of the app accordingly
       const configProject = configObject.project_name;
-      if (configObject.project_name.length < 1) {
+      if (configObject.project_name.length < 1 || configObject.imodel_name.length < 1) {
         ipcRenderer.send("popupWarning", "project");
         try {
           ipcRenderer.send("configDataMissing", "testing from app");
-          throw new ReferenceError("No project id has been specified");
         } catch (e) {
           console.log((e as Error).message);
           ipcRenderer.send("closeApplication", "Missing project");
+          throw new ReferenceError("No project id has been specified");
         }
       }
       this.setState(() => ({

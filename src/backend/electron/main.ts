@@ -152,7 +152,7 @@ export function displayConfig(jsonObject: any) {
   }
 }
 
-export function newWindow() {
+export function newWindow(event: electron.Event) {
   if (manager.mainWindow) {
     electron.dialog.showOpenDialog(manager.mainWindow, {
       title: "Select configuration File",
@@ -162,9 +162,23 @@ export function newWindow() {
       if (!filePaths) {
         electron.app.quit();
       }
+      fileSelectionData(filePaths, event);
     });
   }
 }
+
+export const fileSelectionData = (filePath: string[], event: electron.Event) => {
+  const configObject: any = "";
+  electronFs.readFile(filePath[0], (error: Error | null, data: any) => {
+    if (error) {
+      // tslint:disable-next-line:no-console
+      console.log("error " + error);
+    }
+    const jsonObject = JSON.parse(data);
+    event.sender.send("readConfigResults", jsonObject);
+  });
+  return configObject;
+};
 
 export function popupWarning(typeOfError?: string) {
   const errorMessage = "Warning! The " + typeOfError + " is missing from the settings file!";
