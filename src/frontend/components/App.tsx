@@ -526,6 +526,11 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
         // alert(e.message);
       }
       await this.onIModelSelected(imodel);
+
+      // update the select view dropdown list
+      const mainList = (document.getElementById("viewDropList")) as HTMLSelectElement;
+      mainList.options[0].innerHTML = views2D[0].code.value as string;
+      mainList.options[0].value = views2D[0].id as string;
     }
   }
 
