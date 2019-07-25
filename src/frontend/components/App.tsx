@@ -251,7 +251,7 @@ export default class App extends React.Component<{}, AppState> {
   }
 
   /** Picks the first available spatial view definition in the iModel */
-  private async getFirstViewDefinitionId(imodel: IModelConnection, viewId?: string): Promise<Id64String> {
+  private async getViewDefinitionId(imodel: IModelConnection, viewId?: string): Promise<Id64String> {
     const viewSpecs = await imodel.views.queryProps({});
 
     // Array of view definitions, eventually, all 3D view definitions could be changed
@@ -267,7 +267,10 @@ export default class App extends React.Component<{}, AppState> {
       throw new Error("No valid view definitions for selected iModel. Please select another one.");
     }
 
-    if (!views3D || !views2D) {
+    // if a view ID is provided, return the provided view ID
+    if (viewId) {
+      return viewId!;
+    } else { // otherwise, load all the available views and pick one by default
       views3D = [];
       views2D = [];
       for (const elem of acceptedViewSpecs) {
@@ -280,9 +283,7 @@ export default class App extends React.Component<{}, AppState> {
       for (let idx = 1; idx < acceptedViewSpecs.length; idx++) {
         views2D[idx - 1] = acceptedViewSpecs[idx];
       }
-      return views3D[0].id!;
-    } else {
-      return viewId!;
+      return views2D[0].id!;
     }
   }
 
@@ -302,7 +303,7 @@ export default class App extends React.Component<{}, AppState> {
     try {
       // Attempt to get a view definition
       // const viewDefinitionId = imodel ? await this.getSheetViews(imodel) : undefined;
-      const viewDefinitionId = imodel ? await this.getFirstViewDefinitionId(imodel, viewId) : undefined;
+      const viewDefinitionId = imodel ? await this.getViewDefinitionId(imodel, viewId) : undefined;
       this.setState({ imodel, viewDefinitionId });
     } catch (e) {
       // If failed, close the imodel and reset the state
@@ -446,7 +447,6 @@ export default class App extends React.Component<{}, AppState> {
 }
 
 /** React props for the open iModel button */
-/** React props for the open iModel button */
 interface OpenIModelButtonProps {
   imodelName: string;
   projectName: string;
@@ -468,9 +468,71 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
     isLoading: false,
   };
 
+  /** Finds project and iModel ID's using their names */
+  private async getIModelInfo(): Promise<{ projectId: string, imodelId: string }> {
+
+    const imodelName = this.props.imodelName;
+    const projectName = this.props.projectName;
+    // Requests a context and connection client to access the iModelHub, and retrieves a list of projects
+    requestContext = await AuthorizedFrontendRequestContext.create();
+    connectClient = new ConnectClient();
+
+    // Try catch block gets a project, if the project doesnt exist, throw an alert
+    try {
+      currentProject = await connectClient.getProject(requestContext, { $filter: `Name+eq+'${projectName}'` });
+    } catch (e) {
+      // alert(`Project with name "${projectName}" does not exist.`);
+      throw new Error(`Project with name "${projectName}" does not exist.`);
+    }
+
+    // Creates a new iModelQuery to connect to the database, and queries with specified context and project
+    // Then resolves that promise and sends that information to constiuent components that need the data
+    const imodelQuery = new IModelQuery();
+    imodelQuery.byName(imodelName);
+
+    // Gets the specific imodel, returns the project and imodel wsdId's to the functions handling initial startup/rendering
+    const imodels = await IModelApp.iModelClient.iModels.get(requestContext, currentProject.wsgId, imodelQuery);
+    if (imodels.length === 0) {
+      // alert(`iModel with name "${imodelName}" does not exist in project "${projectName}".`);
+      throw new Error(`iModel with name "${imodelName}" does not exist in project "${projectName}".`);
+    }
+    currentIModel = imodels[0].wsgId;
+
+    // Returns
+    return { projectId: currentProject.wsgId, imodelId: imodels[0].wsgId };
+  }
+
+  /** Handles iModel open event */
+  private async onIModelSelected(imodel: IModelConnection | undefined) {
+    this.props.onIModelSelected(imodel);
+    this.setState({ isLoading: false });
+  }
+
   /** Handles on-click for initial open iModel button */
   private _onClick = async () => {
-    // LOOKING TO IMPLEMENT CTRL+R
+    if (this.props.initialButton || !this.state.isLoading) {
+      this.setState({ isLoading: true });
+      let imodel: IModelConnection | undefined;
+      try {
+        // Attempt to open the imodel
+        if (this.props.offlineIModel) {
+          const offlineIModel = Config.App.getString("imjs_offline_imodel");
+          imodel = await IModelConnection.openSnapshot(offlineIModel);
+        } else {
+          const info = await this.getIModelInfo();
+          imodel = await IModelConnection.open(info.projectId, info.imodelId, OpenMode.Readonly);
+        }
+      } catch (e) {
+        // alert(e.message);
+      }
+      await this.onIModelSelected(imodel);
+    }
+  }
+
+  public componentWillMount() {
+
+    // tslint:disable-next-line: no-floating-promises
+    this._onClick();
   }
 
   /** Renders the button */

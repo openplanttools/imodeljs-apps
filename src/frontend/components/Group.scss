@@ -13,69 +13,27 @@ form {
   padding-inline: 15px;
   padding-top: 10px;
 }
-  // .mail {
-  // margin: auto;
-  // padding-top: 10px;
-  // padding-bottom: 10px;
-  // width: 400px;
-  // background : silver;
-  // border: 1px solid silver;
-  // }
-  // .mail h2 {
-  // margin-left: 38px;
-  // }
-  h2 {
-    font-size: 15pt;
-    align-self: center;
-    padding-bottom: 0;
-  }
-  .formField {
-    align-self: auto;
-    padding-bottom: 0;
-    padding-top: 0;
-  }
-  #openinput {
-    font-size: 15pt;
-  }
 
-  #submitt, #newImodel {
-    height: 30px;
-    display:inline-block;
-    align-self: auto;
-    background-color: rgba(192, 192, 192, 0.747);
-    color: black;
-    border: 1px solid black;
-  }
+h2 {
+  font-size: 15pt;
+  align-self: center;
+  padding-bottom: 0;
+}
+.formField {
+  align-self: auto;
+  padding-bottom: 0;
+  padding-top: 0;
+}
+#openinput {
+  font-size: 15pt;
+}
 
-  #submitt {
-    width: 80px;
-  }
-
-  #iModelDropList{
-    font-size: 10pt;
-  }
-  #iModelDropList-content a{
-    font-family: sans-serif;
-  }
-  #iModelDropList-content option:hover{
-    background-color: rgb(70, 69, 69);
-  }
-
-  #projectDropList{
-    font-size: 10pt;
-  }
-  #projectDropList-content a{
-    font-family: sans-serif;
-  }
-  #projectDropList-content option:hover{
-    background-color: rgb(70, 69, 69);
-  }
-
-  #newImodel{
-    width: 160px;
-  }
-
-  // .rq {
-  // color: #FF0000;
-  // font-size: 10pt;
-  // }
+#viewDropList{
+  font-size: 10pt;
+}
+#viewDropList-content a{
+  font-family: sans-serif;
+}
+#viewDropList-content option:hover{
+  background-color: rgb(70, 69, 69);
+}
