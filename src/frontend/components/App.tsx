@@ -164,8 +164,6 @@ export default class App extends React.Component<{}, AppState> {
 
   /** Changes the viewport to display a new drawing by drawing ID */
   public async changeView(newDrawingId: string, vp: ScreenViewport, doFit?: boolean) {
-    console.log("DRAWING ID");
-    console.log(newDrawingId);
     const view = vp.view;
     if (!(view instanceof DrawingViewState)) // This only works if the viewport is showing a DrawingView
       return;
@@ -280,16 +278,9 @@ export default class App extends React.Component<{}, AppState> {
         }
       }
       for (let idx = 1; idx < acceptedViewSpecs.length; idx++) {
-        console.log(acceptedViewSpecs[idx]);
         views2D[idx - 1] = acceptedViewSpecs[idx];
       }
-      console.log("VIEWS3D");
-      console.log(views3D);
-      console.log("VIEWS2D");
-      console.log(views2D);
-      // views2D[0].code.value;
-      // return acceptedViewSpecs[0].id!;
-      return views2D[0].id!;
+      return views3D[0].id!;
     } else {
       return viewId!;
     }
@@ -350,7 +341,7 @@ export default class App extends React.Component<{}, AppState> {
 
   /** Finds project and iModel ID's using their names */
   private async getIModelInfo(projectName: string, imodelName: string): Promise<{ projectId: string, imodelId: string }> {
-    console.log(projectName + "PORJECT" + 2);
+    console.log(projectName + "PROJECT" + 2);
     console.log("IMODELNAME" + imodelName + 2);
     // Requests a context and connection client to access the iModelHub, and retrieves a list of projects
     requestContext = await AuthorizedFrontendRequestContext.create();
@@ -390,7 +381,7 @@ export default class App extends React.Component<{}, AppState> {
 
   /** Handles on-click for initial open iModel button */
   private _startProcess = async (projectName: string, imodelName: string) => {
-    console.log(projectName + "PORJECT");
+    console.log(projectName + "PROJECT");
     console.log("IMODELNAME" + imodelName);
     console.log(this.state.iModelName + " PROJECT in start of process" + this.state.projectName);
     let imodel: IModelConnection | undefined;
@@ -455,6 +446,7 @@ export default class App extends React.Component<{}, AppState> {
 }
 
 /** React props for the open iModel button */
+/** React props for the open iModel button */
 interface OpenIModelButtonProps {
   imodelName: string;
   projectName: string;
@@ -476,71 +468,9 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
     isLoading: false,
   };
 
-  /** Finds project and iModel ID's using their names */
-  private async getIModelInfo(): Promise<{ projectId: string, imodelId: string }> {
-
-    const imodelName = this.props.imodelName;
-    const projectName = this.props.projectName;
-    // Requests a context and connection client to access the iModelHub, and retrieves a list of projects
-    requestContext = await AuthorizedFrontendRequestContext.create();
-    connectClient = new ConnectClient();
-
-    // Try catch block gets a project, if the project doesnt exist, throw an alert
-    try {
-      currentProject = await connectClient.getProject(requestContext, { $filter: `Name+eq+'${projectName}'` });
-    } catch (e) {
-      // alert(`Project with name "${projectName}" does not exist.`);
-      throw new Error(`Project with name "${projectName}" does not exist.`);
-    }
-
-    // Creates a new iModelQuery to connect to the database, and queries with specified context and project
-    // Then resolves that promise and sends that information to constiuent components that need the data
-    const imodelQuery = new IModelQuery();
-    imodelQuery.byName(imodelName);
-
-    // Gets the specific imodel, returns the project and imodel wsdId's to the functions handling initial startup/rendering
-    const imodels = await IModelApp.iModelClient.iModels.get(requestContext, currentProject.wsgId, imodelQuery);
-    if (imodels.length === 0) {
-      // alert(`iModel with name "${imodelName}" does not exist in project "${projectName}".`);
-      throw new Error(`iModel with name "${imodelName}" does not exist in project "${projectName}".`);
-    }
-    currentIModel = imodels[0].wsgId;
-
-    // Returns
-    return { projectId: currentProject.wsgId, imodelId: imodels[0].wsgId };
-  }
-
-  /** Handles iModel open event */
-  private async onIModelSelected(imodel: IModelConnection | undefined) {
-    this.props.onIModelSelected(imodel);
-    this.setState({ isLoading: false });
-  }
-
   /** Handles on-click for initial open iModel button */
   private _onClick = async () => {
-    if (this.props.initialButton || !this.state.isLoading) {
-      this.setState({ isLoading: true });
-      let imodel: IModelConnection | undefined;
-      try {
-        // Attempt to open the imodel
-        if (this.props.offlineIModel) {
-          const offlineIModel = Config.App.getString("imjs_offline_imodel");
-          imodel = await IModelConnection.openSnapshot(offlineIModel);
-        } else {
-          const info = await this.getIModelInfo();
-          imodel = await IModelConnection.open(info.projectId, info.imodelId, OpenMode.Readonly);
-        }
-      } catch (e) {
-        // alert(e.message);
-      }
-      await this.onIModelSelected(imodel);
-    }
-  }
-
-  public componentWillMount() {
-
-    // tslint:disable-next-line: no-floating-promises
-    this._onClick();
+    // LOOKING TO IMPLEMENT CTRL+R
   }
 
   /** Renders the button */
@@ -597,7 +527,7 @@ class IModelComponents extends React.PureComponent<IModelComponentsProps, IModel
             </div>
             <div className="bottom">
               <div className="sub">
-                <GroupWidget view={"test"}/>
+                <GroupWidget view={"test"} />
                 <PropertiesWidget imodel={this.props.imodel} rulesetId={rulesetId} />
               </div>
             </div>

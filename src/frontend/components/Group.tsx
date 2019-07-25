@@ -103,6 +103,7 @@ export class ViewList extends React.Component<ViewListProps, { value: string }> 
 
       // updates the primary node of the select element
       mainList.options[0].innerHTML = mainList.options[mainList.selectedIndex].innerText;
+      mainList.options[0].value = mainList.options[mainList.selectedIndex].value;
 
       viewContainer.setNewView(mainList.options[mainList.selectedIndex].innerText);
 
