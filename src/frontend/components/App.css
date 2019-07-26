@@ -27,8 +27,8 @@
 .app-header .view {
   position: absolute;
   width: 300px;
-  right: 150px;
-  padding-top: 5px;
+  right: 200px;
+  padding-top: 10px;
   padding-bottom: 5px;
 }
 
@@ -68,7 +68,7 @@
 }
 
 .app .app-header .expand-menu {
-  font-size: 18px;
+  font-size: 24px;
 }
 
 .app-content {
