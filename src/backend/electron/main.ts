@@ -31,16 +31,15 @@ export const readData = (event?: electron.Event, arg?: string) => {
   electronFs.readFile(path.join(__dirname, "../../common/settings.json"), (error: Error | null, data: any) => {
     if (error) {
       // tslint:disable-next-line:no-console
-      console.log("error " + error);
+      console.log("error " + error + arg);
     }
     const jsonObject = JSON.parse(data);
-    if (event) {
-      if (arg === "imodel") {
-        event.sender.send("readConfigResultsIModel", jsonObject);
-        displayConfig(jsonObject);
-      } else {
+    if (jsonObject.imodel_name.length < 1 || jsonObject.project_name.length < 1) {
+      if(event)
+      newWindow(event);
+    } else if (event) {
+        // displayConfig(jsonObject);
         event.sender.send("readConfigResults", jsonObject);
-      }
     }
   });
   return configObject;
@@ -70,7 +69,7 @@ export const changeDrawingName = (drawingName: string) => {
     drawing_name: drawingName,
   };
   const stringifiedConfig = JSON.stringify(newConfig);
-  electronFs.writeFileSync(path.join(__dirname, "../../common/config.json"), stringifiedConfig);
+  electronFs.writeFileSync(path.join(__dirname, "../../common/settings.json"), stringifiedConfig);
 };
 
 // The following four variables are bound to functions, and serve as getters and settings for backend-frontend communication
@@ -128,10 +127,8 @@ export function newWindow(event: electron.Event) {
     electron.dialog.showOpenDialog(manager.mainWindow, {
       title: "Select configuration File",
       properties: ["openFile", "multiSelections"],
-
     }, (filePaths) => {
       if (!filePaths) {
-        electron.app.quit();
       }
       fileSelectionData(filePaths, event);
     });
@@ -146,13 +143,34 @@ export const fileSelectionData = (filePath: string[], event: electron.Event) => 
       console.log("error " + error);
     }
     const jsonObject = JSON.parse(data);
-    event.sender.send("readConfigResults", jsonObject);
+    if(jsonObject.imodel_name.length < 1 || jsonObject.project_name.length < 1) {
+      newWindow(event);
+    } else {
+      editConfig(jsonObject.project_name, jsonObject.imodel_name);
+      event.sender.send("readConfigResults", jsonObject);
+    }
   });
   return configObject;
 };
 
+/** Method to change the iModelName stored in the config.json
+ * @param drawingName string wsgId of the new drawing
+ */
+export const editConfig = (projectName: string, imodelName: string) => {
+  const newConfig = {
+    imodel_name: imodelName,
+    project_name: projectName,
+    drawing_name: "",
+  };
+  const stringifiedConfig = JSON.stringify(newConfig);
+  electronFs.writeFileSync(path.join(__dirname, "../../common/settings.json"), stringifiedConfig);
+};
+
 export function popupWarning(typeOfError?: string) {
-  const errorMessage = "Warning! The " + typeOfError + " is missing from the settings file!";
+  if(typeOfError) {
+    console.log(typeOfError + " is the error");
+  }
+  const errorMessage = "Warning! The current settings file is incomplete!";
   if (manager.mainWindow) {
     electron.dialog.showMessageBox(manager.mainWindow, { type: "error", message: errorMessage, title: "Error" });
   }
