@@ -42,12 +42,12 @@ export default class TitleBar extends React.Component<TitleProps, TitleState> {
 
 // tslint:disable-next-line:variable-name
 export const StyledWrapper = styled.span`
-padding-top: 10px;
-padding-bottom: 0px;
+padding-top: 7px;
+padding-bottom: 3px;
 padding-left: 0px;
 justifyContent: space-between;
 font-weight: bold;
-font-size: large;
+font-size: 16pt;
 display: flex;
 flex-direction: row;
 overflow: hidden;

@@ -3,18 +3,11 @@
 * Licensed under the MIT License. See LICENSE.md in the project root for license terms.
 *--------------------------------------------------------------------------------------------*/
 import * as path from "path";
-import { RpcInterfaceDefinition, ElectronRpcManager, ViewDefinitionProps } from "@bentley/imodeljs-common";
+import { RpcInterfaceDefinition, ElectronRpcManager } from "@bentley/imodeljs-common";
 import { IModelJsElectronManager } from "@bentley/electron-manager";
 import * as electron from "electron";
 import * as configurationData from "../../common/settings.json";
 import * as electronFs from "fs";
-
-/** Gets the list of views for the iModel */
-// tslint:disable-next-line: prefer-const
-let viewList: ViewDefinitionProps[];
-export let getViewList = () => {
-  return viewList;
-};
 
 /** Method to change the iModelName stored in the config.json
  * @param iModelName string wsgId of the new iModel
@@ -108,38 +101,16 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
     ElectronRpcManager.initializeImpl({}, rpcs);
     if (manager.mainWindow) {
       manager.mainWindow.show();
-      const menuBar: electron.Menu = electron.Menu.getApplicationMenu() as electron.Menu;
-      function refreshButtonClick(menuItem: electron.MenuItem, browserWindow: electron.BrowserWindow, event: Event): void {
-        menuItem;
-        browserWindow;
-        event;
-        return;
-      }
-      const refreshButtonOptions: MenuBarOptions = new MenuBarOptions("Refresh", undefined, refreshButtonClick);
-      const refreshButton: electron.MenuItem = new electron.MenuItem(refreshButtonOptions);
-      menuBar.append(refreshButton);
-      const drawingsButtonOptionsSubmenu0: MenuBarOptions = new MenuBarOptions("drawing0", undefined);
-      const drawingsButtonOptionsSubmenu1: MenuBarOptions = new MenuBarOptions("drawing1", undefined);
-      const drawingsButtonOptionsSubmenu2: MenuBarOptions = new MenuBarOptions("drawing2", undefined);
-      const drawingsButtonOptionsSubmenu: MenuBarOptions[] = [drawingsButtonOptionsSubmenu0, drawingsButtonOptionsSubmenu1, drawingsButtonOptionsSubmenu2];
-      const drawingsButtonOptions: MenuBarOptions = new MenuBarOptions("Drawings", drawingsButtonOptionsSubmenu);
-      const drawingsMenu: electron.MenuItem = new electron.MenuItem(drawingsButtonOptions);
-      menuBar.append(drawingsMenu);
-      manager.mainWindow.setMenu(menuBar);
+      // const menuBar: electron.Menu = electron.Menu.getApplicationMenu() as electron.Menu;
+      // const menuItem: electron.Menu = menuBar.items[2];
+      // getReloadIModelClick(menuItem);
     }
   })();
 }
 
-class MenuBarOptions implements electron.MenuItemConstructorOptions {
-  public label: string;
-  public submenu?: MenuBarOptions[];
-  public click?: (menuItem: electron.MenuItem, browserWindow: electron.BrowserWindow, event: Event) => void;
-  constructor(label: string, submenu?: MenuBarOptions[], click?: (menuItem: electron.MenuItem, browserWindow: electron.BrowserWindow, event: Event) => void) {
-    this.label = label;
-    this.submenu = submenu;
-    this.click = click;
-  }
-}
+// export function getReloadIModelClick(menuItem: electron.MenuItem) {
+//   return menuItem.click;
+// }
 
 export function displayConfig(jsonObject: any) {
   if (manager.mainWindow) {
