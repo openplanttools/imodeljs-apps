@@ -24,6 +24,7 @@ import { ColorDef, ViewDefinitionProps } from "@bentley/imodeljs-common";
 import TitleBar from "./Title";
 import { ipcRenderer, Event } from "electron";
 import { GroupWidget } from "./Group";
+import { fitView } from "./Toolbar";
 // tslint:disable: no-console
 // cSpell:ignore imodels
 
@@ -305,6 +306,20 @@ export default class App extends React.Component<{}, AppState> {
       // const viewDefinitionId = imodel ? await this.getSheetViews(imodel) : undefined;
       const viewDefinitionId = imodel ? await this.getViewDefinitionId(imodel, viewId) : undefined;
       this.setState({ imodel, viewDefinitionId });
+      let is3D: boolean = false;
+
+      // fits the view (work in progress)
+      if (viewId) {
+        for (const elem of views3D) {
+          if (viewId === elem.id) {
+            is3D = true;
+          }
+        }
+      }
+      if (!is3D) {
+        console.log("HERE!!!!!!!!!");
+        fitView();
+      }
     } catch (e) {
       // If failed, close the imodel and reset the state
       if (this.state.offlineIModel) {

@@ -95,7 +95,7 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
         preload: path.resolve("preload.js"),
         experimentalFeatures: true, // Needed for CSS Grid support
       },
-      autoHideMenuBar: false,
+      autoHideMenuBar: true,
       show: false,
     });
     // tell ElectronRpcManager which RPC interfaces to handle
