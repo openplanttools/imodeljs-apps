@@ -54,7 +54,7 @@ export class GroupWidget extends React.Component<GroupProps, { value: string }> 
     return (
       <div>
         <link rel="stylesheet" href="./Group.scss" type="text/css" />
-        <div className="midLeft">
+        <div className="viewDropList">
           <ViewList value = {this.props.view}/>
         </div>
       </div>

@@ -89,7 +89,7 @@ export default class App extends React.Component<{}, AppState> {
       drawingName: "",
       offlineIModel: false,
       menuOpened: false,
-      menuName: "Expand Menu",
+      menuName: "+",
     };
     thisApp = this;
   }
@@ -331,11 +331,11 @@ export default class App extends React.Component<{}, AppState> {
     });
     if (this.state.menuOpened) {
       this.setState({
-        menuName: "Expand Menu",
+        menuName: "+",
       });
     } else {
       this.setState({
-        menuName: "Collapse Menu",
+        menuName: "-",
       });
     }
   }
@@ -407,21 +407,26 @@ export default class App extends React.Component<{}, AppState> {
 
   /** Renders the app */
   public render() {
+    let view: React.ReactNode;
     let ui: React.ReactNode;
 
     if (this.state.user.isLoading || window.location.href.includes(this._signInRedirectUri)) {
       // If user is currently being loaded, just tell that
+      view = (<></>);
       ui = `${IModelApp.i18n.translate("SimpleViewer:signing-in")}...`;
     } else if (!this.state.user.accessToken && !this.state.offlineIModel) {
       // If user doesn't have and access token, show sign in page
+      view = (<></>);
       ui = (<SignIn onSignIn={this._onStartSignin} onOffline={this._onOffline} />);
     } else if (!this.state.imodel || !this.state.viewDefinitionId) {
       // if we don't have an imodel / view definition id - render a button that initiates imodel open
       // tslint:disable-next-line: no-floating-promises
+      view = (<></>);
       ui = (<span className="open-imodel"><Spinner size={SpinnerSize.XLarge} /></span>);
     } else {
       // If we do have an imodel and view definition id - render imodel components
       const titleName: string = "Project: " + this.state.projectName + ", iModel: " + this.state.iModelName; // + ", Drawing: " + Config.App.get("imjs_test_drawing") (not working yet);
+      view = <GroupWidget view={"test"} />;
       ui = (<IModelComponents imodel={this.state.imodel} viewDefinitionId={this.state.viewDefinitionId} menuOpened={this.state.menuOpened} title={titleName} />);
     }
     // Render the app
@@ -430,6 +435,9 @@ export default class App extends React.Component<{}, AppState> {
         <div className="app-header">
           <div className="text">
             <TitleBar projectName={this.state.projectName} drawingName={this.state.drawingName} iModelName={this.state.iModelName} />
+          </div>
+          <div className="view">
+            {view}
           </div>
           <div className="reload">
             <OpenIModelButton accessToken={this.state.user.accessToken} offlineIModel={this.state.offlineIModel} onIModelSelected={this._onIModelSelected} imodelName={this.state.iModelName} projectName={this.state.projectName} initialButton={true} />
@@ -544,7 +552,7 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
   public render() {
     return (
       <Button size={ButtonSize.Default} buttonType={ButtonType.Primary} className="button-reload-imodel" onClick={this._onClick} >
-        <span>Reload iModel</span>
+        <span>Refresh iModel</span>
         {this.state.isLoading ? <span style={{ marginLeft: "8px" }}><Spinner size={SpinnerSize.Small} /></span> : undefined}
       </Button>
     );
@@ -562,6 +570,7 @@ interface IModelComponentsProps {
 /** The live state for an iModel component */
 interface IModelComponentState {
   iModel: IModelConnection;
+  viewId: Id64String;
 }
 
 /** Renders a viewport, a tree, a property grid and a table */
@@ -572,6 +581,7 @@ class IModelComponents extends React.PureComponent<IModelComponentsProps, IModel
     super(props);
     this.state = {
       iModel: this.props.imodel,
+      viewId: this.props.viewDefinitionId,
     };
   }
 
@@ -581,12 +591,17 @@ class IModelComponents extends React.PureComponent<IModelComponentsProps, IModel
     // Can be found at `assets/presentation_rules/Default.PresentationRuleSet.xml`
     const rulesetId = "Default";
 
+    // Updates the view ID when a new view is selected
+    this.setState(() => ({
+      viewId: this.props.viewDefinitionId,
+    }));
+
     // Open with Menu opened
     if (this.props.menuOpened) {
       return (
         <div className="app-content">
           <div className="top-left" id="viewport1">
-            <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={this.props.viewDefinitionId} />
+            <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={this.state.viewId} />
           </div>
           <div className="right">
             <div className="top">
@@ -594,7 +609,6 @@ class IModelComponents extends React.PureComponent<IModelComponentsProps, IModel
             </div>
             <div className="bottom">
               <div className="sub">
-                <GroupWidget view={"test"} />
                 <PropertiesWidget imodel={this.props.imodel} rulesetId={rulesetId} />
               </div>
             </div>
@@ -608,7 +622,7 @@ class IModelComponents extends React.PureComponent<IModelComponentsProps, IModel
       return (
         <div className="app-content">
           <div className="top-left-expanded" id="viewport1">
-            <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={this.props.viewDefinitionId} />
+            <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={this.state.viewId} />
           </div>
         </div>
       );

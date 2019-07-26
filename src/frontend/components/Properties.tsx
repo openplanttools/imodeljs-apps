@@ -37,6 +37,7 @@ export type Props = IModelConnectionProps | DataProviderProps;
 export default class SimplePropertiesComponent extends React.PureComponent<Props> {
   private getDataProvider(props: Props) {
     if ((props as any).dataProvider) {
+      console.log("UPDATE HERE");
       const providerProps = props as DataProviderProps;
       return providerProps.dataProvider;
     } else {

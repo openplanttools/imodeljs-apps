@@ -24,25 +24,28 @@
   left: 20px;
 }
 
-.app-header .test {
+.app-header .view {
   position: absolute;
-  width: 150px;
-  right: 300px;
+  width: 300px;
+  right: 150px;
   padding-top: 5px;
+  padding-bottom: 5px;
 }
 
 .app-header .reload {
   position: absolute;
-  width: 150px;
-  right: 150px;
-  padding-top: 5px;
+  width: 200px;
+  right: 50px;
+  padding-top: 3px;
+  padding-bottom: 3px;
 }
 
 .app-header .menu {
   position: absolute;
-  width: 125px;
+  width: 50px;
   right: 0px;
-  padding-top: 5px;
+  padding-top: 3px;
+  padding-bottom: 3px;
 }
 
 .app .button-open-imodel {
@@ -58,6 +61,14 @@
   height: 80%;
   align-self: auto;
   margin-left: 45%;
+}
+
+.app .app-header .button-reload-imodel {
+  font-size: 18px;
+}
+
+.app .app-header .expand-menu {
+  font-size: 18px;
 }
 
 .app-content {
