@@ -159,7 +159,6 @@ export function newWindow(event: electron.Event) {
     }, (filePaths) => {
       if (!filePaths) {
       }
-      console.log(filePaths);
       fileSelectionData(filePaths, event);
     });
   }
@@ -187,16 +186,13 @@ export const fileSelectionData = (filePath: string[], event: electron.Event) => 
  * @param drawingName string wsgId of the new drawing
  */
 export const editConfig = (projectName: string, imodelName: string) => {
-  console.log("In edit config method");
   const newConfig = {
     imodel_name: imodelName,
     project_name: projectName,
     drawing_name: "",
   };
   const stringifiedConfig = JSON.stringify(newConfig);
-  console.log("Edited the config");
   electronFs.writeFileSync(path.join(__dirname, "../../common/settings.json"), stringifiedConfig);
-  console.log("the config has now been edited");
 };
 
 export function popupWarning(typeOfError?: string) {

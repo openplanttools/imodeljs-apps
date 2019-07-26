@@ -89,9 +89,6 @@ export default class App extends React.Component<{}, AppState> {
       menuName: "Expand Menu",
       shouldCall: false,
     };
-    console.log("IN THE CONSTRUCTOR AGAINNNNNNNNNNNNNN");
-    console.log("currentProject : currentIModel " + currentProjectName + " " + currentIModelName);
-    console.log("current State " + this.state.iModelName + " " + this.state.projectName);
     this.makeCalls();
   }
 
@@ -109,14 +106,8 @@ export default class App extends React.Component<{}, AppState> {
         projectName: configObject.project_name,
         iModelName: configObject.imodel_name,
       }));
-      console.log("Right before setting current project name");
-      console.log("currentProject : currentIModel " + currentProjectName + " " + currentIModelName);
-      console.log("current State " + this.state.iModelName + " " + this.state.projectName);
       currentProjectName = configObject.project_name;
       currentIModelName = configObject.imodel_name;
-      console.log("Right after setting current project name");
-      console.log("currentProject : currentIModel " + currentProjectName + " " + currentIModelName);
-      console.log("current State " + this.state.iModelName + " " + this.state.projectName);
       if (configObject.project_name && configObject.imodel_name) {
         await this._startProcess(configObject.project_name, configObject.imodel_name);
       }
