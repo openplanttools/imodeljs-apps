@@ -40,7 +40,7 @@ export const select = () => {
   IModelApp.tools.run(SelectionTool.toolId);
 };
 
-const fitView = () => {
+export const fitView = () => {
   IModelApp.tools.run(FitViewTool.toolId, IModelApp.viewManager.selectedView);
 };
 

@@ -24,6 +24,7 @@ import { ColorDef, ViewDefinitionProps } from "@bentley/imodeljs-common";
 import TitleBar from "./Title";
 import { ipcRenderer, Event } from "electron";
 import { GroupWidget } from "./Group";
+import { fitView } from "./Toolbar";
 // tslint:disable: no-console
 // cSpell:ignore imodels
 
@@ -301,6 +302,20 @@ export default class App extends React.Component<{}, AppState> {
       // const viewDefinitionId = imodel ? await this.getSheetViews(imodel) : undefined;
       const viewDefinitionId = imodel ? await this.getViewDefinitionId(imodel, viewId) : undefined;
       this.setState({ imodel, viewDefinitionId });
+      let is3D: boolean = false;
+
+      // fits the view (work in progress)
+      if (viewId) {
+        for (const elem of views3D) {
+          if (viewId === elem.id) {
+            is3D = true;
+          }
+        }
+      }
+      if (!is3D) {
+        console.log("HERE!!!!!!!!!");
+        fitView();
+      }
     } catch (e) {
       // If failed, close the imodel and reset the state
       if (this.state.offlineIModel) {
@@ -336,8 +351,6 @@ export default class App extends React.Component<{}, AppState> {
 
   /** Finds project and iModel ID's using their names */
   private async getIModelInfo(projectName: string, imodelName: string): Promise<{ projectId: string, imodelId: string }> {
-    console.log(projectName + "PROJECT" + 2);
-    console.log("IMODELNAME" + imodelName + 2);
     // Requests a context and connection client to access the iModelHub, and retrieves a list of projects
     requestContext = await AuthorizedFrontendRequestContext.create();
     connectClient = new ConnectClient();
@@ -375,15 +388,10 @@ export default class App extends React.Component<{}, AppState> {
 
   /** Handles on-click for initial open iModel button */
   private _startProcess = async (projectName: string, imodelName: string) => {
-    console.log(projectName + "PROJECT");
-    console.log("IMODELNAME" + imodelName);
-    console.log(this.state.iModelName + " PROJECT in start of process" + this.state.projectName);
     let imodel: IModelConnection | undefined;
     try {
 
       // Attempt to open the imodel
-      console.log(projectName + "PROJECT" + 3);
-      console.log("IMODELNAME" + imodelName + 3);
       const info = await this.getIModelInfo(projectName, imodelName);
       imodel = await IModelConnection.open(info.projectId, info.imodelId, OpenMode.Readonly);
       await this.onIModelSelected(imodel);
