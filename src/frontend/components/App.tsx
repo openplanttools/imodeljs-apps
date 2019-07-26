@@ -302,20 +302,6 @@ export default class App extends React.Component<{}, AppState> {
       // const viewDefinitionId = imodel ? await this.getSheetViews(imodel) : undefined;
       const viewDefinitionId = imodel ? await this.getViewDefinitionId(imodel, viewId) : undefined;
       this.setState({ imodel, viewDefinitionId });
-      let is3D: boolean = false;
-
-      // fits the view (work in progress)
-      if (viewId) {
-        for (const elem of views3D) {
-          if (viewId === elem.id) {
-            is3D = true;
-          }
-        }
-      }
-      if (!is3D) {
-        console.log("HERE!!!!!!!!!");
-        fitView();
-      }
     } catch (e) {
       // If failed, close the imodel and reset the state
       if (this.state.offlineIModel) {
@@ -431,6 +417,7 @@ export default class App extends React.Component<{}, AppState> {
       const titleName: string = "Project: " + this.state.projectName + ", iModel: " + this.state.iModelName; // + ", Drawing: " + Config.App.get("imjs_test_drawing") (not working yet);
       view = <GroupWidget view={"test"} />;
       ui = (<IModelComponents imodel={this.state.imodel} viewDefinitionId={this.state.viewDefinitionId} menuOpened={this.state.menuOpened} title={titleName} />);
+      fitView();
     }
     // Render the app
     return (
