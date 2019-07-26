@@ -6,7 +6,7 @@ import * as React from "react";
 import { Id64String, OpenMode } from "@bentley/bentleyjs-core";
 import { Range3d } from "@bentley/geometry-core";
 import { AccessToken, ConnectClient, IModelQuery, Project, Config } from "@bentley/imodeljs-clients";
-import { IModelApp, IModelConnection, FrontendRequestContext, AuthorizedFrontendRequestContext, DrawingViewState, ScreenViewport, EmphasizeElements, FeatureOverrideType } from "@bentley/imodeljs-frontend";
+import { IModelApp, IModelConnection, FrontendRequestContext, AuthorizedFrontendRequestContext, DrawingViewState, ScreenViewport, EmphasizeElements, FeatureOverrideType} from "@bentley/imodeljs-frontend";
 import { Presentation, SelectionChangeEventArgs, ISelectionProvider } from "@bentley/presentation-frontend";
 import { Button, ButtonSize, ButtonType, Spinner, SpinnerSize } from "@bentley/ui-core";
 import { SignIn } from "@bentley/ui-components";
@@ -34,6 +34,8 @@ let currentProject: Project;
 let currentIModel: string;
 let views3D: ViewDefinitionProps[];
 let views2D: ViewDefinitionProps[];
+let currentProjectName: string = "";
+let currentIModelName: string = "";
 
 // Getters for instance variables
 export function getCurrentProject() {
@@ -65,6 +67,7 @@ export interface AppState {
   viewDefinitionId?: Id64String;
   menuOpened: boolean;
   menuName: string;
+  shouldCall: boolean;
 }
 
 /** A component the renders the whole application UI */
@@ -78,13 +81,18 @@ export default class App extends React.Component<{}, AppState> {
         isLoading: false,
         accessToken: undefined,
       },
-      projectName: "",
-      iModelName: "",
+      projectName: currentProjectName,
+      iModelName: currentIModelName,
       drawingName: "",
       offlineIModel: false,
       menuOpened: false,
       menuName: "Expand Menu",
+      shouldCall: false,
     };
+    console.log("IN THE CONSTRUCTOR AGAINNNNNNNNNNNNNN");
+    console.log("currentProject : currentIModel " + currentProjectName + " " + currentIModelName);
+    console.log("current State " + this.state.iModelName + " " + this.state.projectName);
+    this.makeCalls();
   }
 
   /** Gets the current desired project as saved either from the settings.json file or from the Config.App singleton */
@@ -93,26 +101,24 @@ export default class App extends React.Component<{}, AppState> {
     // Sets up listener for response back from main/server
     ipcRenderer.on("readConfigResults", async (event: Event, configObject: any) => {
       if (event) {
+        console.log(event);
       }
 
       // assigns correct config value, changes the state of the app accordingly
-      const configProject = configObject.project_name;
-      if (configObject.project_name.length < 1 || configObject.imodel_name.length < 1) {
-        ipcRenderer.send("popupWarning", "project");
-        try {
-          ipcRenderer.send("configDataMissing", "testing from app");
-        } catch (e) {
-          console.log((e as Error).message);
-          ipcRenderer.send("closeApplication", "Missing project");
-          throw new ReferenceError("No project id has been specified");
-        }
-      }
       this.setState(() => ({
-        projectName: configProject,
+        projectName: configObject.project_name,
         iModelName: configObject.imodel_name,
       }));
-      if (configProject && configObject.imodel_name) {
-        await this._startProcess(configProject, configObject.imodel_name);
+      console.log("Right before setting current project name");
+      console.log("currentProject : currentIModel " + currentProjectName + " " + currentIModelName);
+      console.log("current State " + this.state.iModelName + " " + this.state.projectName);
+      currentProjectName = configObject.project_name;
+      currentIModelName = configObject.imodel_name;
+      console.log("Right after setting current project name");
+      console.log("currentProject : currentIModel " + currentProjectName + " " + currentIModelName);
+      console.log("current State " + this.state.iModelName + " " + this.state.projectName);
+      if (configObject.project_name && configObject.imodel_name) {
+        await this._startProcess(configObject.project_name, configObject.imodel_name);
       }
     });
 
@@ -132,7 +138,6 @@ export default class App extends React.Component<{}, AppState> {
   /** React method, after a component mounted sets up non-ui portions */
   public componentDidMount() {
     // tslint:disable-next-line: no-floating-promises
-    this.makeCalls();
     // Subscribe for unified selection changes
     Presentation.selection.selectionChange.addListener(this._onSelectionChanged);
 
@@ -142,6 +147,7 @@ export default class App extends React.Component<{}, AppState> {
       SimpleViewerApp.oidcClient.getAccessToken(new FrontendRequestContext()) // tslint:disable-line: no-floating-promises
         .then((accessToken: AccessToken | undefined) => {
           this.setState((prev) => ({ user: { ...prev.user, accessToken, isLoading: false } }));
+          // tslint:disable-next-line: no-floating-promises
         });
     }
   }
@@ -295,7 +301,7 @@ export default class App extends React.Component<{}, AppState> {
       } else {
         await imodel.close();
       }
-     // this.setState({ imodel: undefined, viewDefinitionId: undefined });
+      // this.setState({ imodel: undefined, viewDefinitionId: undefined });
     }
   }
 
@@ -372,7 +378,12 @@ export default class App extends React.Component<{}, AppState> {
   }
 
   private async makeCalls() {
-    await this._getCorrectProjectName();
+    console.log("IN MAKE CALLS" + this.state.projectName + this.state.iModelName);
+    if(this.state.projectName.length < 1 || this.state.iModelName.length < 1) {
+     await this._getCorrectProjectName();
+    } else {
+      await this._startProcess(this.state.projectName, this.state.iModelName);
+    }
   }
 
   /** Renders the app */
@@ -559,7 +570,7 @@ class IModelComponents extends React.PureComponent<IModelComponentsProps, IModel
             </div>
             <div className="bottom">
               <div className="sub">
-                <GroupWidget view={"test"}/>
+                <GroupWidget view={"test"} />
                 <PropertiesWidget imodel={this.props.imodel} rulesetId={rulesetId} />
               </div>
             </div>
