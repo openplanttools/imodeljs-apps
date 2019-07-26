@@ -99,21 +99,20 @@ export default class App extends React.Component<{}, AppState> {
   private async _getCorrectProjectName() {
 
     // Sets up listener for response back from main/server
-    ipcRenderer.once("readConfigResults", async (event: Event, configObject: any) => {
+    ipcRenderer.on("readConfigResults", async (event: Event, configObject: any) => {
       if (event) {
-        console.log(configObject);
       }
 
       // assigns correct config value, changes the state of the app accordingly
       const configProject = configObject.project_name;
-      if (configObject.project_name.length < 1) {
+      if (configObject.project_name.length < 1 || configObject.imodel_name.length < 1) {
         ipcRenderer.send("popupWarning", "project");
         try {
           ipcRenderer.send("configDataMissing", "testing from app");
-          throw new ReferenceError("No project id has been specified");
         } catch (e) {
           console.log((e as Error).message);
           ipcRenderer.send("closeApplication", "Missing project");
+          throw new ReferenceError("No project id has been specified");
         }
       }
       this.setState(() => ({
@@ -328,8 +327,6 @@ export default class App extends React.Component<{}, AppState> {
         await imodel.close();
       }
      // this.setState({ imodel: undefined, viewDefinitionId: undefined });
-      console.log(e + "IN ONIMODEL");
-      console.log(e.message);
     }
   }
 
@@ -357,8 +354,6 @@ export default class App extends React.Component<{}, AppState> {
 
   /** Finds project and iModel ID's using their names */
   private async getIModelInfo(projectName: string, imodelName: string): Promise<{ projectId: string, imodelId: string }> {
-    console.log(projectName + "PROJECT" + 2);
-    console.log("IMODELNAME" + imodelName + 2);
     // Requests a context and connection client to access the iModelHub, and retrieves a list of projects
     requestContext = await AuthorizedFrontendRequestContext.create();
     connectClient = new ConnectClient();
@@ -368,7 +363,6 @@ export default class App extends React.Component<{}, AppState> {
       currentProject = await connectClient.getProject(requestContext, { $filter: `Name+eq+'${projectName}'` });
     } catch (e) {
       // alert(`Project with name "${projectName}" does not exist.`);
-      console.log("in there");
       throw new Error(`Project with name "${projectName}" does not exist.`);
     }
 
@@ -397,22 +391,14 @@ export default class App extends React.Component<{}, AppState> {
 
   /** Handles on-click for initial open iModel button */
   private _startProcess = async (projectName: string, imodelName: string) => {
-    console.log(projectName + "PROJECT");
-    console.log("IMODELNAME" + imodelName);
-    console.log(this.state.iModelName + " PROJECT in start of process" + this.state.projectName);
     let imodel: IModelConnection | undefined;
     try {
 
       // Attempt to open the imodel
-      console.log(projectName + "PROJECT" + 3);
-      console.log("IMODELNAME" + imodelName + 3);
       const info = await this.getIModelInfo(projectName, imodelName);
       imodel = await IModelConnection.open(info.projectId, info.imodelId, OpenMode.Readonly);
       await this.onIModelSelected(imodel);
     } catch (e) {
-      console.log(e);
-      console.log("start Process");
-      console.log(e.message);
     }
   }
 

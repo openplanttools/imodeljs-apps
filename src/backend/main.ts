@@ -51,7 +51,7 @@ ipcMain.on("configDataMissing", (event: Event, arg: any) => {
 if (event) {
   console.log(arg);
 }
-newWindow();
+newWindow(event);
 });
 setupEnv();
 
