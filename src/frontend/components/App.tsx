@@ -28,6 +28,7 @@ import { GroupWidget } from "./Group";
 // cSpell:ignore imodels
 
 // Setting instance variables for multi-class usage
+let thisApp: App;
 let requestContext: AuthorizedFrontendRequestContext | undefined;
 let connectClient: ConnectClient | undefined;
 let currentProject: Project;
@@ -47,6 +48,11 @@ export function get3DViews() {
 }
 export function get2DViews() {
   return views2D;
+}
+
+// Changes the App's view definition
+export function changeView(viewId: string) {
+  thisApp.updateView(viewId);
 }
 
 /** React state of the App component */
@@ -83,8 +89,9 @@ export default class App extends React.Component<{}, AppState> {
       drawingName: "",
       offlineIModel: false,
       menuOpened: false,
-      menuName: "Expand Menu",
+      menuName: "+",
     };
+    thisApp = this;
   }
 
   /** Gets the current desired project as saved either from the settings.json file or from the Config.App singleton */
@@ -243,7 +250,7 @@ export default class App extends React.Component<{}, AppState> {
   }
 
   /** Picks the first available spatial view definition in the iModel */
-  private async getFirstViewDefinitionId(imodel: IModelConnection): Promise<Id64String> {
+  private async getViewDefinitionId(imodel: IModelConnection, viewId?: string): Promise<Id64String> {
     const viewSpecs = await imodel.views.queryProps({});
 
     // Array of view definitions, eventually, all 3D view definitions could be changed
@@ -259,26 +266,35 @@ export default class App extends React.Component<{}, AppState> {
       throw new Error("No valid view definitions for selected iModel. Please select another one.");
     }
 
-    views3D = [];
-    views2D = [];
-    for (const elem of acceptedViewSpecs) {
-      if (elem.classFullName === "BisCore:OrthographicViewDefinition") {
-        views3D[views3D.length] = elem;
-      } else if (elem.classFullName === "BisCore:DrawingViewDefinition") {
-        views2D[views2D.length] = elem;
+    // if a view ID is provided, return the provided view ID
+    if (viewId) {
+      return viewId!;
+    } else { // otherwise, load all the available views and pick one by default
+      views3D = [];
+      views2D = [];
+      for (const elem of acceptedViewSpecs) {
+        if (elem.classFullName === "BisCore:OrthographicViewDefinition") {
+          views3D[views3D.length] = elem;
+        } else if (elem.classFullName === "BisCore:DrawingViewDefinition") {
+          views2D[views2D.length] = elem;
+        }
       }
+      for (let idx = 1; idx < acceptedViewSpecs.length; idx++) {
+        views2D[idx - 1] = acceptedViewSpecs[idx];
+      }
+      return views2D[0].id!;
     }
-    for (let idx = 1; idx < acceptedViewSpecs.length; idx++) {
-      views2D[idx - 1] = acceptedViewSpecs[idx];
-    }
-    // views2D[0].code.value;
-    // return acceptedViewSpecs[0].id!;
-    return views2D[0].id!;
+  }
+
+  /** Updates the App's view definition */
+  public updateView(viewId: string) {
+    // tslint:disable-next-line: no-floating-promises
+    this._onIModelSelected(this.state.imodel, viewId);
   }
 
   /** Handles iModel open event */
-  private _onIModelSelected = async (imodel: IModelConnection | undefined) => {
-
+  private _onIModelSelected = async (imodel: IModelConnection | undefined, viewId?: string) => {
+    console.log("In _onIMODEL" + imodel + " THIS IS THE IMODEL CONNECTION");
     if (!imodel) {
       // Reset the state when imodel is closed
       return;
@@ -286,7 +302,7 @@ export default class App extends React.Component<{}, AppState> {
     try {
       // Attempt to get a view definition
       // const viewDefinitionId = imodel ? await this.getSheetViews(imodel) : undefined;
-      const viewDefinitionId = imodel ? await this.getFirstViewDefinitionId(imodel) : undefined;
+      const viewDefinitionId = imodel ? await this.getViewDefinitionId(imodel, viewId) : undefined;
       this.setState({ imodel, viewDefinitionId });
     } catch (e) {
       // If failed, close the imodel and reset the state
@@ -312,11 +328,11 @@ export default class App extends React.Component<{}, AppState> {
     });
     if (this.state.menuOpened) {
       this.setState({
-        menuName: "Expand Menu",
+        menuName: "+",
       });
     } else {
       this.setState({
-        menuName: "Collapse Menu",
+        menuName: "-",
       });
     }
   }
@@ -377,21 +393,26 @@ export default class App extends React.Component<{}, AppState> {
 
   /** Renders the app */
   public render() {
+    let view: React.ReactNode;
     let ui: React.ReactNode;
 
     if (this.state.user.isLoading || window.location.href.includes(this._signInRedirectUri)) {
       // If user is currently being loaded, just tell that
+      view = (<></>);
       ui = `${IModelApp.i18n.translate("SimpleViewer:signing-in")}...`;
     } else if (!this.state.user.accessToken && !this.state.offlineIModel) {
       // If user doesn't have and access token, show sign in page
+      view = (<></>);
       ui = (<SignIn onSignIn={this._onStartSignin} onOffline={this._onOffline} />);
     } else if (!this.state.imodel || !this.state.viewDefinitionId) {
       // if we don't have an imodel / view definition id - render a button that initiates imodel open
       // tslint:disable-next-line: no-floating-promises
+      view = (<></>);
       ui = (<span className="open-imodel"><Spinner size={SpinnerSize.XLarge} /></span>);
     } else {
       // If we do have an imodel and view definition id - render imodel components
       const titleName: string = "Project: " + this.state.projectName + ", iModel: " + this.state.iModelName; // + ", Drawing: " + Config.App.get("imjs_test_drawing") (not working yet);
+      view = <GroupWidget view={"test"} />;
       ui = (<IModelComponents imodel={this.state.imodel} viewDefinitionId={this.state.viewDefinitionId} menuOpened={this.state.menuOpened} title={titleName} />);
     }
     // Render the app
@@ -400,6 +421,9 @@ export default class App extends React.Component<{}, AppState> {
         <div className="app-header">
           <div className="text">
             <TitleBar projectName={this.state.projectName} drawingName={this.state.drawingName} iModelName={this.state.iModelName} />
+          </div>
+          <div className="view">
+            {view}
           </div>
           <div className="reload">
             <OpenIModelButton accessToken={this.state.user.accessToken} offlineIModel={this.state.offlineIModel} onIModelSelected={this._onIModelSelected} imodelName={this.state.iModelName} projectName={this.state.projectName} initialButton={true} />
@@ -496,6 +520,11 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
         // alert(e.message);
       }
       await this.onIModelSelected(imodel);
+
+      // update the select view dropdown list
+      const mainList = (document.getElementById("viewDropList")) as HTMLSelectElement;
+      mainList.options[0].innerHTML = views2D[0].code.value as string;
+      mainList.options[0].value = views2D[0].id as string;
     }
   }
 
@@ -509,7 +538,7 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
   public render() {
     return (
       <Button size={ButtonSize.Default} buttonType={ButtonType.Primary} className="button-reload-imodel" onClick={this._onClick} >
-        <span>Reload iModel</span>
+        <span>Refresh iModel</span>
         {this.state.isLoading ? <span style={{ marginLeft: "8px" }}><Spinner size={SpinnerSize.Small} /></span> : undefined}
       </Button>
     );
@@ -527,6 +556,7 @@ interface IModelComponentsProps {
 /** The live state for an iModel component */
 interface IModelComponentState {
   iModel: IModelConnection;
+  viewId: Id64String;
 }
 
 /** Renders a viewport, a tree, a property grid and a table */
@@ -537,6 +567,7 @@ class IModelComponents extends React.PureComponent<IModelComponentsProps, IModel
     super(props);
     this.state = {
       iModel: this.props.imodel,
+      viewId: this.props.viewDefinitionId,
     };
   }
 
@@ -546,12 +577,17 @@ class IModelComponents extends React.PureComponent<IModelComponentsProps, IModel
     // Can be found at `assets/presentation_rules/Default.PresentationRuleSet.xml`
     const rulesetId = "Default";
 
+    // Updates the view ID when a new view is selected
+    this.setState(() => ({
+      viewId: this.props.viewDefinitionId,
+    }));
+
     // Open with Menu opened
     if (this.props.menuOpened) {
       return (
         <div className="app-content">
           <div className="top-left" id="viewport1">
-            <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={this.props.viewDefinitionId} />
+            <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={this.state.viewId} />
           </div>
           <div className="right">
             <div className="top">
@@ -559,7 +595,6 @@ class IModelComponents extends React.PureComponent<IModelComponentsProps, IModel
             </div>
             <div className="bottom">
               <div className="sub">
-                <GroupWidget view={"test"}/>
                 <PropertiesWidget imodel={this.props.imodel} rulesetId={rulesetId} />
               </div>
             </div>
@@ -573,7 +608,7 @@ class IModelComponents extends React.PureComponent<IModelComponentsProps, IModel
       return (
         <div className="app-content">
           <div className="top-left-expanded" id="viewport1">
-            <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={this.props.viewDefinitionId} />
+            <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={this.state.viewId} />
           </div>
         </div>
       );

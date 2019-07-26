@@ -4,8 +4,10 @@
 *--------------------------------------------------------------------------------------------*/
 import styled from "styled-components";
 import * as React from "react";
-import viewDataWidget from "./ViewList";
+import viewWidget from "./ViewList";
 import "../../common/configuration.js";
+import "./Group.scss";
+import { changeView } from "./App";
 
 // WIP, event emitter bound function to be called from App.tsx and create changes in the AppState
 // WIP, class to contain the current view chosen and return it to App.tsx
@@ -51,8 +53,8 @@ export class GroupWidget extends React.Component<GroupProps, { value: string }> 
   public render() {
     return (
       <div>
-        <link rel="stylesheet" type="text/css" />
-        <div className="midLeft">
+        <link rel="stylesheet" href="./Group.scss" type="text/css" />
+        <div className="viewDropList">
           <ViewList value = {this.props.view}/>
         </div>
       </div>
@@ -60,11 +62,10 @@ export class GroupWidget extends React.Component<GroupProps, { value: string }> 
   }
 }
 
+/** ViewList class is a react component, has an app state with defined instance variables to keep track of relevant information */
 export interface ViewListProps {
   value?: string;
 }
-
-/** ViewList class is a react component, has an app state with defined instance variables to keep track of relevant information */
 export class ViewList extends React.Component<ViewListProps, { value: string }> {
   public myRef: HTMLElement | undefined;
   public prevIndex: number | undefined;
@@ -102,14 +103,18 @@ export class ViewList extends React.Component<ViewListProps, { value: string }> 
 
       // updates the primary node of the select element
       mainList.options[0].innerHTML = mainList.options[mainList.selectedIndex].innerText;
+      mainList.options[0].value = mainList.options[mainList.selectedIndex].value;
 
       viewContainer.setNewView(mainList.options[mainList.selectedIndex].innerText);
 
-      // stores an view data object representing the view selected
+      // stores a view data object representing the view selected
       viewContainer.viewObject = {
         viewName: mainList.options[mainList.selectedIndex].innerHTML,
         viewValue: mainList.options[mainList.selectedIndex].value,
       };
+
+      // Updates the App with the selected view definition
+      changeView(viewContainer.viewObject.viewValue);
     }
   }
 
@@ -118,7 +123,7 @@ export class ViewList extends React.Component<ViewListProps, { value: string }> 
     return (
          <form onSubmit={() => this.handleSubmit}>
         <label className="viewLabel">
-          <select id="viewDropList" name="viewList" style={{ fontFamily: "sans-serif" }} value="List of Views" onChange={() => { this.handleSubmit(); }}>{viewDataWidget().map((viewItem) => {
+          <select id="viewDropList" name="viewList" style={{ fontFamily: "sans-serif" }} value="List of Views" onChange={() => { this.handleSubmit(); }}>{viewWidget().map((viewItem) => {
             if (viewItem.viewName.length < 1) {
               return <option key={viewItem.key} value={this.props.value}>{this.props.value}</option>;
             } else {
