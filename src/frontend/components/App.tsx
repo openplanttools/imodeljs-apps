@@ -426,6 +426,9 @@ export default class App extends React.Component<{}, AppState> {
           <div className="text">
             <TitleBar projectName={this.state.projectName} drawingName={this.state.drawingName} iModelName={this.state.iModelName} />
           </div>
+          <div className="viewlabel">
+            Drawing:
+          </div>
           <div className="view">
             {view}
           </div>
@@ -504,6 +507,7 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
   private async onIModelSelected(imodel: IModelConnection | undefined) {
     this.props.onIModelSelected(imodel);
     this.setState({ isLoading: false });
+    fitView();
   }
 
   /** Handles on-click for open iModel button */
@@ -525,11 +529,12 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
       }
       await this.onIModelSelected(imodel);
 
-      // update the select view dropdown list
-      const mainList = (document.getElementById("viewDropList")) as HTMLSelectElement;
-      mainList.options[0].innerHTML = views2D[0].code.value as string;
-      mainList.options[0].value = views2D[0].id as string;
-      fitView();
+      // once the views have been loaded, update the select view dropdown list
+      if (!!views3D && !!views2D) {
+        const mainList = (document.getElementById("viewDropList")) as HTMLSelectElement;
+        mainList.options[0].innerHTML = views2D[0].code.value as string;
+        mainList.options[0].value = views2D[0].id as string;
+      }
     }
   }
 
@@ -543,7 +548,7 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
   public render() {
     return (
       <Button size={ButtonSize.Default} buttonType={ButtonType.Primary} className="button-reload-imodel" onClick={this._onClick} >
-        <img src="refresh.png" alt="Refresh"></img>
+        {this.state.isLoading ? undefined : <img src="refresh.png" alt="Refresh"></img>}
         {this.state.isLoading ? <span style={{ marginLeft: "8px" }}><Spinner size={SpinnerSize.Small} /></span> : undefined}
       </Button>
     );
