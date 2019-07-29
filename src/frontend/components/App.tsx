@@ -96,6 +96,7 @@ export default class App extends React.Component<{}, AppState> {
       menuName: "+",
       shouldCall: false,
     };
+    // tslint:disable-next-line: no-floating-promises
     this.makeCalls();
     thisApp = this;
   }
@@ -302,20 +303,6 @@ export default class App extends React.Component<{}, AppState> {
       // const viewDefinitionId = imodel ? await this.getSheetViews(imodel) : undefined;
       const viewDefinitionId = imodel ? await this.getViewDefinitionId(imodel, viewId) : undefined;
       this.setState({ imodel, viewDefinitionId });
-      let is3D: boolean = false;
-
-      // fits the view (work in progress)
-      if (viewId) {
-        for (const elem of views3D) {
-          if (viewId === elem.id) {
-            is3D = true;
-          }
-        }
-      }
-      if (!is3D) {
-        console.log("HERE!!!!!!!!!");
-        fitView();
-      }
     } catch (e) {
       // If failed, close the imodel and reset the state
       if (this.state.offlineIModel) {
@@ -401,7 +388,7 @@ export default class App extends React.Component<{}, AppState> {
 
   private async makeCalls() {
     console.log("IN MAKE CALLS" + this.state.projectName + this.state.iModelName);
-    if(this.state.projectName.length < 1 || this.state.iModelName.length < 1) {
+    if (this.state.projectName.length < 1 || this.state.iModelName.length < 1) {
      await this._getCorrectProjectName();
     } else {
       await this._startProcess(this.state.projectName, this.state.iModelName);
@@ -519,7 +506,7 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
     this.setState({ isLoading: false });
   }
 
-  /** Handles on-click for initial open iModel button */
+  /** Handles on-click for open iModel button */
   private _onClick = async () => {
     if (this.props.initialButton || !this.state.isLoading) {
       this.setState({ isLoading: true });
@@ -542,6 +529,7 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
       const mainList = (document.getElementById("viewDropList")) as HTMLSelectElement;
       mainList.options[0].innerHTML = views2D[0].code.value as string;
       mainList.options[0].value = views2D[0].id as string;
+      fitView();
     }
   }
 
@@ -555,7 +543,7 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
   public render() {
     return (
       <Button size={ButtonSize.Default} buttonType={ButtonType.Primary} className="button-reload-imodel" onClick={this._onClick} >
-        <span>Refresh iModel</span>
+        <img src="refresh.png" alt="Refresh"></img>
         {this.state.isLoading ? <span style={{ marginLeft: "8px" }}><Spinner size={SpinnerSize.Small} /></span> : undefined}
       </Button>
     );
