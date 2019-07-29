@@ -6,8 +6,9 @@ import * as path from "path";
 import { RpcInterfaceDefinition, ElectronRpcManager } from "@bentley/imodeljs-common";
 import { IModelJsElectronManager } from "@bentley/electron-manager";
 import * as electron from "electron";
-import * as configurationData from "../../common/settings.json";
+import * as configurationData from "../../common/iModel.Settings.json";
 import * as electronFs from "fs";
+// import html from "../../frontend/components/Popup.html";
 
 /** Method to change the iModelName stored in the config.json
  * @param iModelName string wsgId of the new iModel
@@ -19,7 +20,7 @@ export const changeiModel = (iModelName: string) => {
     drawing_name: configurationData.drawing_name,
   };
   const stringifiedConfig = JSON.stringify(newConfig);
-  electronFs.writeFileSync(path.join(__dirname, "../../common/settings.json"), stringifiedConfig);
+  electronFs.writeFileSync(path.join(__dirname, "../../common/iModel.Settings.json"), stringifiedConfig);
 };
 
 /**
@@ -28,7 +29,7 @@ export const changeiModel = (iModelName: string) => {
  */
 export const readData = (event?: electron.Event, arg?: string) => {
   const configObject: any = "";
-  electronFs.readFile(path.join(__dirname, "../../common/settings.json"), (error: Error | null, data: any) => {
+  electronFs.readFile(path.join(__dirname, "../../common/iModel.Settings.json"), (error: Error | null, data: any) => {
     if (error) {
       // tslint:disable-next-line:no-console
       console.log("error " + error + arg);
@@ -56,7 +57,7 @@ export const changeProject = (projectName: string) => {
     drawing_name: configurationData.drawing_name,
   };
   const stringifiedConfig = JSON.stringify(newConfig);
-  electronFs.writeFileSync(path.join(__dirname, "../../common/settings.json"), stringifiedConfig);
+  electronFs.writeFileSync(path.join(__dirname, "../../common/iModel.Settings.json"), stringifiedConfig);
 };
 
 /** Method to change the iModelName stored in the config.json
@@ -69,7 +70,7 @@ export const changeDrawingName = (drawingName: string) => {
     drawing_name: drawingName,
   };
   const stringifiedConfig = JSON.stringify(newConfig);
-  electronFs.writeFileSync(path.join(__dirname, "../../common/settings.json"), stringifiedConfig);
+  electronFs.writeFileSync(path.join(__dirname, "../../common/iModel.Settings.json"), stringifiedConfig);
 };
 
 // The following four variables are bound to functions, and serve as getters and settings for backend-frontend communication
@@ -123,10 +124,17 @@ export function displayConfig(jsonObject: any) {
 }
 
 export function newWindow(event: electron.Event) {
+  const test1: electron.FileFilter[] = [];
+  const test: electron.FileFilter = {
+    name: ".json",
+    extensions: ["Settings.json"],
+  };
+  test1.push(test);
   if (manager.mainWindow) {
     electron.dialog.showOpenDialog(manager.mainWindow, {
       title: "Select configuration File",
       properties: ["openFile", "multiSelections"],
+      filters: test1,
     }, (filePaths) => {
       if (!filePaths) {
       }
@@ -163,7 +171,7 @@ export const editConfig = (projectName: string, imodelName: string) => {
     drawing_name: "",
   };
   const stringifiedConfig = JSON.stringify(newConfig);
-  electronFs.writeFileSync(path.join(__dirname, "../../common/settings.json"), stringifiedConfig);
+  electronFs.writeFileSync(path.join(__dirname, "../../common/iModel.Settings.json"), stringifiedConfig);
 };
 
 export function popupWarning(typeOfError?: string) {
@@ -175,3 +183,10 @@ export function popupWarning(typeOfError?: string) {
     electron.dialog.showMessageBox(manager.mainWindow, { type: "error", message: errorMessage, title: "Error" });
   }
 }
+
+// export function tempTest() {
+// // let win = new electron.BrowserWindow({frame: true, width: 400, height: 200, webPreferences: {webSecurity: true}});
+// // let newPath = path.join(__dirname + "../../../frontend/components/Popup.html");
+// // win.loadFile(newPath);
+// // win.show();
+// }

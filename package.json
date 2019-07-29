@@ -40,8 +40,16 @@
           "dest": "./lib"
         },
         {
+          "source": "./src/**/*.html",
+          "dest": "./lib"
+        },
+        {
           "source": "./public/**/*",
           "dest": "./lib/webresources"
+        },
+        {
+          "source": "./src/**/*.json",
+          "dest": "./lib"
         },
         {
           "source": "./src/frontend/plugins/public/**/*",
