@@ -14,10 +14,8 @@
 *.Tiles
 
 # readme
-.README.md
-*README*.*
-*.md*
-!*.md*
+*.md
+/README
 
 # viewflow linker
 ~$$ViewFlow.~vsdx
