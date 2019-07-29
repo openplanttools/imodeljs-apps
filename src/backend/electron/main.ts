@@ -8,6 +8,7 @@ import { IModelJsElectronManager } from "@bentley/electron-manager";
 import * as electron from "electron";
 import * as configurationData from "../../common/settings.json";
 import * as electronFs from "fs";
+// import html from "../../frontend/components/Popup.html";
 
 /** Method to change the iModelName stored in the config.json
  * @param iModelName string wsgId of the new iModel
@@ -174,4 +175,11 @@ export function popupWarning(typeOfError?: string) {
   if (manager.mainWindow) {
     electron.dialog.showMessageBox(manager.mainWindow, { type: "error", message: errorMessage, title: "Error" });
   }
+}
+
+export function tempTest() {
+let win = new electron.BrowserWindow({frame: true, width: 400, height: 200, webPreferences: {webSecurity: true}});
+let newPath = path.join(__dirname + "../../../frontend/components/Popup.html");
+win.loadFile(newPath);
+win.show();
 }
