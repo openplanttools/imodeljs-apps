@@ -48,8 +48,8 @@
           "dest": "./lib/webresources"
         },
         {
-          "source": "./public/**/*.json",
-          "dest": "./lib/common"
+          "source": "./src/**/*.json",
+          "dest": "./lib"
         },
         {
           "source": "./src/frontend/plugins/public/**/*",

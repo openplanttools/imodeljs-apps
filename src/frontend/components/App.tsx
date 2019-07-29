@@ -98,7 +98,6 @@ export default class App extends React.Component<{}, AppState> {
     };
     this.makeCalls();
     thisApp = this;
-    ipcRenderer.send("selectMethod", "selectMethod");
   }
 
   /** Gets the current desired project as saved either from the settings.json file or from the Config.App singleton */

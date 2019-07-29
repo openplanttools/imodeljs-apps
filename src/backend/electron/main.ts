@@ -184,9 +184,9 @@ export function popupWarning(typeOfError?: string) {
   }
 }
 
-export function tempTest() {
-let win = new electron.BrowserWindow({frame: true, width: 400, height: 200, webPreferences: {webSecurity: true}});
-let newPath = path.join(__dirname + "../../../frontend/components/Popup.html");
-win.loadFile(newPath);
-win.show();
-}
+// export function tempTest() {
+// // let win = new electron.BrowserWindow({frame: true, width: 400, height: 200, webPreferences: {webSecurity: true}});
+// // let newPath = path.join(__dirname + "../../../frontend/components/Popup.html");
+// // win.loadFile(newPath);
+// // win.show();
+// }
