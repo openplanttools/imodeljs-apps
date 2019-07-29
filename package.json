@@ -49,7 +49,7 @@
         },
         {
           "source": "./public/**/*.json",
-          "dest": "./lib/webresources"
+          "dest": "./lib/common"
         },
         {
           "source": "./src/frontend/plugins/public/**/*",

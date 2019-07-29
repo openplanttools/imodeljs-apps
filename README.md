@@ -41,6 +41,7 @@
 
 ### **Configuration**
 How to change the imodel/project combination you would like to view.
+    - **As of right now all project must be on the QA server**
 ##### Method 1
 1. Navigate to imodeljs-openplant-viewer/lib/common and open iModel.Settings.json and from there edit the project and imodel values.
 2. Run the application normally.
