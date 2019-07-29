@@ -34,6 +34,7 @@
 
 1. Type the following command in the terminal to run the application. An electron window will open within seconds.
    - **`npm run electron`**
+   //test
 2. View the **Help** section below to see how to use the application.
 3. Close the electron window to stop running the application.
 4. If you want to re-run the application without any changes to the program files, go back to step 1.

@@ -12,7 +12,12 @@
 .env.production.local
 *.TileCache*
 *.Tiles
-*.md
+
+# readme
+.README.md
+*README*.*
+*.md*
+!*.md*
 
 # viewflow linker
 ~$$ViewFlow.~vsdx
