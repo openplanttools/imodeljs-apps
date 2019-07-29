@@ -96,6 +96,7 @@ export default class App extends React.Component<{}, AppState> {
       menuName: "+",
       shouldCall: false,
     };
+    // tslint:disable-next-line: no-floating-promises
     this.makeCalls();
     thisApp = this;
   }
@@ -387,7 +388,7 @@ export default class App extends React.Component<{}, AppState> {
 
   private async makeCalls() {
     console.log("IN MAKE CALLS" + this.state.projectName + this.state.iModelName);
-    if(this.state.projectName.length < 1 || this.state.iModelName.length < 1) {
+    if (this.state.projectName.length < 1 || this.state.iModelName.length < 1) {
      await this._getCorrectProjectName();
     } else {
       await this._startProcess(this.state.projectName, this.state.iModelName);
@@ -542,7 +543,7 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
   public render() {
     return (
       <Button size={ButtonSize.Default} buttonType={ButtonType.Primary} className="button-reload-imodel" onClick={this._onClick} >
-        <span>Refresh iModel</span>
+        <img src="refresh.png" alt="Refresh"></img>
         {this.state.isLoading ? <span style={{ marginLeft: "8px" }}><Spinner size={SpinnerSize.Small} /></span> : undefined}
       </Button>
     );

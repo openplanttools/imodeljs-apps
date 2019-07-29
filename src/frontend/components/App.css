@@ -26,15 +26,15 @@
 
 .app-header .view {
   position: absolute;
-  width: 300px;
-  right: 200px;
+  width: 250px;
+  right: 125px;
   padding-top: 10px;
   padding-bottom: 5px;
 }
 
 .app-header .reload {
   position: absolute;
-  width: 200px;
+  width: 75px;
   right: 50px;
   padding-top: 3px;
   padding-bottom: 3px;
@@ -46,6 +46,7 @@
   right: 0px;
   padding-top: 3px;
   padding-bottom: 3px;
+  color: white;
 }
 
 .app .button-open-imodel {
