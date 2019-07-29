@@ -39,6 +39,16 @@
 4. If you want to re-run the application without any changes to the program files, go back to step 1.
 5. If you want to re-run the application and make changes to the program files, go back to the **Build** section above to re-build the application.
 
+### **Configuration**
+How to change the imodel/project combination you would like to view.
+##### Method 1
+1. Navigate to imodeljs-openplant-viewer/lib/common and open iModel.Settings.json and from there edit the project and imodel values.
+2. Run the application normally.
+##### Method 2
+1. Create a new file called <FileName>.Settings.json
+2. Populate this file in the same format as iModel.Settings.json, fill in your own values.
+3. Run the application, and on the opening screen navigate to and select your new configuration file.
+
 ### **Help**
 
 1. When prompted, **log-in** with your credentials. This grants access to the backend servers that contain the iModel information.
