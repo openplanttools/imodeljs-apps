@@ -417,7 +417,6 @@ export default class App extends React.Component<{}, AppState> {
       const titleName: string = "Project: " + this.state.projectName + ", iModel: " + this.state.iModelName; // + ", Drawing: " + Config.App.get("imjs_test_drawing") (not working yet);
       view = <GroupWidget view={"test"} />;
       ui = (<IModelComponents imodel={this.state.imodel} viewDefinitionId={this.state.viewDefinitionId} menuOpened={this.state.menuOpened} title={titleName} />);
-      fitView();
     }
     // Render the app
     return (
@@ -506,7 +505,7 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
     this.setState({ isLoading: false });
   }
 
-  /** Handles on-click for initial open iModel button */
+  /** Handles on-click for open iModel button */
   private _onClick = async () => {
     if (this.props.initialButton || !this.state.isLoading) {
       this.setState({ isLoading: true });
@@ -529,6 +528,7 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
       const mainList = (document.getElementById("viewDropList")) as HTMLSelectElement;
       mainList.options[0].innerHTML = views2D[0].code.value as string;
       mainList.options[0].value = views2D[0].id as string;
+      fitView();
     }
   }
 
