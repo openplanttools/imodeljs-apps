@@ -24,7 +24,6 @@ import { ColorDef, ViewDefinitionProps } from "@bentley/imodeljs-common";
 import TitleBar from "./Title";
 import { ipcRenderer, Event } from "electron";
 import { GroupWidget } from "./Group";
-import { fitView } from "./Toolbar";
 // tslint:disable: no-console
 // cSpell:ignore imodels
 
@@ -507,7 +506,6 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
   private async onIModelSelected(imodel: IModelConnection | undefined) {
     this.props.onIModelSelected(imodel);
     this.setState({ isLoading: false });
-    fitView();
   }
 
   /** Handles on-click for open iModel button */
