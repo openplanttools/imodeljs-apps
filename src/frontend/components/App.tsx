@@ -24,6 +24,8 @@ import { ColorDef, ViewDefinitionProps } from "@bentley/imodeljs-common";
 import TitleBar from "./Title";
 import { ipcRenderer, Event } from "electron";
 import { GroupWidget } from "./Group";
+import { fitView } from "./Toolbar";
+import { delay } from "q";
 // tslint:disable: no-console
 // cSpell:ignore imodels
 
@@ -308,6 +310,13 @@ export default class App extends React.Component<{}, AppState> {
       // const viewDefinitionId = imodel ? await this.getSheetViews(imodel) : undefined;
       const viewDefinitionId = imodel ? await this.getViewDefinitionId(imodel, viewId) : undefined;
       this.setState({ imodel, viewDefinitionId });
+      // auto-fit-view
+      if (viewId) {
+        await delay(100);
+      } else {
+        await delay(1000);
+      }
+      fitView();
     } catch (e) {
       // If failed, close the imodel and reset the state
       if (this.state.offlineIModel) {
@@ -540,6 +549,9 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
         mainList.options[0].value = views2D[0].id as string;
       }
     }
+    // auto-fit-view
+    await delay(100);
+    fitView();
   }
 
   public componentWillMount() {
