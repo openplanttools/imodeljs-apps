@@ -43,17 +43,6 @@
 4. If you want to re-run the application without any changes to the program files, go back to step 1.
 5. If you want to re-run the application and make changes to the program files, go back to the **Build** section above to re-build the application.
 
-### **Configuration**
-How to change the imodel/project combination you would like to view.
-    - **As of right now all project must be on the QA server**
-##### Method 1
-1. Navigate to imodeljs-openplant-viewer/lib/common and open iModel.Settings.json and from there edit the project and imodel values.
-2. Run the application normally.
-##### Method 2
-1. Create a new file called <FileName>.Settings.json
-2. Populate this file in the same format as iModel.Settings.json, fill in your own values.
-3. Run the application, and on the opening screen navigate to and select your new configuration file.
-
 ### **Help**
 
 1. When prompted, **log-in** with your credentials. This grants access to the backend servers that contain the iModel information.
@@ -61,6 +50,24 @@ How to change the imodel/project combination you would like to view.
 3. Click on the **refresh icon** in the header to refresh the iModel if it was changed after the viewer was opened.
 4. Click on the **+ icon** in the header to show the menu (Tree and Properties).
 5. When the menu is expanded, click the **- icon** in the header to collapse the menu.
+
+### **Configuration**
+
+How to change the project/iModel combination you would like to view
+
+- **As of right now, all projects must be on the QA server.**
+
+#### Method 1
+
+1. Navigate to imodeljs-openplant-viewer/lib/common and open iModel.Settings.json.
+2. In the file, edit the project and imodel values.
+2. Run the application normally.
+
+#### Method 2
+
+1. Create a new file called <FileName>.Settings.json.
+2. Populate this file in the same format as iModel.Settings.json, and fill in your own values.
+3. Run the application, and, on the opening screen, navigate to and select your new configuration file.
 
 ### **Workflow**
 
