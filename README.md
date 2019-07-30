@@ -21,7 +21,7 @@
 ### **Build**
 
 1. Open src/common/configuration.json, scroll down to the very bottom, and comment/uncomment the lines for your client (Production or QA).
-2. Open the src/common/settings.json, and put the names of the project, iModel, and drawing (optional).
+2. Open the src/common/settings.json, and put the names of the project, iModel, and drawing (optional - if a valid drawing name is given, that drawing will be shown on start-up and after refreshing the iModel).
 3. Save your changes.
 4. Type **[CTRL+`]** to open the terminal in Visual Studio Code.
 5. Type the following command in the terminal to install the dependencies (may take a few minutes).
@@ -30,14 +30,14 @@
 6. Type the following command in the terminal to build the applicaiton (should only take a few seconds).
    - **`npm run build`**
    - `or`
-   - **`npm run go`**
+   - **`npm run go`** (builds and runs the application)
 
 ### **Run**
 
 1. Type the following command in the terminal to run the application. An electron window will open within seconds.
    - **`npm run electron`**
     -   `or`
-   - **`npm run go`**
+   - **`npm run go`** (builds and runs the application)
 2. View the **Help** section below to see how to use the application.
 3. Close the electron window to stop running the application.
 4. If you want to re-run the application without any changes to the program files, go back to step 1.
@@ -57,11 +57,10 @@ How to change the imodel/project combination you would like to view.
 ### **Help**
 
 1. When prompted, **log-in** with your credentials. This grants access to the backend servers that contain the iModel information.
-2. When a blue button that reads "**Open iModel**" comes up, click on it. This will pull the iModel information from the web and display it.
-3. Click on "**Expand Menu**" (top-right of screen) to see options and properties, as well as the Tree. This can be collapsed by clicking on the same button.
-4. Click on "**Reload iModel**" (top-right of screen) to refresh the iModel you are viewing if it was updated on the cloud after you opened it in the viewer.
-5. To switch drawings, click on a **drawing** under the **Tree** (top-right of screen). This will update the viewer.
-6. To select a **graphic** in a drawing, either click on it in the viewer, or expand the drawing under **Tree** and select one under **PID Drawing Categories**. When a graphic is selected, it will be highlighted in the viewer and will have its information displayed in **Properties** (bottom of screen).
+2. Use the **Drawings** dropdown menu in the header to select a different drawing.
+3. Click on the **refresh icon** in the header to refresh the iModel if it was changed after the viewer was opened.
+4. Click on the **+ icon** in the header to show the menu (Tree and Properties).
+5. When the menu is expanded, click the **- icon** in the header to collapse the menu.
 
 ### **Workflow**
 
