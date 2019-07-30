@@ -65,7 +65,7 @@ How to change the project/iModel combination you would like to view
 
 #### Method 2
 
-1. Create a new file called <FileName>.Settings.json.
+1. Create a new file called [FileName].Settings.json.
 2. Populate this file in the same format as iModel.Settings.json, and fill in your own values.
 3. Run the application, and, on the opening screen, navigate to and select your new configuration file.
 
