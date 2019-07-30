@@ -6,14 +6,14 @@ import * as React from "react";
 import { Id64String, OpenMode } from "@bentley/bentleyjs-core";
 import { Range3d } from "@bentley/geometry-core";
 import { AccessToken, ConnectClient, IModelQuery, Project, Config } from "@bentley/imodeljs-clients";
-import { IModelApp, IModelConnection, FrontendRequestContext, AuthorizedFrontendRequestContext, DrawingViewState, ScreenViewport, EmphasizeElements, FeatureOverrideType} from "@bentley/imodeljs-frontend";
+import { IModelApp, IModelConnection, FrontendRequestContext, AuthorizedFrontendRequestContext, DrawingViewState, ScreenViewport, EmphasizeElements, FeatureOverrideType } from "@bentley/imodeljs-frontend";
 import { Presentation, SelectionChangeEventArgs, ISelectionProvider } from "@bentley/presentation-frontend";
 import { Button, ButtonSize, ButtonType, Spinner, SpinnerSize } from "@bentley/ui-core";
 import { SignIn } from "@bentley/ui-components";
 import { SimpleViewerApp } from "../api/SimpleViewerApp";
 import PropertiesWidget from "./Properties";
 import GridWidget from "./Table";
-import TreeWidget from "./Tree";
+// import TreeWidget from "./Tree";
 import ViewportContentControl from "./Viewport";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "./App.css";
@@ -25,6 +25,7 @@ import TitleBar from "./Title";
 import { ipcRenderer, Event } from "electron";
 import { GroupWidget } from "./Group";
 import { fitView } from "./Toolbar";
+// import console = require("console");
 // tslint:disable: no-console
 // cSpell:ignore imodels
 
@@ -170,6 +171,8 @@ export default class App extends React.Component<{}, AppState> {
     (newView.baseModelId as Id64String) = newDrawingId; // Change the base model id (cast is necessary since it's marked as readonly after its been constructed)
 
     await newView.load(); // Load the model
+    console.log(newView.jsonProperties + "HERE");
+    console.log(newView.peekDetail + "HERE");
     view.displayStyle.viewFlags.fill = false;
     vp.changeView(newView); // And point the Viewport at the new drawing
 
@@ -251,7 +254,6 @@ export default class App extends React.Component<{}, AppState> {
   /** Picks the first available spatial view definition in the iModel */
   private async getViewDefinitionId(imodel: IModelConnection, viewId?: string): Promise<Id64String> {
     const viewSpecs = await imodel.views.queryProps({});
-
     // Array of view definitions, eventually, all 3D view definitions could be changed
     const acceptedViewClasses = [
       "BisCore:OrthographicViewDefinition", // 3D view
@@ -272,6 +274,9 @@ export default class App extends React.Component<{}, AppState> {
       views3D = [];
       views2D = [];
       for (const elem of acceptedViewSpecs) {
+        console.log(elem.description);
+        console.log(elem.jsonProperties + "PROPERTIES");
+        console.log(elem.displayStyleId);
         if (elem.classFullName === "BisCore:OrthographicViewDefinition") {
           views3D[views3D.length] = elem;
         } else if (elem.classFullName === "BisCore:DrawingViewDefinition") {
@@ -389,7 +394,7 @@ export default class App extends React.Component<{}, AppState> {
   private async makeCalls() {
     console.log("IN MAKE CALLS" + this.state.projectName + this.state.iModelName);
     if (this.state.projectName.length < 1 || this.state.iModelName.length < 1) {
-     await this._getCorrectProjectName();
+      await this._getCorrectProjectName();
     } else {
       await this._startProcess(this.state.projectName, this.state.iModelName);
     }
@@ -595,14 +600,7 @@ class IModelComponents extends React.PureComponent<IModelComponentsProps, IModel
             <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={this.state.viewId} />
           </div>
           <div className="right">
-            <div className="top">
-              <TreeWidget imodel={this.props.imodel} rulesetId={rulesetId} />
-            </div>
-            <div className="bottom">
-              <div className="sub">
-                <PropertiesWidget imodel={this.props.imodel} rulesetId={rulesetId} />
-              </div>
-            </div>
+            <PropertiesWidget imodel={this.props.imodel} rulesetId={rulesetId} />
           </div>
           <div className="bottom">
             <GridWidget imodel={this.props.imodel} rulesetId={rulesetId} />
