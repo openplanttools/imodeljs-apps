@@ -87,11 +87,11 @@ Before using Git on windows command prompt or git bash, you will need to install
 
 Get a local copy of the repository (`master` branch):
 
-- `git clone https://bentleycs.visualstudio.com/iModelTechnologies/_git/imodeljs-openplant-viewer`
+- `git clone https://bentleycs@dev.azure.com/bentleycs/Plant%20Design/_git/imodeljs-openplant-viewer`
 
 If you already have a local git repository set up, then run the following to ensure that you are synchronized with VSTS (check with a team member - this may be done for you already):
 
-- `git remote set-url origin https://bentleycs.visualstudio.com/iModelTechnologies/_git/imodeljs-openplant-viewer`
+- `git remote set-url origin https://bentleycs@dev.azure.com/bentleycs/Plant%20Design/_git/imodeljs-openplant-viewer`
 
 You may verify your remote handles:
 
@@ -132,7 +132,7 @@ Instead of the above, you may also do the following:
    - `git commit -m "[Commit message]"`
 4. Push your changes:
    - `git push origin [UR-branch-name]`
-5. Navigate over to view all branches via [VSTS](https://bentleycs.visualstudio.com/iModelTechnologies/_git/imodeljs-openplant-viewer).
+5. Navigate over to view all branches via [VSTS](https://bentleycs@dev.azure.com/bentleycs/Plant%20Design/_git/imodeljs-openplant-viewer).
 6. Set the `master` branch as the compare branch.
 7. Submit a pull request and be sure to add at least one team member to review your work.
 8. Once someone reviews your work and approves your changes, merge your changes to the `master` branch.
