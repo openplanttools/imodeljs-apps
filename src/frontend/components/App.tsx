@@ -277,15 +277,14 @@ export default class App extends React.Component<{}, AppState> {
           views2D[views2D.length] = elem;
         }
       }
-      views3D.sort(this.arrSort);
-      views2D.sort(this.arrSort);
-      console.log(views2D);
+      views3D.sort(this.viewSort);
+      views2D.sort(this.viewSort);
       return views2D[0].id!;
     }
   }
 
   /** Helper method to sort an array of view definitions */
-  private arrSort(a: ViewDefinitionProps, b: ViewDefinitionProps): number {
+  private viewSort(a: ViewDefinitionProps, b: ViewDefinitionProps): number {
     const valA: string = a.code.value as string;
     const valB: string = b.code.value as string;
     return valA.localeCompare(valB);

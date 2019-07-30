@@ -50,7 +50,7 @@ export default class SimpleTreeComponent extends React.PureComponent<Props> {
       <>
         <h3 data-testid="tree-component-header">{IModelApp.i18n.translate("SimpleViewer:components.tree")}</h3>
         <div style={{ flex: "1" }}>
-          <SimpleTree dataProvider={this.getDataProvider(this.props)}/>
+          <SimpleTree dataProvider={this.getDataProvider(this.props)} />
         </div>
       </>
     );

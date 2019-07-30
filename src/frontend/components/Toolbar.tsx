@@ -6,7 +6,7 @@
 import * as React from "react";
 import {
   IModelApp,
-  ZoomViewTool, PanViewTool, RotateViewTool, SelectionTool, FitViewTool,
+  ZoomViewTool, PanViewTool, SelectionTool, FitViewTool,
   // ScreenViewport, Viewport, ViewState,
 } from "@bentley/imodeljs-frontend";
 
@@ -24,7 +24,6 @@ const toolbar = () => {
     <div className="toolbar">
       <a href="#" title={SelectionTool.flyover} onClick={select}><span className="icon icon-cursor"></span></a>
       <a href="#" title={FitViewTool.flyover} onClick={fitView}><span className="icon icon-fit-to-view"></span></a>
-      <a href="#" title={RotateViewTool.flyover} onClick={rotate}><span className="icon icon-gyroscope"></span></a>
       <a href="#" title={PanViewTool.flyover} onClick={pan}><span className="icon icon-hand-2"></span></a>
       <a href="#" title={ZoomViewTool.flyover} onClick={zoom}><span className="icon icon-zoom"></span></a>
     </div>
@@ -42,11 +41,6 @@ export const select = () => {
 
 export const fitView = () => {
   IModelApp.tools.run(FitViewTool.toolId, IModelApp.viewManager.selectedView);
-};
-
-const rotate = () => {
-
-  IModelApp.tools.run(RotateViewTool.toolId, IModelApp.viewManager.selectedView);
 };
 
 const pan = () => {
