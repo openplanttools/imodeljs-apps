@@ -420,9 +420,9 @@ export default class App extends React.Component<{}, AppState> {
       ui = (<span className="open-imodel"><Spinner size={SpinnerSize.XLarge} /></span>);
     } else {
       // If we do have an imodel and view definition id - render imodel components
-      const titleName: string = "Project: " + this.state.projectName + ", iModel: " + this.state.iModelName; // + ", Drawing: " + Config.App.get("imjs_test_drawing") (not working yet);
-      view = <GroupWidget view={"test"} />;
-      ui = (<IModelComponents imodel={this.state.imodel} viewDefinitionId={this.state.viewDefinitionId} menuOpened={this.state.menuOpened} title={titleName} />);
+      // const titleName: string = "Project: " + this.state.projectName + ", iModel: " + this.state.iModelName; // + ", Drawing: " + Config.App.get("imjs_test_drawing") (not working yet);
+      view = <GroupWidget view={""} />;
+      ui = (<IModelComponents imodel={this.state.imodel} viewDefinitionId={this.state.viewDefinitionId} menuOpened={this.state.menuOpened} title={""} />);
     }
     // Render the app
     return (
@@ -432,7 +432,7 @@ export default class App extends React.Component<{}, AppState> {
             <TitleBar projectName={this.state.projectName} drawingName={this.state.drawingName} iModelName={this.state.iModelName} />
           </div>
           <div className="viewlabel">
-            Drawing:
+            Drawings:
           </div>
           <div className="view">
             {view}

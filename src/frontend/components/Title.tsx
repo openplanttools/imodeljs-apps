@@ -32,24 +32,43 @@ export default class TitleBar extends React.Component<TitleProps, TitleState> {
   }
 
   public render() {
+    const projDisplay = `Project: ${this.state.projectName}`;
+    const modelDisplay = `(${this.state.iModelName})`;
+
     return (
-      <StyledWrapper id={this.state.iModelName} key = {this.state.iModelName}>
-        <StyledWrapper id = {this.state.iModelName + "1"}> {"Project: " + this.state.projectName + ", iModel: " + this.state.iModelName} </StyledWrapper>
-      </StyledWrapper>
+      <StyledWrapperProject id={this.state.iModelName} key = {this.state.iModelName}>
+        <StyledWrapperProject id = {this.state.iModelName + "1"}> {projDisplay} </StyledWrapperProject>
+        <StyledWrapperModel id = {this.state.iModelName + "2"}> {modelDisplay} </StyledWrapperModel>
+      </StyledWrapperProject>
     );
   }
 }
 
 // tslint:disable-next-line:variable-name
-export const StyledWrapper = styled.span`
+export const StyledWrapperProject = styled.span`
 padding-top: 7px;
 padding-bottom: 3px;
 padding-left: 0px;
 justifyContent: space-between;
 font-weight: bold;
-font-size: 16pt;
+font-size: 12pt;
 display: flex;
 flex-direction: row;
 overflow: hidden;
 flex-flow: row;
+`;
+
+// tslint:disable-next-line:variable-name
+export const StyledWrapperModel = styled.span`
+padding-top: 9px;
+padding-bottom: 2px;
+padding-left: 2px;
+justifyContent: space-between;
+// font-weight: bold;
+font-size: 10pt;
+display: flex;
+flex-direction: row;
+overflow: hidden;
+flex-flow: row;
+color: cyan;
 `;
