@@ -2,10 +2,7 @@
 * Copyright (c) 2019 Bentley Systems, Incorporated. All rights reserved.
 * Licensed under the MIT License. See LICENSE.md in the project root for license terms.
 *--------------------------------------------------------------------------------------------*/
-import {
-  // get3DViews,
-  get2DViews,
-} from "./App.js";
+import { get2DViews, getInitialView } from "./App.js";
 
 // Stores the list of view definitions
 export const viewList: any[] = [];
@@ -13,7 +10,7 @@ export const viewList: any[] = [];
 /** Creates and exports widget with list of view definitions */
 const viewWidget = () => {
   // Sets the initial (displayed) option in dropdown list
-  const initVal = get2DViews()[0];
+  const initVal = getInitialView();
   viewList[0] = {
     viewName: initVal.code.value,
     viewValue: initVal.id,

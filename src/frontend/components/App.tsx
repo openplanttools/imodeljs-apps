@@ -39,6 +39,8 @@ let views3D: ViewDefinitionProps[];
 let views2D: ViewDefinitionProps[];
 let currentProjectName: string = "";
 let currentIModelName: string = "";
+let initialDrawingName: string = "";
+let initialView: ViewDefinitionProps;
 
 // Getters for instance variables
 export function getCurrentProject() {
@@ -52,6 +54,9 @@ export function get3DViews() {
 }
 export function get2DViews() {
   return views2D;
+}
+export function getInitialView() {
+  return initialView;
 }
 
 // Changes the App's view definition
@@ -118,6 +123,7 @@ export default class App extends React.Component<{}, AppState> {
       }));
       currentProjectName = configObject.project_name;
       currentIModelName = configObject.imodel_name;
+      initialDrawingName = configObject.drawing_name;
       if (configObject.project_name && configObject.imodel_name) {
         await this._startProcess(configObject.project_name, configObject.imodel_name);
       }
@@ -277,11 +283,17 @@ export default class App extends React.Component<{}, AppState> {
           views3D[views3D.length] = elem;
         } else if (elem.classFullName === "BisCore:DrawingViewDefinition") {
           views2D[views2D.length] = elem;
+          if (elem.code.value === initialDrawingName) {
+            initialView = elem;
+          }
         }
       }
       views3D.sort(this.viewSort);
       views2D.sort(this.viewSort);
-      return views2D[0].id!;
+      if (!initialView) {
+        initialView = views2D[0];
+      }
+      return initialView.id!;
     }
   }
 
@@ -544,8 +556,8 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
       // once the views have been loaded, update the select view dropdown list
       if (!!views3D && !!views2D) {
         const mainList = (document.getElementById("viewDropList")) as HTMLSelectElement;
-        mainList.options[0].innerHTML = views2D[0].code.value as string;
-        mainList.options[0].value = views2D[0].id as string;
+        mainList.options[0].innerHTML = initialView.code.value as string;
+        mainList.options[0].value = initialView.id as string;
       }
     }
     // auto-fit-view
