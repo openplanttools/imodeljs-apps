@@ -570,7 +570,7 @@ interface IModelComponentState {
 }
 
 /** Renders a viewport, a tree, a property grid and a table */
-class IModelComponents extends React.PureComponent<IModelComponentsProps, IModelComponentState> {
+export class IModelComponents extends React.PureComponent<IModelComponentsProps, IModelComponentState> {
 
   /** Creates an iModel component instance */
   constructor(props: IModelComponentsProps) {

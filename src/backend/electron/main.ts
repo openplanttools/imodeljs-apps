@@ -28,13 +28,14 @@ export const changeiModel = (iModelName: string) => {
  * @param event The event sent by the renderer processes back to the main
  */
 export const readData = (event?: electron.Event, arg?: string) => {
-  const configObject: any = "";
+  let configObject: any = "";
   electronFs.readFile(path.join(__dirname, "../../common/iModel.Settings.json"), (error: Error | null, data: any) => {
     if (error) {
       // tslint:disable-next-line:no-console
       console.log("error " + error + arg);
     }
     const jsonObject = JSON.parse(data);
+    configObject = jsonObject;
     if (jsonObject.imodel_name.length < 1 || jsonObject.project_name.length < 1) {
       if(event)
       newWindow(event);
@@ -82,7 +83,6 @@ export const changeDrawingName = (drawingName: string) => {
  */
 const manager = new IModelJsElectronManager(path.join(__dirname, "..", "..", "webresources"));
 export default function initialize(rpcs: RpcInterfaceDefinition[]) {
-
   // Much of electron and iModelJS's functionality is wrapped in promises, so this nested async function is needed to avoid unhandled promise exceptions
   (async () => { // tslint:disable-line:no-floating-promises
     await manager.initialize({
@@ -101,7 +101,28 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
     // tell ElectronRpcManager which RPC interfaces to handle
     ElectronRpcManager.initializeImpl({}, rpcs);
     if (manager.mainWindow) {
-      manager.mainWindow.show();
+      electronFs.readFile(path.join(__dirname, "../../common/iModel.Settings.json"), (error: Error | null, data: any) => {
+        const jsonObject = JSON.parse(data);
+        console.log(error);
+        electron.dialog.showMessageBox({
+          title: "Configuration Data",
+          message: "Current project: " + jsonObject.project_name + " Current iModel: " + jsonObject.imodel_name,
+          buttons: ["Exit", "Select new configuration file", "Continue with current configuration"],
+        }, (index: number) => {
+          console.log(index);
+          if (index === 0) {
+            electron.app.quit();
+          } else if (index === 1) {
+            newWindow();
+          } else if (index === 2) {
+          } else {
+            if (manager.mainWindow)
+            manager.mainWindow.show();
+          }
+          if (manager.mainWindow)
+          manager.mainWindow.show();
+        });
+      });
       // const menuBar: electron.Menu = electron.Menu.getApplicationMenu() as electron.Menu;
       // const menuItem: electron.Menu = menuBar.items[2];
       // getReloadIModelClick(menuItem);
@@ -123,7 +144,7 @@ export function displayConfig(jsonObject: any) {
   }
 }
 
-export function newWindow(event: electron.Event) {
+export function newWindow(event?: electron.Event) {
   const test1: electron.FileFilter[] = [];
   const test: electron.FileFilter = {
     name: ".json",
@@ -143,7 +164,7 @@ export function newWindow(event: electron.Event) {
   }
 }
 
-export const fileSelectionData = (filePath: string[], event: electron.Event) => {
+export const fileSelectionData = (filePath: string[], event?: electron.Event) => {
   const configObject: any = "";
   electronFs.readFile(filePath[0], (error: Error | null, data: any) => {
     if (error) {
@@ -155,6 +176,7 @@ export const fileSelectionData = (filePath: string[], event: electron.Event) => 
       newWindow(event);
     } else {
       editConfig(jsonObject.project_name, jsonObject.imodel_name);
+      if(event)
       event.sender.send("readConfigResults", jsonObject);
     }
   });
