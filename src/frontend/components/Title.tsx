@@ -32,7 +32,7 @@ export default class TitleBar extends React.Component<TitleProps, TitleState> {
   }
 
   public render() {
-    const projDisplay = `Project: ${this.state.projectName}`;
+    const projDisplay = `${this.state.projectName}`;
     const modelDisplay = `(${this.state.iModelName})`;
 
     return (
