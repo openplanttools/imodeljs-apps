@@ -177,8 +177,6 @@ export default class App extends React.Component<{}, AppState> {
     (newView.baseModelId as Id64String) = newDrawingId; // Change the base model id (cast is necessary since it's marked as readonly after its been constructed)
 
     await newView.load(); // Load the model
-    console.log(newView.jsonProperties + "HERE");
-    console.log(newView.peekDetail + "HERE");
     view.displayStyle.viewFlags.fill = false;
     vp.changeView(newView); // And point the Viewport at the new drawing
 
@@ -280,9 +278,6 @@ export default class App extends React.Component<{}, AppState> {
       views3D = [];
       views2D = [];
       for (const elem of acceptedViewSpecs) {
-        console.log(elem.description);
-        console.log(elem.jsonProperties + "PROPERTIES");
-        console.log(elem.displayStyleId);
         if (elem.classFullName === "BisCore:OrthographicViewDefinition") {
           views3D[views3D.length] = elem;
         } else if (elem.classFullName === "BisCore:DrawingViewDefinition") {

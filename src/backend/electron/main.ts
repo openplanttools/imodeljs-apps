@@ -37,8 +37,8 @@ export const readData = (event?: electron.Event, arg?: string) => {
     const jsonObject = JSON.parse(data);
     configObject = jsonObject;
     if (jsonObject.imodel_name.length < 1 || jsonObject.project_name.length < 1) {
-      if(event)
-      newWindow(event);
+      // if(event)
+      // newWindow(event);
     } else if (event) {
         // displayConfig(jsonObject);
         event.sender.send("readConfigResults", jsonObject);
@@ -114,18 +114,11 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
             electron.app.quit();
           } else if (index === 1) {
             newWindow();
-          } else if (index === 2) {
-          } else {
-            if (manager.mainWindow)
-            manager.mainWindow.show();
           }
           if (manager.mainWindow)
           manager.mainWindow.show();
         });
       });
-      // const menuBar: electron.Menu = electron.Menu.getApplicationMenu() as electron.Menu;
-      // const menuItem: electron.Menu = menuBar.items[2];
-      // getReloadIModelClick(menuItem);
     }
   })();
 }
@@ -173,11 +166,14 @@ export const fileSelectionData = (filePath: string[], event?: electron.Event) =>
     }
     const jsonObject = JSON.parse(data);
     if(jsonObject.imodel_name.length < 1 || jsonObject.project_name.length < 1) {
-      newWindow(event);
+      electron.app.quit();
     } else {
       editConfig(jsonObject.project_name, jsonObject.imodel_name);
-      if(event)
+      if (event)
       event.sender.send("readConfigResults", jsonObject);
+    }
+    if(manager.mainWindow) {
+      manager.mainWindow.show();
     }
   });
   return configObject;
