@@ -89,6 +89,14 @@ How to change the project/iModel combination you would like to view
    - **`git checkout master`**
    - **`git pull origin master`**
 
+## **Setup Guide**
+
+See **docs/Plant-Viewer-Set-Up.md**.
+
+## **Pull Request Guide**
+
+See **docs/Pull-Request-Guide.md**.
+
 ## **Git Developer Guide**
 
 Before using Git on windows command prompt or git bash, you will need to install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
