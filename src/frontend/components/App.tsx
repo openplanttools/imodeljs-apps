@@ -25,7 +25,7 @@ import TitleBar from "./Title";
 import { ipcRenderer, Event } from "electron";
 import { GroupWidget } from "./Group";
 import { fitView } from "./Toolbar";
-// import console = require("console");
+import { delay } from "q";
 // tslint:disable: no-console
 // cSpell:ignore imodels
 
@@ -39,6 +39,8 @@ let views3D: ViewDefinitionProps[];
 let views2D: ViewDefinitionProps[];
 let currentProjectName: string = "";
 let currentIModelName: string = "";
+let initialDrawingName: string = "";
+let initialView: ViewDefinitionProps;
 
 // Getters for instance variables
 export function getCurrentProject() {
@@ -52,6 +54,9 @@ export function get3DViews() {
 }
 export function get2DViews() {
   return views2D;
+}
+export function getInitialView() {
+  return initialView;
 }
 
 // Changes the App's view definition
@@ -118,6 +123,7 @@ export default class App extends React.Component<{}, AppState> {
       }));
       currentProjectName = configObject.project_name;
       currentIModelName = configObject.imodel_name;
+      initialDrawingName = configObject.drawing_name;
       if (configObject.project_name && configObject.imodel_name) {
         await this._startProcess(configObject.project_name, configObject.imodel_name);
       }
@@ -281,13 +287,25 @@ export default class App extends React.Component<{}, AppState> {
           views3D[views3D.length] = elem;
         } else if (elem.classFullName === "BisCore:DrawingViewDefinition") {
           views2D[views2D.length] = elem;
+          if (elem.code.value === initialDrawingName) {
+            initialView = elem;
+          }
         }
       }
-      for (let idx = 1; idx < acceptedViewSpecs.length; idx++) {
-        views2D[idx - 1] = acceptedViewSpecs[idx];
+      views3D.sort(this.viewSort);
+      views2D.sort(this.viewSort);
+      if (!initialView) {
+        initialView = views2D[0];
       }
-      return views2D[0].id!;
+      return initialView.id!;
     }
+  }
+
+  /** Helper method to sort an array of view definitions */
+  private viewSort(a: ViewDefinitionProps, b: ViewDefinitionProps): number {
+    const valA: string = a.code.value as string;
+    const valB: string = b.code.value as string;
+    return valA.localeCompare(valB);
   }
 
   /** Updates the App's view definition */
@@ -308,6 +326,13 @@ export default class App extends React.Component<{}, AppState> {
       // const viewDefinitionId = imodel ? await this.getSheetViews(imodel) : undefined;
       const viewDefinitionId = imodel ? await this.getViewDefinitionId(imodel, viewId) : undefined;
       this.setState({ imodel, viewDefinitionId });
+      // auto-fit-view
+      if (viewId) {
+        await delay(100);
+      } else {
+        await delay(1000);
+      }
+      fitView();
     } catch (e) {
       // If failed, close the imodel and reset the state
       if (this.state.offlineIModel) {
@@ -420,9 +445,8 @@ export default class App extends React.Component<{}, AppState> {
       ui = (<span className="open-imodel"><Spinner size={SpinnerSize.XLarge} /></span>);
     } else {
       // If we do have an imodel and view definition id - render imodel components
-      const titleName: string = "Project: " + this.state.projectName + ", iModel: " + this.state.iModelName; // + ", Drawing: " + Config.App.get("imjs_test_drawing") (not working yet);
-      view = <GroupWidget view={"test"} />;
-      ui = (<IModelComponents imodel={this.state.imodel} viewDefinitionId={this.state.viewDefinitionId} menuOpened={this.state.menuOpened} title={titleName} />);
+      view = <GroupWidget view={""} />;
+      ui = (<IModelComponents imodel={this.state.imodel} viewDefinitionId={this.state.viewDefinitionId} menuOpened={this.state.menuOpened} title={""} />);
     }
     // Render the app
     return (
@@ -430,6 +454,9 @@ export default class App extends React.Component<{}, AppState> {
         <div className="app-header">
           <div className="text">
             <TitleBar projectName={this.state.projectName} drawingName={this.state.drawingName} iModelName={this.state.iModelName} />
+          </div>
+          <div className="viewlabel">
+            Drawings:
           </div>
           <div className="view">
             {view}
@@ -530,12 +557,16 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
       }
       await this.onIModelSelected(imodel);
 
-      // update the select view dropdown list
-      const mainList = (document.getElementById("viewDropList")) as HTMLSelectElement;
-      mainList.options[0].innerHTML = views2D[0].code.value as string;
-      mainList.options[0].value = views2D[0].id as string;
-      fitView();
+      // once the views have been loaded, update the select view dropdown list
+      if (!!views3D && !!views2D) {
+        const mainList = (document.getElementById("viewDropList")) as HTMLSelectElement;
+        mainList.options[0].innerHTML = initialView.code.value as string;
+        mainList.options[0].value = initialView.id as string;
+      }
     }
+    // auto-fit-view
+    await delay(100);
+    fitView();
   }
 
   public componentWillMount() {
@@ -548,7 +579,7 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
   public render() {
     return (
       <Button size={ButtonSize.Default} buttonType={ButtonType.Primary} className="button-reload-imodel" onClick={this._onClick} >
-        <img src="refresh.png" alt="Refresh"></img>
+        {this.state.isLoading ? undefined : <img src="refresh.png" alt="Refresh"></img>}
         {this.state.isLoading ? <span style={{ marginLeft: "8px" }}><Spinner size={SpinnerSize.Small} /></span> : undefined}
       </Button>
     );

@@ -24,20 +24,27 @@
   left: 20px;
 }
 
+.app-header .viewlabel {
+  position: absolute;
+  width: 60px;
+  right: 425px;
+  padding-top: 16px;
+  font-size: 12px;
+}
+
 .app-header .view {
   position: absolute;
-  width: 250px;
-  right: 125px;
-  padding-top: 10px;
+  width: 300px;
+  right: 111px;
+  padding-top: 15px;
   padding-bottom: 5px;
 }
 
 .app-header .reload {
   position: absolute;
-  width: 75px;
+  width: 50px;
   right: 50px;
   padding-top: 3px;
-  padding-bottom: 3px;
 }
 
 .app-header .menu {
@@ -46,7 +53,6 @@
   right: 0px;
   padding-top: 3px;
   padding-bottom: 3px;
-  color: white;
 }
 
 .app .button-open-imodel {
@@ -66,10 +72,12 @@
 
 .app .app-header .button-reload-imodel {
   font-size: 18px;
+  color: black;
 }
 
 .app .app-header .expand-menu {
-  font-size: 24px;
+  font-size: 40px;
+  color: black;
 }
 
 .app-content {
