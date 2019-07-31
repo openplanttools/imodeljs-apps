@@ -3,7 +3,7 @@
 * Licensed under the MIT License. See LICENSE.md in the project root for license terms.
 *--------------------------------------------------------------------------------------------*/
 import {
-  //get3DViews,
+  // get3DViews,
   get2DViews,
   getInitialView,
 } from "./App.js";

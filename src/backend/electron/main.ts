@@ -36,8 +36,8 @@ export const readData = (event?: electron.Event, arg?: string) => {
     }
     const jsonObject = JSON.parse(data);
     if (jsonObject.imodel_name.length < 1 || jsonObject.project_name.length < 1) {
-      if(event)
-      newWindow(event);
+      if (event)
+        newWindow(event);
     } else if (event) {
         // displayConfig(jsonObject);
         event.sender.send("readConfigResults", jsonObject);
@@ -151,7 +151,7 @@ export const fileSelectionData = (filePath: string[], event: electron.Event) => 
       console.log("error " + error);
     }
     const jsonObject = JSON.parse(data);
-    if(jsonObject.imodel_name.length < 1 || jsonObject.project_name.length < 1) {
+    if (jsonObject.imodel_name.length < 1 || jsonObject.project_name.length < 1) {
       newWindow(event);
     } else {
       editConfig(jsonObject.project_name, jsonObject.imodel_name);
@@ -175,7 +175,8 @@ export const editConfig = (projectName: string, imodelName: string) => {
 };
 
 export function popupWarning(typeOfError?: string) {
-  if(typeOfError) {
+  if (typeOfError) {
+    // tslint:disable-next-line: no-console
     console.log(typeOfError + " is the error");
   }
   const errorMessage = "Warning! The current settings file is incomplete!";
