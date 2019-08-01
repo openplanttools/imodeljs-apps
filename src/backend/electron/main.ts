@@ -9,6 +9,7 @@ import * as electron from "electron";
 import * as configurationData from "../../common/iModel.Settings.json";
 import * as electronFs from "fs";
 // import html from "../../frontend/components/Popup.html";
+// tslint:disable: no-console
 
 /** Method to change the iModelName stored in the config.json
  * @param iModelName string wsgId of the new iModel
@@ -102,7 +103,7 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
         const jsonObject = JSON.parse(data);
         console.log(error);
         let buttonsArray = ["Exit", "Select new configuration file", "Continue with current configuration"];
-        if(jsonObject.project_name.length < 1 || jsonObject.imodel_name < 1) {
+        if (jsonObject.project_name.length < 1 || jsonObject.imodel_name < 1) {
           buttonsArray = ["Exit", "Select new configuration file"];
         }
         electron.dialog.showMessageBox({
@@ -116,7 +117,7 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
           } else if (index === 1) {
             newWindow();
           } else if (index === 2) {
-            if(manager.mainWindow) {
+            if (manager.mainWindow) {
               manager.mainWindow.show();
             }
           }
@@ -136,6 +137,7 @@ export function displayConfig(jsonObject: any) {
   }
 }
 
+/** Pops up new window for configuration file selection */
 export function newWindow(event?: electron.Event) {
   const test1: electron.FileFilter[] = [];
   const test: electron.FileFilter = {
@@ -156,6 +158,7 @@ export function newWindow(event?: electron.Event) {
   }
 }
 
+/** Reads and parses the configuration file for valid information */
 export const fileSelectionData = (filePath: string[], event?: electron.Event) => {
   const configObject: any = "";
   electronFs.readFile(filePath[0], (error: Error | null, data: any) => {
@@ -164,14 +167,14 @@ export const fileSelectionData = (filePath: string[], event?: electron.Event) =>
       console.log("error " + error);
     }
     const jsonObject = JSON.parse(data);
-    if(jsonObject.imodel_name.length < 1 || jsonObject.project_name.length < 1) {
+    if (jsonObject.imodel_name.length < 1 || jsonObject.project_name.length < 1) {
       electron.app.quit();
     } else {
       editConfig(jsonObject.project_name, jsonObject.imodel_name);
       if (event)
       event.sender.send("readConfigResults", jsonObject);
     }
-    if(manager.mainWindow) {
+    if (manager.mainWindow) {
       manager.mainWindow.show();
     }
   });

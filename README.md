@@ -1,5 +1,7 @@
 # **Plant Viewer (in development)**
 
+[[_TOC_]]
+
 ## **User Guide**
 
 ### **About**

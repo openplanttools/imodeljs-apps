@@ -1,4 +1,6 @@
-# **Plant Viewer**
+# Plant Viewer Setup Guide
+
+[[_TOC_]]
 
 ## **User Guide**
 

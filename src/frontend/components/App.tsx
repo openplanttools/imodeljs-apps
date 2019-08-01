@@ -107,7 +107,8 @@ export default class App extends React.Component<{}, AppState> {
     thisApp = this;
   }
 
-  componentWillMount() {
+  public componentWillMount() {
+    // tslint:disable-next-line: no-floating-promises
     this.makeCalls();
   }
 

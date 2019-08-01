@@ -23,6 +23,7 @@ export default class TitleBar extends React.Component<TitleProps, TitleState> {
     };
   }
 
+  /** Sets the title with the provided iModel data */
   public componentWillReceiveProps(newProps: TitleProps) {
     this.setState(() => ({
       iModelName: newProps.iModelName,
@@ -31,6 +32,7 @@ export default class TitleBar extends React.Component<TitleProps, TitleState> {
     }));
   }
 
+  /** Renders the title */
   public render() {
     const projDisplay = `${this.state.projectName}`;
     const modelDisplay = `(${this.state.iModelName})`;

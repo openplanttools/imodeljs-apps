@@ -1,4 +1,4 @@
-# Pull Request Policies
+# Pull Request Guide
 
 [[_TOC_]]
 
