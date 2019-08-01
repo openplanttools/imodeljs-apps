@@ -2,88 +2,81 @@
 
 [[_TOC_]]
 
-- **Opening the App**
-- **Selecting a Custom Configuration File**
-- **Signing In**
-- **Loading the App**
-- **Making a Selection in the Viewport**
-- **Selecting Fit View in the Viewport**
-- **Selecting Pan View in the Viewport**
-- **Selecting Zoom in the Toolbar**
-- **Refreshing the iModel**
-- **Expanding the Menu**
-- **Collapsing the Menu**
-- **Selecting a Drawing in the Header**
-- **Selecting a Drawing in the Tree**
+## **Opening the App**
 
-**Opening the App**
-configuration - setupEnv
-	File: src/common/configuration.ts
-	Function: export default function setupEnv() {
-	Description: Setup configuration for the application
-main - initializeToConsole
-	File: src/backend/main.ts
-	Function: Logger.initializeToConsole();
-	Description: Initialize logging
-main - startup
-	File: src/backend/main.ts
-	Function: IModelHost.startup();
-	Description: Start host
-main - initialize
-	File: src/backend/main.ts
-	Function: Presentation.initialize({
-	Description: Initialize presentation-backend
-electron/main - initialize
-	File: src/backend/electron/main.ts
-	Function: export default function initialize(rpcs: RpcInterfaceDefinition[]) {
-	Description: Initializes Electron backend
-main - readConfig
-	File: src/backend/main.ts
-	Function: ipcMain.on("readConfig", (event: Event, arg: any) => {
-	Description: Read config file
-electron/main - readData
-	File: src/backend/electron/main.ts
-	Function: export const readData = (event?: electron.Event, arg?: string) => {
-	Description: This method reads the config, parses it into a JSON object, and returns it back to the renderer
---> Proceed to **Selecting a Custom Configuration File**
+1. configuration - setupEnv
+   - **File:** src/common/configuration.ts
+   - **Function:** export default function setupEnv() {
+   - **Description:** Setup configuration for the application
+2. main - initializeToConsole
+   - **File:** src/backend/main.ts
+   - **Function:** Logger.initializeToConsole();
+   - **Description:** Initialize logging
+3. main - startup
+   - **File:** src/backend/main.ts
+   - **Function:** IModelHost.startup();
+   - **Description:** Start host
+4. main - initialize
+   - **File:** src/backend/main.ts
+   - **Function:** Presentation.initialize({
+   - **Description:** Initialize presentation-backend
+5. electron/main - initialize
+   - **File:** src/backend/electron/main.ts
+   - **Function:** export default function initialize(rpcs: RpcInterfaceDefinition[]) {
+   - **Description:** Initializes Electron backend
+6. main - readConfig
+   - **File:** src/backend/main.ts
+   - **Function:** ipcMain.on("readConfig", (event: Event, arg: any) => {
+   - **Description:** Read config file
+7. electron/main - readData
+   - **File:** src/backend/electron/main.ts
+   - **Function:** export const readData = (event?: electron.Event, arg?: string) => {
+   - **Description:** This method reads the config, parses it into a JSON object, and returns it back to the renderer
 
-**Selecting a Custom Configuraton File**
-electron/main - newWindow
-	File: src/backend/electron/main.ts
-	Function: export function newWindow(event?: electron.Event) {
-	Description: Pops up new window for configuration file selection
-electron/main - fileSelectionData
-	File: src/backend/electron/main.ts
-	Function: export const fileSelectionData = (filePath: string[], event?: electron.Event) => {
-	Description: Reads and parses the configuration file for valid information
-electron/main - editConfig
-	File: src/backend/electron/main.ts
-	Function: export const editConfig = (projectName: string, imodelName: string) => {
-	Description: Method to change the iModelName stored in the config.json
---> If valid configuration file, proceed to **Signing In**
---> If not, popup error and exit application
+*Proceed to **Selecting a Custom Configuration File**.*
 
-**Signing In**
-App - onStartSignin
-	File: src/frontend/components/App.tsx
-	Function: private _onStartSignin = async () => {
-	Description: Handles beginning of sign-in process
-App - render
-	File: src/frontend/components/App.tsx
-	Function: public render() {
-	Description: Renders the app
-Title - componentWillReceiveProps
-	File: src/frontend/components/Title.tsx
-	Function: public componentWillReceiveProps(newProps: TitleProps) {
-	Description: Sets the title with the provided iModel data
-Title - render
-	File: src/frontend/components/Title.tsx
-	Function: public render() {
-	Description: Renders the title
---> If valid credentials, proceed to **Loading the App**
---> If not, popup error and exit application
+## **Selecting a Custom Configuraton File**
 
-**Loading the App**
+1. electron/main - newWindow
+   - **File:** src/backend/electron/main.ts
+   - **Function:** export function newWindow(event?: electron.Event) {
+   - **Description:** Pops up new window for configuration file selection
+2. electron/main - fileSelectionData
+   - **File:** src/backend/electron/main.ts
+   - **Function:** export const fileSelectionData = (filePath: string[], event?: electron.Event) => {
+   - **Description:** Reads and parses the configuration file for valid information
+3. electron/main - editConfig
+   - **File:** src/backend/electron/main.ts
+   - **Function:** export const editConfig = (projectName: string, imodelName: string) => {
+   - **Description:** Method to change the iModelName stored in the config.json
+
+- *If valid configuration file, proceed to **Signing In**.*
+- *If not, popup error and exit application.*
+
+## **Signing In**
+
+1. App - onStartSignin
+   - **File:** src/frontend/components/App.tsx
+   - **Function:** private _onStartSignin = async () => {
+   - **Description:** Handles beginning of sign-in process
+2. App - render
+   - **File:** src/frontend/components/App.tsx
+   - **Function:** public render() {
+   - **Description:** Renders the app
+3. Title - componentWillReceiveProps
+   - **File:** src/frontend/components/Title.tsx
+   - **Function:** public componentWillReceiveProps(newProps: TitleProps) {
+   - **Description:** Sets the title with the provided iModel data
+4. Title - render
+   - **File:** src/frontend/components/Title.tsx
+   - **Function:** public render() {
+   - **Description:** Renders the title
+
+- *If valid credentials, proceed to **Loading the App**.*
+- *If not, popup error and exit application.*
+
+## **Loading the App**
+
 Group - ViewContainer constructor
 configuration - setupEnv
 SimpleViewerApp - startup
@@ -139,41 +132,51 @@ App - IModelComponents render
 Viewport - render
 Toolbar - toolbar
 Toolbar - fitView
---> Proceed to **Making a Selection in the Viewport**
 
-**Making a Selection in the Viewport**
-Toolbar - select
-	File: src/frontend/components/Toolbar.tsx
-	Function: export const select = () => {
-	Description: Enables making a selection in the viewport
-App - onSelectionChanged
-	File: src/frontend/components/App.tsx
-	Function: private _onSelectionChanged = (evt: SelectionChangeEventArgs, selectionProvider: ISelectionProvider) => {
-	Description: When the drawing is changed, handle that change in selection, get a new drawing, and update properties and viewings
---> Proceed to **Selecting Fit View in the Toolbar**
+*Proceed to **Making a Selection in the Viewport**.*
 
-**Selecting Fit View in the Toolbar**
-Toolbar - fitView
-	File: src/frontend/components/Toolbar.tsx
-	Function: export const fitView = () => {
-	Description: Fits the view in the viewport
---> Proceed to **Selecting Pan View in the Toolbar**
+## **Making a Selection in the Viewport**
 
-**Selecting Pan View in the Toolbar**
-Toolbar - pan
-	File: src/frontend/components/Toolbar.tsx
-	Function: const pan = () => {
-	Description: Enables panning in the viewport
---> Proceed to **Selecting Zoom in the Toolbar**
+1. Toolbar - select
+   - **File:** src/frontend/components/Toolbar.tsx
+   - **Function:** export const select = () => {
+   - **Description:** Enables making a selection in the viewport
+2. App - onSelectionChanged
+   - **File:** src/frontend/components/App.tsx
+   - **Function:** private _onSelectionChanged = (evt: SelectionChangeEventArgs, selectionProvider: ISelectionProvider) => {
+   - **Description:** When the drawing is changed, handle that change in selection, get a new drawing, and update properties and viewings
 
-**Selecting Zoom in the Toolbar**
-Toolbar - zoom
-	File: src/frontend/components/Toolbar.tsx
-	Function: const zoom = () => {
-	Description: Enables zooming in the viewport
---> Proceed to **Refreshing the iModel**
+*Proceed to **Selecting Fit View in the Toolbar**.*
 
-**Refreshing the iModel**
+## **Selecting Fit View in the Toolbar**
+
+1. Toolbar - fitView
+   - **File:** src/frontend/components/Toolbar.tsx
+   - **Function:** export const fitView = () => {
+   - **Description:** Fits the view in the viewport
+
+*Proceed to **Selecting Pan View in the Toolbar**.*
+
+## **Selecting Pan View in the Toolbar**
+
+1. Toolbar - pan
+   - **File:** src/frontend/components/Toolbar.tsx
+   - **Function:** const pan = () => {
+   - **Description:** Enables panning in the viewport
+
+*Proceed to **Selecting Zoom in the Toolbar**.*
+
+## **Selecting Zoom in the Toolbar**
+
+1. Toolbar - zoom
+   - **File:** src/frontend/components/Toolbar.tsx
+   - **Function:** const zoom = () => {
+   - **Description:** Enables zooming in the viewport
+
+*Proceed to **Refreshing the iModel**.*
+
+## **Refreshing the iModel**
+
 App - OpenIModelButton onClick
 App - OpenIModelButton getIModelInfo
 App - OpenIModelButton render
@@ -195,9 +198,11 @@ App - IModelComponents render
 Viewport - render
 Toolbar - toolbar
 Toolbar - fitView
---> Proceed to **Expanding the Menu**
 
-**Expanding the Menu**
+*Proceed to **Expanding the Menu**.*
+
+## **Expanding the Menu**
+
 App - menuClick
 App - render
 App - signInRedirectUri
@@ -218,9 +223,11 @@ Properties - render
 Properties - getDataProvider
 Table - render
 Table - getDataProvider
---> Proceed to **Collapsing the Menu**
 
-**Collapsing the Menu**
+*Proceed to **Collapsing the Menu**.*
+
+## **Collapsing the Menu**
+
 App - menuClick
 App - render
 App - signInRedirectUri
@@ -235,9 +242,11 @@ App - get3DViews
 App - IModelComponents render
 Viewport - render
 Toolbar - toolbar
---> Proceed to **Selecting a Drawing in the Header**
 
-**Selecting a Drawing in the Header**
+*Proceed to **Selecting a Drawing in the Header**.*
+
+## **Selecting a Drawing in the Header**
+
 Group - ViewList handleSubmit
 Group - ViewContainer setNewView
 App - changeView
@@ -261,10 +270,13 @@ App - IModelComponents render
 Viewport - render
 Toolbar - toolbar
 Toolbar - fitView
---> Proceed to **Selecting a Drawing in the Tree**
 
-**Selecting a Drawing in the Tree**
+*Proceed to **Selecting a Drawing in the Tree**.*
+
+## **Selecting a Drawing in the Tree**
+
 App - onSelectionChanged
 App - changeView
 App - setupDisplayByCategories
---> Return to **Call Stack**
+
+*Return to **Call Stack**.*
