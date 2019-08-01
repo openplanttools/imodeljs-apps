@@ -103,8 +103,12 @@ export default class App extends React.Component<{}, AppState> {
       shouldCall: false,
     };
     // tslint:disable-next-line: no-floating-promises
-    this.makeCalls();
+    // this.makeCalls();
     thisApp = this;
+  }
+
+  componentWillMount() {
+    this.makeCalls();
   }
 
   /** Gets the current desired project as saved either from the settings.json file or from the Config.App singleton */

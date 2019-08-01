@@ -36,10 +36,7 @@ export const readData = (event?: electron.Event, arg?: string) => {
     }
     const jsonObject = JSON.parse(data);
     configObject = jsonObject;
-    if (jsonObject.imodel_name.length < 1 || jsonObject.project_name.length < 1) {
-      // if(event)
-      // newWindow(event);
-    } else if (event) {
+    if (event) {
         // displayConfig(jsonObject);
         event.sender.send("readConfigResults", jsonObject);
     }
@@ -114,9 +111,11 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
             electron.app.quit();
           } else if (index === 1) {
             newWindow();
+          } else if (index === 2) {
+            if(manager.mainWindow) {
+              manager.mainWindow.show();
+            }
           }
-          if (manager.mainWindow)
-          manager.mainWindow.show();
         });
       });
     }
