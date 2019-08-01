@@ -36,7 +36,7 @@
 
 1. Type the following command in the terminal to run the application. An electron window will open within seconds.
    - **`npm run electron`**
-    -   `or`
+   - `or`
    - **`npm run go`** (builds and runs the application)
 2. View the **Help** section below to see how to use the application.
 3. Close the electron window to stop running the application.
@@ -61,7 +61,7 @@ How to change the project/iModel combination you would like to view
 
 1. Navigate to imodeljs-openplant-viewer/lib/common and open iModel.Settings.json.
 2. In the file, edit the project and imodel values.
-2. Run the application normally.
+3. Run the application normally.
 
 #### Method 2
 
@@ -88,6 +88,14 @@ How to change the project/iModel combination you would like to view
 8. Remember to type the following commands in your terminal to get the updated master branch.
    - **`git checkout master`**
    - **`git pull origin master`**
+
+## **Setup Guide**
+
+See **docs/Plant-Viewer-Set-Up.md**.
+
+## **Pull Request Guide**
+
+See **docs/Pull-Request-Guide.md**.
 
 ## **Git Developer Guide**
 

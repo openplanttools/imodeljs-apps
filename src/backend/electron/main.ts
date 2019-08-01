@@ -192,7 +192,8 @@ export const editConfig = (projectName: string, imodelName: string) => {
 };
 
 export function popupWarning(typeOfError?: string) {
-  if(typeOfError) {
+  if (typeOfError) {
+    // tslint:disable-next-line: no-console
     console.log(typeOfError + " is the error");
   }
   const errorMessage = "Warning! The current settings file is incomplete!";

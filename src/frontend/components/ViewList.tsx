@@ -2,7 +2,11 @@
 * Copyright (c) 2019 Bentley Systems, Incorporated. All rights reserved.
 * Licensed under the MIT License. See LICENSE.md in the project root for license terms.
 *--------------------------------------------------------------------------------------------*/
-import { get2DViews, getInitialView } from "./App.js";
+import {
+  // get3DViews,
+  get2DViews,
+  getInitialView,
+} from "./App.js";
 
 // Stores the list of view definitions
 export const viewList: any[] = [];
@@ -17,7 +21,7 @@ const viewWidget = () => {
     key: initVal.id,
   };
 
-  // TODO: Adds the 3D views in the dropdown list
+  // Adds the 3D views in the dropdown list
   // const views3D = get3DViews();
   // for (let i = 0; i < views3D.length; i++) {
   //   viewList[i + 1] = {
@@ -36,6 +40,7 @@ const viewWidget = () => {
       key: views2D[i].id,
     };
   }
+
   return viewList;
 };
 export default viewWidget;
