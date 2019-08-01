@@ -150,6 +150,7 @@ export function newWindow(event?: electron.Event) {
       filters: test1,
     }, (filePaths) => {
       if (!filePaths) {
+        electron.app.quit();
       }
       fileSelectionData(filePaths, event);
     });
@@ -164,14 +165,14 @@ export const fileSelectionData = (filePath: string[], event?: electron.Event) =>
       console.log("error " + error);
     }
     const jsonObject = JSON.parse(data);
-    if(jsonObject.imodel_name.length < 1 || jsonObject.project_name.length < 1) {
+    if (jsonObject.imodel_name.length < 1 || jsonObject.project_name.length < 1) {
       electron.app.quit();
     } else {
       editConfig(jsonObject.project_name, jsonObject.imodel_name);
       if (event)
       event.sender.send("readConfigResults", jsonObject);
     }
-    if(manager.mainWindow) {
+    if (manager.mainWindow) {
       manager.mainWindow.show();
     }
   });
