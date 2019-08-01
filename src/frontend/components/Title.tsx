@@ -14,6 +14,7 @@ export interface TitleState {
 }
 
 export default class TitleBar extends React.Component<TitleProps, TitleState> {
+  // Constructs a TitleBar object
   constructor(props: TitleProps) {
     super(props);
     this.state = {

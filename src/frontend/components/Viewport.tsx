@@ -25,6 +25,7 @@ export interface Props {
 
 /** Viewport component for the viewer app */
 export default class SimpleViewportComponent extends React.Component<Props> {
+  /** Renders the Viewport */
   public render() {
     return (
       <>
