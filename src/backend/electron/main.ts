@@ -101,10 +101,14 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
       electronFs.readFile(path.join(__dirname, "../../common/iModel.Settings.json"), (error: Error | null, data: any) => {
         const jsonObject = JSON.parse(data);
         console.log(error);
+        let buttonsArray = ["Exit", "Select new configuration file", "Continue with current configuration"];
+        if(jsonObject.project_name.length < 1 || jsonObject.imodel_name < 1) {
+          buttonsArray = ["Exit", "Select new configuration file"];
+        }
         electron.dialog.showMessageBox({
           title: "Configuration Data",
           message: "Current project: " + jsonObject.project_name + " Current iModel: " + jsonObject.imodel_name,
-          buttons: ["Exit", "Select new configuration file", "Continue with current configuration"],
+          buttons: buttonsArray,
         }, (index: number) => {
           console.log(index);
           if (index === 0) {
@@ -121,10 +125,6 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
     }
   })();
 }
-
-// export function getReloadIModelClick(menuItem: electron.MenuItem) {
-//   return menuItem.click;
-// }
 
 export function displayConfig(jsonObject: any) {
   if (manager.mainWindow) {
