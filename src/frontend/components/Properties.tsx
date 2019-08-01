@@ -42,8 +42,15 @@ export default class SimplePropertiesComponent extends React.PureComponent<Props
     } else {
       const imodelProps = props as IModelConnectionProps;
       const provider: PresentationPropertyDataProvider = new PresentationPropertyDataProvider(imodelProps.imodel, imodelProps.rulesetId);
+     this.test(provider);
       return provider;
     }
+  }
+
+  public async test(provider: PresentationPropertyDataProvider) {
+    console.log(await provider.getData());
+    console.log(await provider.getContentDescriptor());
+    console.log(await provider.keys);
   }
 
   public render() {
