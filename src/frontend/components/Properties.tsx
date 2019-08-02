@@ -35,7 +35,10 @@ export type Props = IModelConnectionProps | DataProviderProps;
 
 /** Property grid component for the viewer app */
 export default class SimplePropertiesComponent extends React.PureComponent<Props> {
-  /** Gets the data provider to fill the Properties widget */
+
+  /** Gets the data provider to fill the Properties widget
+   * @param props the data provider props
+   */
   private getDataProvider(props: Props) {
     if ((props as any).dataProvider) {
       const providerProps = props as DataProviderProps;
@@ -48,6 +51,9 @@ export default class SimplePropertiesComponent extends React.PureComponent<Props
     }
   }
 
+  /** Tests for the Properties widget
+   * @provider the data provider for the Properties widget
+   */
   public async test(provider: PresentationPropertyDataProvider) {
     console.log(await provider.getData());
     console.log(await provider.getContentDescriptor());

@@ -9,8 +9,8 @@ import "../../common/configuration.js";
 import "./Group.scss";
 import { changeView } from "./App";
 
-// WIP, event emitter bound function to be called from App.tsx and create changes in the AppState
-// WIP, class to contain the current view chosen and return it to App.tsx
+// event emitter bound function to be called from App.tsx and create changes in the AppState
+// class to contain the current view chosen and return it to App.tsx
 export class ViewContainer {
 
   // instance variables, storing view name as a string and an object, the object is useful because it can be assigned
@@ -32,15 +32,22 @@ export class ViewContainer {
     };
   }
 
-  // getters and setters
+  /** Sets the name of the current view definition to the provided name
+   * @param view the provided name
+   */
   public setNewView(view: string) {
     this.currentView = view;
   }
-  public updateView() {
+
+  /** Returns the name of the current view definition
+   * @return the name of the current view definition
+   */
+  public updateView(): string {
     return this.currentView;
   }
 }
 
+// The ViewContainer to hold the GroupWidget
 export const viewContainer = new ViewContainer();
 
 /** Group Widget controller class, formats and spaces the collcetion of tools associated with developing a new view */
@@ -49,6 +56,8 @@ export const viewContainer = new ViewContainer();
 export interface GroupProps {
   view: string;
 }
+
+/** The GroupWidget to hold the ViewList */
 export class GroupWidget extends React.Component<GroupProps, { value: string }> {
   /** Renders the GroupWidget */
   public render() {
@@ -78,13 +87,16 @@ export class ViewList extends React.Component<ViewListProps, { value: string }> 
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  // WIP, handles changes to the state of this piece when the desired project is changed, functionality not yet implemented
+  /** Handles changes to the state of this piece when the desired project is changed
+   * Not yet fully implemented
+   * @param event the state change selection made by the user
+   */
   public handleChange(event: Event) {
     if (event.target)
       this.setState({});
   }
 
-  // Handles new form submission of dropdown elements from the list
+  /** Handles new form submission of dropdown elements from the list */
   public handleSubmit() {
 
     // alert('A name was submitted: ' + this.state);

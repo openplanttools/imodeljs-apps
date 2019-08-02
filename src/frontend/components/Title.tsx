@@ -1,18 +1,21 @@
 import * as React from "react";
 import styled from "styled-components";
 
+/** The props for the Title component */
 export interface TitleProps {
   projectName?: string;
   drawingName?: string;
   iModelName: string;
 }
 
+/** The state of the Title component */
 export interface TitleState {
   projectName?: string;
   drawingName?: string;
   iModelName: string;
 }
 
+/** The Title component */
 export default class TitleBar extends React.Component<TitleProps, TitleState> {
   // Constructs a TitleBar object
   constructor(props: TitleProps) {
@@ -24,7 +27,9 @@ export default class TitleBar extends React.Component<TitleProps, TitleState> {
     };
   }
 
-  /** Sets the title with the provided iModel data */
+  /** Sets the title with the provided iModel data
+   * @param newProps the new project, iModel, and drawing names to display in the title
+   */
   public componentWillReceiveProps(newProps: TitleProps) {
     this.setState(() => ({
       iModelName: newProps.iModelName,

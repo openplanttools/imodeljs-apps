@@ -21,8 +21,14 @@ export class SimpleViewerApp {
   private static _isReady: Promise<void>;
   private static _oidcClient: IOidcFrontendClient;
 
+  /** Gets the OIDC client
+   * @return the OIDC client
+   */
   public static get oidcClient() { return this._oidcClient; }
 
+  /** Gets whether or not the application is ready to launch
+   * @return whether or not the application is ready to launch
+   */
   public static get ready(): Promise<void> { return this._isReady; }
 
   /** Handles app start-up */
@@ -57,7 +63,9 @@ export class SimpleViewerApp {
     this._isReady = Promise.all(initPromises).then(() => { });
   }
 
-  /** Initializes rpc with connection info */
+  /** Initializes rpc with connection info
+   * @return a promise
+   */
   private static async initializeRpc(): Promise<void> {
     const rpcParams = await this.getConnectionInfo();
     initRpc(rpcParams);
@@ -78,12 +86,15 @@ export class SimpleViewerApp {
     IModelApp.authorizationClient = this._oidcClient;
   }
 
+  /** Shuts down the application */
   public static shutdown() {
     this._oidcClient.dispose();
     IModelApp.shutdown();
   }
 
-  /** Gets connection info to initialize rpc */
+  /** Gets connection info to initialize rpc
+   * @return a promise to the application's connection info
+   */
   private static async getConnectionInfo(): Promise<BentleyCloudRpcParams | undefined> {
     const usedBackend = Config.App.getNumber("imjs_backend", UseBackend.Local);
 
