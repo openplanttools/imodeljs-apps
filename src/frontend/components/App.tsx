@@ -107,7 +107,8 @@ export default class App extends React.Component<{}, AppState> {
     thisApp = this;
   }
 
-  componentWillMount() {
+  public componentWillMount() {
+    // tslint:disable-next-line: no-floating-promises
     this.makeCalls();
   }
 
@@ -415,6 +416,7 @@ export default class App extends React.Component<{}, AppState> {
     }
   }
 
+  /** Makes calls on initial start-up to set-up the app */
   private async makeCalls() {
     console.log("IN MAKE CALLS" + this.state.projectName + this.state.iModelName);
     if (this.state.projectName.length < 1 || this.state.iModelName.length < 1) {
@@ -568,13 +570,14 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
     fitView();
   }
 
+  /** Performs onClick on initial start-up */
   public componentWillMount() {
 
     // tslint:disable-next-line: no-floating-promises
     this._onClick();
   }
 
-  /** Renders the button */
+  /** Renders the open iModel button */
   public render() {
     return (
       <Button size={ButtonSize.Default} buttonType={ButtonType.Primary} className="button-reload-imodel" onClick={this._onClick} >

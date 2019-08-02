@@ -50,6 +50,7 @@ export interface GroupProps {
   view: string;
 }
 export class GroupWidget extends React.Component<GroupProps, { value: string }> {
+  /** Renders the GroupWidget */
   public render() {
     return (
       <div>
@@ -69,6 +70,7 @@ export interface ViewListProps {
 export class ViewList extends React.Component<ViewListProps, { value: string }> {
   public myRef: HTMLElement | undefined;
   public prevIndex: number | undefined;
+  // Constructs a dropdown list selecting a view
   constructor(props: any) {
     super(props);
     this.state = { value: "" };

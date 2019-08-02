@@ -51,11 +51,12 @@ ipcMain.on("popupWarning", (event: Event, arg: any) => {
 });
 setupEnv();
 
-// initialize logging
+// Initialize logging
 Logger.initializeToConsole();
+// Start host
 IModelHost.startup();
 
-// initialize presentation-backend
+// Initialize presentation-backend
 Presentation.initialize({
 
   // Specify location of where application's presentation rule sets are located.

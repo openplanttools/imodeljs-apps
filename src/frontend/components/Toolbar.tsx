@@ -35,18 +35,22 @@ const toolbar = () => {
  * for more details and available tools.
  */
 
+ /** Enables making a selection in the viewport */
 export const select = () => {
   IModelApp.tools.run(SelectionTool.toolId);
 };
 
+ /** Fits the view in the viewport */
 export const fitView = () => {
   IModelApp.tools.run(FitViewTool.toolId, IModelApp.viewManager.selectedView);
 };
 
+ /** Enables panning in the viewport */
 const pan = () => {
   IModelApp.tools.run(PanViewTool.toolId, IModelApp.viewManager.selectedView);
 };
 
+ /** Enables zooming in the viewport */
 const zoom = () => {
   IModelApp.tools.run(ZoomViewTool.toolId, IModelApp.viewManager.selectedView);
 };

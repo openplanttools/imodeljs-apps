@@ -25,6 +25,7 @@ export class SimpleViewerApp {
 
   public static get ready(): Promise<void> { return this._isReady; }
 
+  /** Handles app start-up */
   public static startup() {
     IModelApp.startup();
 
@@ -56,11 +57,13 @@ export class SimpleViewerApp {
     this._isReady = Promise.all(initPromises).then(() => { });
   }
 
+  /** Initializes rpc with connection info */
   private static async initializeRpc(): Promise<void> {
     const rpcParams = await this.getConnectionInfo();
     initRpc(rpcParams);
   }
 
+  /** Initializes oidc with configuration ids & uri */
   private static async initializeOidc() {
     const clientId = Config.App.get("imjs_browser_test_client_id");
     const redirectUri = Config.App.getString("imjs_browser_test_redirect_uri"); // must be set in config
@@ -80,6 +83,7 @@ export class SimpleViewerApp {
     IModelApp.shutdown();
   }
 
+  /** Gets connection info to initialize rpc */
   private static async getConnectionInfo(): Promise<BentleyCloudRpcParams | undefined> {
     const usedBackend = Config.App.getNumber("imjs_backend", UseBackend.Local);
 
