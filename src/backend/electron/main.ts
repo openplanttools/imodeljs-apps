@@ -24,8 +24,7 @@ export const changeiModel = (iModelName: string) => {
   electronFs.writeFileSync(path.join(__dirname, "../../common/iModel.Settings.json"), stringifiedConfig);
 };
 
-/**
- *  This method reads the config, parses it into a JSON object, and returns it back to the renderer
+/** This method reads the config, parses it into a JSON object, and returns it back to the renderer
  * @param event The event sent by the renderer processes back to the main
  */
 export const readData = (event?: electron.Event, arg?: string) => {
@@ -45,8 +44,7 @@ export const readData = (event?: electron.Event, arg?: string) => {
   return configObject;
 };
 
-/**
- * This method sets the project name in the settings.json
+/** This method sets the project name in the settings.json
  * @param projectName The name of the desired project
  */
 export const changeProject = (projectName: string) => {
@@ -76,8 +74,8 @@ export const changeDrawingName = (drawingName: string) => {
 // This is because external components that require data gathered in App.tsx, are unable to import that file, due to security reasons.
 // Thus the data must travel App.tsx -> main.ts (backend) -> component that needs the data
 
-/**
- * Initializes Electron backend
+/** Initializes Electron backend
+ * @param rpcs the RPC interfaces
  */
 const manager = new IModelJsElectronManager(path.join(__dirname, "..", "..", "webresources"));
 export default function initialize(rpcs: RpcInterfaceDefinition[]) {
@@ -127,6 +125,9 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
   })();
 }
 
+/** Displays the current configuration file information
+ * @param jsonObject The current config JSON
+ */
 export function displayConfig(jsonObject: any) {
   if (manager.mainWindow) {
     const configData = "Project: " + jsonObject.project_name + " iModel: " + jsonObject.imodel_name;
@@ -137,7 +138,9 @@ export function displayConfig(jsonObject: any) {
   }
 }
 
-/** Pops up new window for configuration file selection */
+/** Pops up new window for configuration file selection
+ * @param event the selection made by the user
+ */
 export function newWindow(event?: electron.Event) {
   const test1: electron.FileFilter[] = [];
   const test: electron.FileFilter = {
@@ -158,7 +161,10 @@ export function newWindow(event?: electron.Event) {
   }
 }
 
-/** Reads and parses the configuration file for valid information */
+/** Reads and parses the configuration file for valid information
+ * @param filePath the file path chosen by the user
+ * @param event the selection made by the user
+ */
 export const fileSelectionData = (filePath: string[], event?: electron.Event) => {
   const configObject: any = "";
   electronFs.readFile(filePath[0], (error: Error | null, data: any) => {
@@ -170,7 +176,7 @@ export const fileSelectionData = (filePath: string[], event?: electron.Event) =>
     if (jsonObject.imodel_name.length < 1 || jsonObject.project_name.length < 1) {
       electron.app.quit();
     } else {
-      editConfig(jsonObject.project_name, jsonObject.imodel_name);
+      editConfig(jsonObject.project_name, jsonObject.imodel_name, jsonObject.drawing_name);
       if (event)
       event.sender.send("readConfigResults", jsonObject);
     }
@@ -182,18 +188,23 @@ export const fileSelectionData = (filePath: string[], event?: electron.Event) =>
 };
 
 /** Method to change the iModelName stored in the config.json
+ * @param projectName string wsgId of the new project
+ * @param imodelName string wsgId of the new imodel
  * @param drawingName string wsgId of the new drawing
  */
-export const editConfig = (projectName: string, imodelName: string) => {
+export const editConfig = (projectName: string, imodelName: string, drawingName: string) => {
   const newConfig = {
-    imodel_name: imodelName,
     project_name: projectName,
-    drawing_name: "",
+    imodel_name: imodelName,
+    drawing_name: drawingName,
   };
   const stringifiedConfig = JSON.stringify(newConfig);
   electronFs.writeFileSync(path.join(__dirname, "../../common/iModel.Settings.json"), stringifiedConfig);
 };
 
+/** Creates a warning pop-up for an incorrect JSON file
+ * @param typeOfError the type of error with the file
+ */
 export function popupWarning(typeOfError?: string) {
   if (typeOfError) {
     // tslint:disable-next-line: no-console
