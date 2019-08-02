@@ -12,8 +12,7 @@ import { Button, ButtonSize, ButtonType, Spinner, SpinnerSize } from "@bentley/u
 import { SignIn } from "@bentley/ui-components";
 import { SimpleViewerApp } from "../api/SimpleViewerApp";
 import PropertiesWidget from "./Properties";
-import GridWidget from "./Table";
-// import TreeWidget from "./Tree";
+// import GridWidget from "./Table";
 import ViewportContentControl from "./Viewport";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "./App.css";
@@ -629,14 +628,11 @@ export class IModelComponents extends React.PureComponent<IModelComponentsProps,
     if (this.props.menuOpened) {
       return (
         <div className="app-content">
-          <div className="top-left" id="viewport1">
+          <div className="left" id="viewport1">
             <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={this.state.viewId} />
           </div>
           <div className="right">
             <PropertiesWidget imodel={this.props.imodel} rulesetId={rulesetId} />
-          </div>
-          <div className="bottom">
-            <GridWidget imodel={this.props.imodel} rulesetId={rulesetId} />
           </div>
         </div>
       );
