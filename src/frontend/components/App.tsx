@@ -501,10 +501,12 @@ export default class App extends React.Component<{}, AppState> {
             {view}
           </div>
           <div className="reload">
-            <OpenIModelButton accessToken={this.state.user.accessToken} offlineIModel={this.state.offlineIModel} onIModelSelected={this._onIModelSelected} imodelName={this.state.iModelName} projectName={this.state.projectName} initialButton={true} />
+            <OpenIModelButton accessToken={this.state.user.accessToken} offlineIModel={this.state.offlineIModel} onIModelSelected={this._onIModelSelected}
+              imodelName={this.state.iModelName} projectName={this.state.projectName} initialButton={true}/>
           </div>
           <div className="menu">
-            <Button size={ButtonSize.Default} buttonType={ButtonType.Primary} className="expand-menu" onClick={this._menuClick}>
+            <Button size={ButtonSize.Default} buttonType={ButtonType.Primary} className="expand-menu" onClick={this._menuClick}
+              title={this.state.menuName === "+" ? "Expand Menu" : "Collapse Menu"}>
               <span>{this.state.menuName}</span>
             </Button>
           </div>
@@ -622,7 +624,8 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
   /** Renders the open iModel button */
   public render() {
     return (
-      <Button size={ButtonSize.Default} buttonType={ButtonType.Primary} className="button-reload-imodel" onClick={this._onClick} >
+      <Button size={ButtonSize.Default} buttonType={ButtonType.Primary} className="button-reload-imodel" onClick={this._onClick}
+        title={this.state.isLoading ? "Refreshing..." : "Refresh"}>
         {this.state.isLoading ? undefined : <img src="refresh.png" alt="Refresh"></img>}
         {this.state.isLoading ? <span style={{ marginLeft: "8px" }}><Spinner size={SpinnerSize.Small} /></span> : undefined}
       </Button>
