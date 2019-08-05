@@ -387,7 +387,7 @@
    - *File:* src/frontend/components/ViewList.tsx
    - *Function:* const viewWidget = () => {
    - *Description:* Creates and exports widget with list of view definitions
-9. App - getIniitalView
+9. App - getInititalView
    - *File:* src/frontend/components/App.tsx
    - *Function:* export function getInitialView() {
    - *Description:* Returns initial ViewDefinitionProps object
@@ -472,7 +472,7 @@
    - *File:* src/frontend/components/ViewList.tsx
    - *Function:* const viewWidget = () => {
    - *Description:* Creates and exports widget with list of view definitions
-9. App - getIniitalView
+9. App - getInitialView
    - *File:* src/frontend/components/App.tsx
    - *Function:* export function getInitialView() {
    - *Description:* Returns initial ViewDefinitionProps object
