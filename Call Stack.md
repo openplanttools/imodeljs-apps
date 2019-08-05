@@ -199,8 +199,8 @@
     - *Description:* Returns array of 2D ViewDefinitionProps objects
 31. App - get3DViews
     - *File:* src/frontend/components/App.tsx
-    - *Function:* export function get2DViews() {
-    - *Description:* Returns array of 2D ViewDefinitionProps objects
+    - *Function:* export function get3DViews() {
+    - *Description:* Returns array of 3D ViewDefinitionProps objects
 32. App - IModelComponents constructor
     - *File:* src/frontend/components/App.tsx
     - *Function:* constructor(props: IModelComponentsProps) {
@@ -332,8 +332,8 @@
     - *Description:* Returns array of 2D ViewDefinitionProps objects
 17. App - get3DViews
     - *File:* src/frontend/components/App.tsx
-    - *Function:* export function get2DViews() {
-    - *Description:* Returns array of 2D ViewDefinitionProps objects
+    - *Function:* export function get3DViews() {
+    - *Description:* Returns array of 3D ViewDefinitionProps objects
 18. App - IModelComponents render
     - *File:* src/frontend/components/App.tsx
     - *Function:* public render() {
@@ -397,8 +397,8 @@
     - *Description:* Returns array of 2D ViewDefinitionProps objects
 11. App - get3DViews
     - *File:* src/frontend/components/App.tsx
-    - *Function:* export function get2DViews() {
-    - *Description:* Returns array of 2D ViewDefinitionProps objects
+    - *Function:* export function get3DViews() {
+    - *Description:* Returns array of 3D ViewDefinitionProps objects
 12. App - IModelComponents render
     - *File:* src/frontend/components/App.tsx
     - *Function:* public render() {
@@ -482,8 +482,8 @@
     - *Description:* Returns array of 2D ViewDefinitionProps objects
 11. App - get3DViews
     - *File:* src/frontend/components/App.tsx
-    - *Function:* export function get2DViews() {
-    - *Description:* Returns array of 2D ViewDefinitionProps objects
+    - *Function:* export function get3DViews() {
+    - *Description:* Returns array of 3D ViewDefinitionProps objects
 12. App - IModelComponents render
     - *File:* src/frontend/components/App.tsx
     - *Function:* public render() {
