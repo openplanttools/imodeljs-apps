@@ -130,7 +130,9 @@ export default class App extends React.Component<{}, AppState> {
       }));
       currentProjectName = configObject.project_name;
       currentIModelName = configObject.imodel_name;
-      initialDrawingName = configObject.drawing_name;
+      if (configObject.drawing_name) {
+        initialDrawingName = configObject.drawing_name;
+      }
       if (configObject.project_name && configObject.imodel_name) {
         await this._startProcess(configObject.project_name, configObject.imodel_name);
       }
@@ -306,7 +308,7 @@ export default class App extends React.Component<{}, AppState> {
           views3D[views3D.length] = elem;
         } else if (elem.classFullName === "BisCore:DrawingViewDefinition") {
           views2D[views2D.length] = elem;
-          if (elem.code.value === initialDrawingName) {
+          if ((elem.code.value as string).toLowerCase() === initialDrawingName.toLowerCase()) {
             initialView = elem;
           }
         }
