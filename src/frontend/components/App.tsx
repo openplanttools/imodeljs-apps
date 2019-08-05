@@ -12,7 +12,6 @@ import { Button, ButtonSize, ButtonType, Spinner, SpinnerSize } from "@bentley/u
 import { SignIn } from "@bentley/ui-components";
 import { SimpleViewerApp } from "../api/SimpleViewerApp";
 import PropertiesWidget from "./Properties";
-// import GridWidget from "./Table";
 import ViewportContentControl from "./Viewport";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "./App.css";
@@ -444,9 +443,7 @@ export default class App extends React.Component<{}, AppState> {
    */
   private _startProcess = async (projectName: string, imodelName: string) => {
     let imodel: IModelConnection | undefined;
-    try {
-
-      // Attempt to open the imodel
+    try { // Attempt to open the imodel
       const info = await this.getIModelInfo(projectName, imodelName);
       imodel = await IModelConnection.open(info.projectId, info.imodelId, OpenMode.Readonly);
       await this.onIModelSelected(imodel);
@@ -470,11 +467,11 @@ export default class App extends React.Component<{}, AppState> {
     let ui: React.ReactNode;
 
     if (this.state.user.isLoading || window.location.href.includes(this._signInRedirectUri)) {
-      // If user is currently being loaded, just tell that
+      // If user is currently being loaded, just say that
       view = (<></>);
       ui = `${IModelApp.i18n.translate("SimpleViewer:signing-in")}...`;
     } else if (!this.state.user.accessToken && !this.state.offlineIModel) {
-      // If user doesn't have and access token, show sign in page
+      // If user doesn't have an access token, show sign in page
       view = (<></>);
       ui = (<SignIn onSignIn={this._onStartSignin} onOffline={this._onOffline} />);
     } else if (!this.state.imodel || !this.state.viewDefinitionId) {
@@ -647,7 +644,7 @@ interface IModelComponentState {
   viewId: Id64String;
 }
 
-/** Renders a viewport, a tree, a property grid and a table */
+/** Renders a viewport, and properties if the menu is open */
 export class IModelComponents extends React.PureComponent<IModelComponentsProps, IModelComponentState> {
 
   /** Creates an iModel component instance */
@@ -670,7 +667,7 @@ export class IModelComponents extends React.PureComponent<IModelComponentsProps,
       viewId: this.props.viewDefinitionId,
     }));
 
-    // Open with Menu opened
+    // Open with Menu expanded
     if (this.props.menuOpened) {
       return (
         <div className="app-content">
@@ -682,7 +679,7 @@ export class IModelComponents extends React.PureComponent<IModelComponentsProps,
           </div>
         </div>
       );
-    } else { // Open with Menu closed
+    } else { // Open with Menu collapsed
       return (
         <div className="app-content">
           <div className="top-left-expanded" id="viewport1">
