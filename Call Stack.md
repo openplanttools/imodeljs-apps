@@ -367,7 +367,7 @@
    - *File:* src/frontend/components/App.tsx
    - *Function:* private get _signInRedirectUri() {
    - *Description:* Grabs the configuration redirect URI
-4. Title - componentWillReciveProps
+4. Title - componentWillReceiveProps
    - *File:* src/frontend/components/Title.tsx
    - *Function:* public componentWillReceiveProps(newProps: TitleProps) {
    - *Description:* Sets the title with the provided iModel data
