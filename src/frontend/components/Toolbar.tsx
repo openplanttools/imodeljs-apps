@@ -22,7 +22,7 @@ const toolbar = () => {
 //   }
   return (
     <div className="toolbar">
-      <a href="#" className="tool"title={SelectionTool.flyover} onClick={select}><span className="icon icon-cursor"></span></a>
+      <a href="#" className="tool" title={SelectionTool.flyover} onClick={select}><span className="icon icon-cursor"></span></a>
       <a href="#" className="tool" title={FitViewTool.flyover} onClick={fitView}><span className="icon icon-fit-to-view"></span></a>
       <a href="#" className="tool" title={PanViewTool.flyover} onClick={pan}><span className="icon icon-hand-2"></span></a>
       <a href="#" className="tool" title={ZoomViewTool.flyover} onClick={zoom}><span className="icon icon-zoom"></span></a>

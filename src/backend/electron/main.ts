@@ -36,7 +36,6 @@ export const readData = (event?: electron.Event, arg?: string) => {
     const jsonObject = JSON.parse(data);
     configObject = jsonObject;
     if (event) {
-      // displayConfig(jsonObject);
       event.sender.send("readConfigResults", jsonObject);
     }
   });
@@ -97,6 +96,7 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
       // Reads current config contents, creates a window displaying the data with options
       electronFs.readFile(path.join(__dirname, "../../common/iModel.Settings.json"), (error: Error | null, data: any) => {
         const jsonObject = JSON.parse(data);
+        // tslint:disable-next-line:no-console
         console.log(error);
         let buttonsArray = ["Continue with current configuration", "Select new configuration file", "Exit"];
         if (jsonObject.project_name.length < 1 || jsonObject.imodel_name < 1) {
