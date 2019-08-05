@@ -8,6 +8,7 @@ import { IModelJsElectronManager } from "@bentley/electron-manager";
 import * as electron from "electron";
 import * as configurationData from "../../common/iModel.Settings.json";
 import * as electronFs from "fs";
+import * as messages from "./messages";
 
 /** Method to change the iModelName stored in the config.json
  * @param iModelName string wsgId of the new iModel
@@ -102,12 +103,10 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
           buttonsArray = ["Select new configuration file", "Exit"];
         }
         electron.dialog.showMessageBox({
-          title: "OpenPlant Viewer",
-          message: "Current project: " + jsonObject.project_name + " Current iModel: " + jsonObject.imodel_name,
+          title: messages.initialTitle,
+          message: `${messages.currentProject} ${jsonObject.project_name} Current iModel: ${jsonObject.imodel_name}`,
           buttons: buttonsArray,
         }, (index: number) => {
-          console.log(index);
-
           // Conditionals dealing with the outcomes of the buttons on the startup screen
           if (index === 2) {
             electron.app.quit();
@@ -130,10 +129,9 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
  */
 export function displayConfig(jsonObject: any) {
   if (manager.mainWindow) {
-    const configData = "Project: " + jsonObject.project_name + " iModel: " + jsonObject.imodel_name;
     electron.dialog.showMessageBox(manager.mainWindow, {
-      title: "Current Configuration",
-      message: configData,
+      title: messages.configurationTitle,
+      message: `Project: ${jsonObject.project_name} iModel: ${jsonObject.imodel_name}`,
     });
   }
 }
@@ -154,7 +152,7 @@ export function createFileSelectionWindow(event?: electron.Event) {
   // opens the window, binds the callback function and applies the filter
   if (manager.mainWindow) {
     electron.dialog.showOpenDialog(manager.mainWindow, {
-      title: "Select configuration File",
+      title: messages.selectionTitle,
       properties: ["openFile", "multiSelections"],
       filters: fileFilters,
     }, (filePaths) => {
@@ -217,8 +215,8 @@ export function popupWarning(typeOfError?: string) {
     // tslint:disable-next-line: no-console
     console.log(typeOfError + " is the error");
   }
-  const errorMessage = "Warning! The current settings file is incomplete!";
+
   if (manager.mainWindow) {
-    electron.dialog.showMessageBox(manager.mainWindow, { type: "error", message: errorMessage, title: "Error" });
+    electron.dialog.showMessageBox(manager.mainWindow, { type: "error", message: messages.errorMessage, title: "Error" });
   }
 }
