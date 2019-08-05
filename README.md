@@ -1,4 +1,4 @@
-# **Plant Viewer (in development)**
+# **Plant Viewer**
 
 [[_TOC_]]
 
