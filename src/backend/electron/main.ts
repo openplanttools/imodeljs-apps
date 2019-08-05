@@ -99,9 +99,9 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
       electronFs.readFile(path.join(__dirname, "../../common/iModel.Settings.json"), (error: Error | null, data: any) => {
         const jsonObject = JSON.parse(data);
         console.log(error);
-        let buttonsArray = ["Exit", "Select new configuration file", "Continue with current configuration"];
+        let buttonsArray = ["Continue with current configuration", "Select new configuration file", "Exit"];
         if (jsonObject.project_name.length < 1 || jsonObject.imodel_name < 1) {
-          buttonsArray = ["Exit", "Select new configuration file"];
+          buttonsArray = ["Select new configuration file", "Exit"];
         }
         electron.dialog.showMessageBox({
           title: "OpenPlant Viewer",
@@ -111,11 +111,11 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
           console.log(index);
 
           // Conditionals dealing with the outcomes of the buttons on the startup screen
-          if (index === 0) {
+          if (index === 2) {
             electron.app.quit();
           } else if (index === 1) {
             createFileSelectionWindow();
-          } else if (index === 2) {
+          } else if (index === 0) {
             if (manager.mainWindow) {
               manager.mainWindow.show();
             }
@@ -208,6 +208,10 @@ export const editConfig = (projectName: string, imodelName: string) => {
   electronFs.writeFileSync(path.join(__dirname, "../../common/iModel.Settings.json"), stringifiedConfig);
 };
 
+/**
+ * Displays a warning to the user, normally sent from the renderer processes
+ * @param typeOfError The message to be associated with the error, for logging purposes
+ */
 export function popupWarning(typeOfError?: string) {
   if (typeOfError) {
     // tslint:disable-next-line: no-console
