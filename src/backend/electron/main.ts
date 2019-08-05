@@ -22,8 +22,7 @@ export const changeiModel = (iModelName: string) => {
   electronFs.writeFileSync(path.join(__dirname, "../../common/iModel.Settings.json"), stringifiedConfig);
 };
 
-/**
- *  This method reads the config, parses it into a JSON object, and returns it back to the renderer
+/** This method reads the config, parses it into a JSON object, and returns it back to the renderer
  * @param event The event sent by the renderer processes back to the main
  */
 export const readData = (event?: electron.Event, arg?: string) => {
@@ -43,8 +42,7 @@ export const readData = (event?: electron.Event, arg?: string) => {
   return configObject;
 };
 
-/**
- * This method sets the project name in the settings.json
+/** This method sets the project name in the settings.json
  * @param projectName The name of the desired project
  */
 export const changeProject = (projectName: string) => {
@@ -184,7 +182,7 @@ export const fileSelectionData = (filePath: string[], event?: electron.Event) =>
     if (jsonObject.imodel_name.length < 1 || jsonObject.project_name.length < 1) {
       electron.app.quit();
     } else {
-      editConfig(jsonObject.project_name, jsonObject.imodel_name);
+      editConfig(jsonObject.project_name, jsonObject.imodel_name, jsonObject.drawing_name);
       if (event)
         event.sender.send("readConfigResults", jsonObject);
     }
@@ -196,13 +194,15 @@ export const fileSelectionData = (filePath: string[], event?: electron.Event) =>
 };
 
 /** Method to change the iModelName stored in the config.json
+ * @param projectName string wsgId of the new project
+ * @param imodelName string wsgId of the new imodel
  * @param drawingName string wsgId of the new drawing
  */
-export const editConfig = (projectName: string, imodelName: string) => {
+export const editConfig = (projectName: string, imodelName: string, drawingName: string) => {
   const newConfig = {
-    imodel_name: imodelName,
     project_name: projectName,
-    drawing_name: "",
+    imodel_name: imodelName,
+    drawing_name: drawingName,
   };
   const stringifiedConfig = JSON.stringify(newConfig);
   electronFs.writeFileSync(path.join(__dirname, "../../common/iModel.Settings.json"), stringifiedConfig);

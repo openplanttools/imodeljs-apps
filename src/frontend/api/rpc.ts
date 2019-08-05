@@ -9,8 +9,9 @@ import {
 } from "@bentley/imodeljs-common";
 import getSupportedRpcs from "../../common/rpcs";
 
-/**
- * Initializes RPC communication based on the platform
+/** Initializes RPC communication based on the platform
+ * @param rpcParams cloud data for RPC configuration
+ * @return the RPC configuration
  */
 export default function initRpc(rpcParams?: BentleyCloudRpcParams): RpcConfiguration {
   let config: RpcConfiguration;

@@ -6,8 +6,8 @@
 import { RpcInterfaceDefinition, BentleyCloudRpcManager } from "@bentley/imodeljs-common";
 import { IModelJsExpressServer } from "@bentley/express-server";
 
-/**
- * Initializes Web Server backend
+/** Initializes Web Server backend
+ * @param rpcs the RPC interfaces
  */
 export default async function initialize(rpcs: RpcInterfaceDefinition[]) {
   // tell BentleyCloudRpcManager which RPC interfaces to handle

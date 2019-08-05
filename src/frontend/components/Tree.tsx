@@ -31,7 +31,9 @@ export type Props = IModelConnectionProps | DataProviderProps;
 /** Tree component for the viewer app */
 export default class SimpleTreeComponent extends React.PureComponent<Props> {
 
-  /* Returns a data provider for the tree */
+  /** Returns a data provider for the tree
+   * @param props the data provider props
+   */
   private getDataProvider(props: Props) {
     if ((props as any).dataProvider) {
       const providerProps = props as DataProviderProps;

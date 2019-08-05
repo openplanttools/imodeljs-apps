@@ -34,7 +34,10 @@ export type Props = IModelConnectionProps | DataProviderProps;
 
 /** Table component for the viewer app */
 export default class SimpleTableComponent extends React.PureComponent<Props> {
-  /** Gets the data provider to fill the Table widget */
+
+  /** Gets the data provider to fill the Table widget
+   * @param props the data provider props
+   */
   private getDataProvider(props: Props) {
     if ((props as any).dataProvider) {
       const providerProps = props as DataProviderProps;

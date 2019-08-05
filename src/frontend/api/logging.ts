@@ -6,6 +6,7 @@
 import { LogFunction, Logger } from "@bentley/bentleyjs-core";
 import { GetMetaDataFunction } from "@bentley/imodeljs-common";
 
+/** Initializes logging */
 export default function init() {
   // map between iModelJs LogFunction signature and console logger
   const errorLogger: LogFunction = (_category: string, message: string, getMetaData?: GetMetaDataFunction): void => console.log("Error: " + message + (getMetaData ? " " + JSON.stringify(getMetaData()) : ""));

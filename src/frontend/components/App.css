@@ -86,11 +86,11 @@
   width: 100%;
 }
 
-.app-content .top-left {
+.app-content .left {
   position: absolute;
   top: 0;
   left: 0;
-  height: 70%;
+  height: 100%;
   width: 70%;
 }
 

@@ -12,7 +12,7 @@ import { Button, ButtonSize, ButtonType, Spinner, SpinnerSize } from "@bentley/u
 import { SignIn } from "@bentley/ui-components";
 import { SimpleViewerApp } from "../api/SimpleViewerApp";
 import PropertiesWidget from "./Properties";
-import GridWidget from "./Table";
+// import GridWidget from "./Table";
 import ViewportContentControl from "./Viewport";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "./App.css";
@@ -85,7 +85,10 @@ export interface AppState {
 /** A component the renders the whole application UI */
 export default class App extends React.Component<{}, AppState> {
 
-  /** Creates an App instance */
+  /** Creates an App instance
+   * @param props the data provider props for the applicaiton
+   * @param context the context provided for the application
+   */
   constructor(props?: any, context?: any) {
     super(props, context);
     this.state = {
@@ -106,6 +109,7 @@ export default class App extends React.Component<{}, AppState> {
     thisApp = this;
   }
 
+  /** React method, activates when the application will be mounted, making initial calls on start-up */
   public componentWillMount() {
     // tslint:disable-next-line: no-floating-promises
     this.makeCalls();
@@ -137,7 +141,10 @@ export default class App extends React.Component<{}, AppState> {
     ipcRenderer.send("readConfig", "project");
   }
 
-  /** Returns an updated iModelConnection */
+  /** Returns an updated iModelConnection
+   * @param updatedIModelId the new iModel ID
+   * @param updatedIModelProjectId the new project ID
+   */
   public async updateIModelConnection(updatedIModelId: string, updatedIModelProjectId: string) {
     if (updatedIModelId && updatedIModelProjectId) {
       const iModelConnection = await IModelConnection.open(updatedIModelProjectId, updatedIModelProjectId, OpenMode.Readonly);
@@ -171,7 +178,11 @@ export default class App extends React.Component<{}, AppState> {
     SimpleViewerApp.oidcClient.onUserStateChanged.removeListener(this._onUserStateChanged);
   }
 
-  /** Changes the viewport to display a new drawing by drawing ID */
+  /** Changes the viewport to display a new drawing by drawing ID
+   * @param newDrawingId the new drawing ID
+   * @param vp the Viewport
+   * @param doFit whether or not to change the view to show the whole drawing
+   */
   public async changeView(newDrawingId: string, vp: ScreenViewport, doFit?: boolean) {
     const view = vp.view;
     if (!(view instanceof DrawingViewState)) // This only works if the viewport is showing a DrawingView
@@ -228,7 +239,10 @@ export default class App extends React.Component<{}, AppState> {
     }
   }
 
-  /** When the drawing is changed, handle that change in selection, get a new drawing, and update properties and viewings */
+  /** When the drawing is changed, handle that change in selection, get a new drawing, and update properties and viewings
+   * @param evt the selection change event
+   * @param selectionProvider the data provider for the selection change
+   */
   private _onSelectionChanged = (evt: SelectionChangeEventArgs, selectionProvider: ISelectionProvider) => {
     const selection = selectionProvider.getSelection(evt.imodel, evt.level);
     if (!selection.isEmpty) {
@@ -254,12 +268,19 @@ export default class App extends React.Component<{}, AppState> {
     await SimpleViewerApp.oidcClient.signIn(new FrontendRequestContext());
   }
 
-  /** Handles when the user state changes, quasi-react method */
+  /** Handles when the user state changes, quasi-react method
+   * @param accessToken the access token for the user's sign-in
+   */
   private _onUserStateChanged = (accessToken: AccessToken | undefined) => {
     this.setState((prev) => ({ user: { ...prev.user, accessToken, isLoading: false } }));
   }
 
-  /** Picks the first available spatial view definition in the iModel */
+  /** Picks the provided spatial view definition in the iModel
+   * If none is provided, picks the first
+   * @param imodel the iModel connection
+   * @param viewId the ID for the provided spatial view definition (if given & valid)
+   * @return a promise to the string of the view definition ID
+   */
   private async getViewDefinitionId(imodel: IModelConnection, viewId?: string): Promise<Id64String> {
     const viewSpecs = await imodel.views.queryProps({});
     // Array of view definitions, eventually, all 3D view definitions could be changed
@@ -293,27 +314,36 @@ export default class App extends React.Component<{}, AppState> {
       }
       views3D.sort(this.viewSort);
       views2D.sort(this.viewSort);
-      if (!initialView) {
+      if (!initialView) { // if no ID to a valid view is provided, get the first view
         initialView = views2D[0];
       }
       return initialView.id!;
     }
   }
 
-  /** Helper method to sort an array of view definitions */
+  /** Helper method to sort an array of view definitions
+   * @param a the first view definition to compare
+   * @param b the second view definition to compare
+   * @return a number comparing a to b (a - b)
+   */
   private viewSort(a: ViewDefinitionProps, b: ViewDefinitionProps): number {
     const valA: string = a.code.value as string;
     const valB: string = b.code.value as string;
     return valA.localeCompare(valB);
   }
 
-  /** Updates the App's view definition */
+  /** Updates the App's view definition
+   * @param viewId the string of the ID for the new view definition
+   */
   public updateView(viewId: string) {
     // tslint:disable-next-line: no-floating-promises
     this._onIModelSelected(this.state.imodel, viewId);
   }
 
-  /** Handles iModel open event */
+  /** Handles iModel open event
+   * @param imodelId the iModel connection
+   * @param viewId the string of the ID for the new view definition (if given & valid)
+   */
   private _onIModelSelected = async (imodel: IModelConnection | undefined, viewId?: string) => {
     console.log("In _onIMODEL" + imodel + " THIS IS THE IMODEL CONNECTION");
     if (!imodel) {
@@ -365,7 +395,11 @@ export default class App extends React.Component<{}, AppState> {
     }
   }
 
-  /** Finds project and iModel ID's using their names */
+  /** Finds project and iModel ID's using their names
+   * @param projectName the name of the project to get the ID for
+   * @param imodelName the name of the iModel to get the ID for
+   * @return a promise to the new project and iModel IDs
+   */
   private async getIModelInfo(projectName: string, imodelName: string): Promise<{ projectId: string, imodelId: string }> {
     // Requests a context and connection client to access the iModelHub, and retrieves a list of projects
     requestContext = await AuthorizedFrontendRequestContext.create();
@@ -396,13 +430,18 @@ export default class App extends React.Component<{}, AppState> {
     return { projectId: currentProject.wsgId, imodelId: imodels[0].wsgId };
   }
 
-  /** Handles iModel open event */
+  /** Handles iModel open event
+   * @param imodel the iModel connection
+   */
   private async onIModelSelected(imodel: IModelConnection | undefined) {
     // tslint:disable-next-line: no-floating-promises
     this._onIModelSelected(imodel);
   }
 
-  /** Handles on-click for initial open iModel button */
+  /** Handles on-click for initial open iModel button
+   * @param projectName the name of the project
+   * @param imodelName the name of the iModel
+   */
   private _startProcess = async (projectName: string, imodelName: string) => {
     let imodel: IModelConnection | undefined;
     try {
@@ -498,7 +537,9 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
     isLoading: false,
   };
 
-  /** Finds project and iModel ID's using their names */
+  /** Finds project and iModel ID's using their names
+   * @return a promise to the project & iModel IDs
+   */
   private async getIModelInfo(): Promise<{ projectId: string, imodelId: string }> {
 
     const imodelName = this.props.imodelName;
@@ -532,7 +573,9 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
     return { projectId: currentProject.wsgId, imodelId: imodels[0].wsgId };
   }
 
-  /** Handles iModel open event */
+  /** Handles iModel open event
+   * @param imodel the iModel connection
+   */
   private async onIModelSelected(imodel: IModelConnection | undefined) {
     this.props.onIModelSelected(imodel);
     this.setState({ isLoading: false });
@@ -628,14 +671,11 @@ export class IModelComponents extends React.PureComponent<IModelComponentsProps,
     if (this.props.menuOpened) {
       return (
         <div className="app-content">
-          <div className="top-left" id="viewport1">
+          <div className="left" id="viewport1">
             <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={this.state.viewId} />
           </div>
           <div className="right">
             <PropertiesWidget imodel={this.props.imodel} rulesetId={rulesetId} />
-          </div>
-          <div className="bottom">
-            <GridWidget imodel={this.props.imodel} rulesetId={rulesetId} />
           </div>
         </div>
       );
