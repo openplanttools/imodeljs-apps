@@ -23,13 +23,14 @@
 ### **Build**
 
 1. Open src/common/configuration.json, scroll down to the very bottom, and comment/uncomment the lines for your client (Production or QA).
-2. Open the src/common/settings.json, and put the names of the project, iModel, and drawing (optional - if a valid drawing name is given, that drawing will be shown on start-up and after refreshing the iModel).
-3. Save your changes.
-4. Type **[CTRL+`]** to open the terminal in Visual Studio Code.
-5. Type the following command in the terminal to install the dependencies (may take a few minutes).
+2. In the same file, at the very bottom, set auto_fit_view to true or false. This toggles whether to auto-fit each drawing by zooming into it automatically.
+3. Open the src/common/settings.json, and put the names of the project, iModel, and drawing (optional - if a valid drawing name is given, that drawing will be shown on start-up and after refreshing the iModel).
+4. Save your changes.
+5. Type **[CTRL+`]** to open the terminal in Visual Studio Code.
+6. Type the following command in the terminal to install the dependencies (may take a few minutes).
    - **`npm install`**
    - **_This only has to be done once even if you make changes and build again!_**
-6. Type the following command in the terminal to build the applicaiton (should only take a few seconds).
+7. Type the following command in the terminal to build the applicaiton (should only take a few seconds).
    - **`npm run build`**
    - `or`
    - **`npm run go`** (builds and runs the application)
@@ -50,14 +51,12 @@
 1. When prompted, **log-in** with your credentials. This grants access to the backend servers that contain the iModel information.
 2. Use the **Drawings** dropdown menu in the header to select a different drawing.
 3. Click on the **refresh icon** in the header to refresh the iModel if it was changed after the viewer was opened.
-4. Click on the **+ icon** in the header to show the menu (Tree and Properties).
-5. When the menu is expanded, click the **- icon** in the header to collapse the menu.
+4. To select an element, click on the **Select Elements** (the mouse / left-most option) in the **Toolbar** (top-right of viewport).
+5. To view the element's properties, click on the **Properties** toolbar icon (right of viewport under the Toolbar).
 
 ### **Configuration**
 
 How to change the project/iModel combination you would like to view
-
-- **As of right now, all projects must be on the QA server.**
 
 #### Method 1
 
