@@ -91,6 +91,17 @@ How to change the project/iModel combination you would like to view
    - **`git checkout master`**
    - **`git pull origin master`**
 
+## Merging DevOps Repository into GitHub Repository
+
+1. Have local repositories on your machine for both Azure DevOps and GitHub.
+   - **`git clone https://dev.azure.com/bentleycs/Plant%20Design/_git/imodeljs-openplant-viewer`** will create a folder named **imodeljs-openplant-viewer** for the **Azure DevOps** repository.
+   - **`git clone https://github.com/openplanttools/ElectronPlantViewer`** will create a folder named **ElectronPlantViewer** for the **GitHub repository**.
+2. Ensure both branches are up-to-date by typing **`git pull origin master`** in the terminal in both repositories.
+3. In a file explorer, delete the **public**, **src**, and **test** folders in **ElectronPlantViewer**.
+4. In a file explorer, copy the **public**, **src**, and **test** folders from **imodeljs-openplant-viewer** to **ElectronPlantViewer**.
+5. *NOTE: These are the only files that should normally be merged from DevOps to GitHub. Changes to other files (eg. README.md) are not meant to be merged to the GitHub repository.*
+6. Follow the **Workflow** section above to push your changes to the GitHub repository.
+
 ## **Setup Guide**
 
 See **docs/Plant-Viewer-Set-Up.md**.
