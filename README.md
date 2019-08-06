@@ -91,7 +91,7 @@ How to change the project/iModel combination you would like to view
    - **`git checkout master`**
    - **`git pull origin master`**
 
-## Merging DevOps Repository into GitHub Repository
+## **Merging DevOps Repository into GitHub Repository**
 
 1. Have local repositories on your machine for both Azure DevOps and GitHub.
    - **`git clone https://dev.azure.com/bentleycs/Plant%20Design/_git/imodeljs-openplant-viewer`** will create a folder named **imodeljs-openplant-viewer** for the **Azure DevOps** repository.
