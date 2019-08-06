@@ -62,6 +62,22 @@ export function changeView(viewId: string) {
   thisApp.updateView(viewId);
 }
 
+/** Handles onClick for the Properties toolbar button */
+export function propertiesClick() {
+  // tslint:disable-next-line: no-floating-promises
+  thisApp.menuClick();
+}
+
+/** Auto-fits the view
+ * @param delayLength the number of milliseconds to wait for the view to load before performing auto-fit
+ */
+async function autoFitView(delayLength: number) {
+  if (Config.App.get("auto_fit_view")) {
+    await delay(delayLength);
+    fitView();
+  }
+}
+
 /** React state of the App component */
 export interface AppState {
   user: {
@@ -356,12 +372,17 @@ export default class App extends React.Component<{}, AppState> {
       // const viewDefinitionId = imodel ? await this.getSheetViews(imodel) : undefined;
       const viewDefinitionId = imodel ? await this.getViewDefinitionId(imodel, viewId) : undefined;
       this.setState({ imodel, viewDefinitionId });
+
       // auto-fit-view
+      let delayLength: number;
       if (viewId) {
-        await delay(100);
+        delayLength = 100;
       } else {
-        await delay(1000);
+        delayLength = 1000;
       }
+      // tslint:disable-next-line: no-floating-promises
+      autoFitView(delayLength);
+
       fitView();
     } catch (e) {
       // If failed, close the imodel and reset the state
@@ -381,7 +402,7 @@ export default class App extends React.Component<{}, AppState> {
   }
 
   /** Handles full screen menu button state change */
-  private _menuClick = async () => {
+  public menuClick = async () => {
     this.setState({
       menuOpened: !this.state.menuOpened,
     });
@@ -502,12 +523,12 @@ export default class App extends React.Component<{}, AppState> {
             <OpenIModelButton accessToken={this.state.user.accessToken} offlineIModel={this.state.offlineIModel} onIModelSelected={this._onIModelSelected}
               imodelName={this.state.iModelName} projectName={this.state.projectName} initialButton={true}/>
           </div>
-          <div className="menu">
-            <Button size={ButtonSize.Default} buttonType={ButtonType.Primary} className="expand-menu" onClick={this._menuClick}
+          {/* <div className="menu">
+            <Button size={ButtonSize.Default} buttonType={ButtonType.Primary} className="expand-menu" onClick={this.menuClick}
               title={this.state.menuName === "+" ? "Expand Menu" : "Collapse Menu"}>
               <span>{this.state.menuName}</span>
             </Button>
-          </div>
+          </div> */}
         </div>
         {ui}
       </div>
@@ -608,8 +629,8 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
       }
     }
     // auto-fit-view
-    await delay(100);
-    fitView();
+    // tslint:disable-next-line: no-floating-promises
+    autoFitView(100);
   }
 
   /** Performs onClick on initial start-up */

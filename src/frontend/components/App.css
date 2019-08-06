@@ -21,7 +21,7 @@
 .app-header .text {
   position: absolute;
   top: 0;
-  left: 20px;
+  left: 25px;
   transition-duration: .2s;
   transition: all .4s ease;
 }
@@ -66,10 +66,19 @@ scale: 1.2;
 option:hover {
   scale: 3;
 }
+
+.properties:hover {
+  scale: 1.25;
+}
+option:hover {
+  scale: 3;
+}
+
 .app-header .viewlabel {
   position: absolute;
   width: 60px;
-  right: 425px;
+  /* right: 425px; */
+  right: 375px;
   padding-top: 16px;
   font-size: 12px;
 }
@@ -77,7 +86,8 @@ option:hover {
 .app-header .view {
   position: absolute;
   width: 300px;
-  right: 111px;
+  /* right: 125px; */
+  right: 75px;
   padding-top: 15px;
   padding-bottom: 5px;
 }
@@ -85,14 +95,15 @@ option:hover {
 .app-header .reload {
   position: absolute;
   width: 50px;
-  right: 50px;
+  /* right: 50px; */
+  right: 5px;
   padding-top: 3px;
 }
 
 .app-header .menu {
   position: absolute;
   width: 50px;
-  right: 0px;
+  right: 450px;
   padding-top: 3px;
   padding-bottom: 3px;
 }
