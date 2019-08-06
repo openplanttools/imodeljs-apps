@@ -8,8 +8,7 @@ import { IModelJsElectronManager } from "@bentley/electron-manager";
 import * as electron from "electron";
 import * as configurationData from "../../common/iModel.Settings.json";
 import * as electronFs from "fs";
-// import html from "../../frontend/components/Popup.html";
-// tslint:disable: no-console
+import * as messages from "./messages";
 
 /** Method to change the iModelName stored in the config.json
  * @param iModelName string wsgId of the new iModel
@@ -37,8 +36,7 @@ export const readData = (event?: electron.Event, arg?: string) => {
     const jsonObject = JSON.parse(data);
     configObject = jsonObject;
     if (event) {
-        // displayConfig(jsonObject);
-        event.sender.send("readConfigResults", jsonObject);
+      event.sender.send("readConfigResults", jsonObject);
     }
   });
   return configObject;
@@ -70,12 +68,8 @@ export const changeDrawingName = (drawingName: string) => {
   electronFs.writeFileSync(path.join(__dirname, "../../common/iModel.Settings.json"), stringifiedConfig);
 };
 
-// The following four variables are bound to functions, and serve as getters and settings for backend-frontend communication
-// This is because external components that require data gathered in App.tsx, are unable to import that file, due to security reasons.
-// Thus the data must travel App.tsx -> main.ts (backend) -> component that needs the data
-
-/** Initializes Electron backend
- * @param rpcs the RPC interfaces
+/**
+ * Initializes Electron backend
  */
 const manager = new IModelJsElectronManager(path.join(__dirname, "..", "..", "webresources"));
 export default function initialize(rpcs: RpcInterfaceDefinition[]) {
@@ -94,27 +88,31 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
       autoHideMenuBar: true,
       show: false,
     });
+
     // tell ElectronRpcManager which RPC interfaces to handle
     ElectronRpcManager.initializeImpl({}, rpcs);
     if (manager.mainWindow) {
+
+      // Reads current config contents, creates a window displaying the data with options
       electronFs.readFile(path.join(__dirname, "../../common/iModel.Settings.json"), (error: Error | null, data: any) => {
         const jsonObject = JSON.parse(data);
+        // tslint:disable-next-line:no-console
         console.log(error);
-        let buttonsArray = ["Exit", "Select new configuration file", "Continue with current configuration"];
+        let buttonsArray = ["Continue with current configuration", "Select new configuration file", "Exit"];
         if (jsonObject.project_name.length < 1 || jsonObject.imodel_name < 1) {
-          buttonsArray = ["Exit", "Select new configuration file"];
+          buttonsArray = ["Select new configuration file", "Exit"];
         }
         electron.dialog.showMessageBox({
-          title: "Configuration Data",
-          message: "Current project: " + jsonObject.project_name + " Current iModel: " + jsonObject.imodel_name,
+          title: messages.initialTitle,
+          message: `${messages.currentProject} ${jsonObject.project_name}${messages.currentiModel}${jsonObject.imodel_name}`,
           buttons: buttonsArray,
         }, (index: number) => {
-          console.log(index);
-          if (index === 0) {
+          // Conditionals dealing with the outcomes of the buttons on the startup screen
+          if (index === 2) {
             electron.app.quit();
           } else if (index === 1) {
-            newWindow();
-          } else if (index === 2) {
+            createFileSelectionWindow();
+          } else if (index === 0) {
             if (manager.mainWindow) {
               manager.mainWindow.show();
             }
@@ -125,45 +123,51 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
   })();
 }
 
-/** Displays the current configuration file information
- * @param jsonObject The current config JSON
+/**
+ * Displays the data currently in the iModel.Settings.json file
+ * @param jsonObject The contents of the configuration file
  */
 export function displayConfig(jsonObject: any) {
   if (manager.mainWindow) {
-    const configData = "Project: " + jsonObject.project_name + " iModel: " + jsonObject.imodel_name;
     electron.dialog.showMessageBox(manager.mainWindow, {
-      title: "Current Configuration",
-      message: configData,
+      title: messages.configurationTitle,
+      message: `${messages.project}${jsonObject.project_name} ${messages.imodel}${jsonObject.imodel_name}`,
     });
   }
 }
 
-/** Pops up new window for configuration file selection
- * @param event the selection made by the user
+/** Creates a modal file selection window
+ * @param event The event sent if called from renderer processes, normally not used
  */
-export function newWindow(event?: electron.Event) {
-  const test1: electron.FileFilter[] = [];
-  const test: electron.FileFilter = {
+export function createFileSelectionWindow(event?: electron.Event) {
+
+  // creates a filter to be applied in the window
+  const fileFilters: electron.FileFilter[] = [];
+  const configurationFilter: electron.FileFilter = {
     name: ".json",
     extensions: ["Settings.json"],
   };
-  test1.push(test);
+  fileFilters.push(configurationFilter);
+
+  // opens the window, binds the callback function and applies the filter
   if (manager.mainWindow) {
     electron.dialog.showOpenDialog(manager.mainWindow, {
-      title: "Select configuration File",
+      title: messages.selectionTitle,
       properties: ["openFile", "multiSelections"],
-      filters: test1,
+      filters: fileFilters,
     }, (filePaths) => {
       if (!filePaths) {
+        electron.app.quit();
       }
       fileSelectionData(filePaths, event);
     });
   }
 }
 
-/** Reads and parses the configuration file for valid information
- * @param filePath the file path chosen by the user
- * @param event the selection made by the user
+/**
+ * Handles the file paths chosen by the file selection window
+ * @param filePath the file paths chosen
+ * @param event if the window is opened from the renderer processes, the event that is sent
  */
 export const fileSelectionData = (filePath: string[], event?: electron.Event) => {
   const configObject: any = "";
@@ -178,7 +182,7 @@ export const fileSelectionData = (filePath: string[], event?: electron.Event) =>
     } else {
       editConfig(jsonObject.project_name, jsonObject.imodel_name, jsonObject.drawing_name);
       if (event)
-      event.sender.send("readConfigResults", jsonObject);
+        event.sender.send("readConfigResults", jsonObject);
     }
     if (manager.mainWindow) {
       manager.mainWindow.show();
@@ -202,23 +206,17 @@ export const editConfig = (projectName: string, imodelName: string, drawingName:
   electronFs.writeFileSync(path.join(__dirname, "../../common/iModel.Settings.json"), stringifiedConfig);
 };
 
-/** Creates a warning pop-up for an incorrect JSON file
- * @param typeOfError the type of error with the file
+/**
+ * Displays a warning to the user, normally sent from the renderer processes
+ * @param typeOfError The message to be associated with the error, for logging purposes
  */
 export function popupWarning(typeOfError?: string) {
   if (typeOfError) {
     // tslint:disable-next-line: no-console
     console.log(typeOfError + " is the error");
   }
-  const errorMessage = "Warning! The current settings file is incomplete!";
+
   if (manager.mainWindow) {
-    electron.dialog.showMessageBox(manager.mainWindow, { type: "error", message: errorMessage, title: "Error" });
+    electron.dialog.showMessageBox(manager.mainWindow, { type: "error", message: messages.errorMessage, title: "Error" });
   }
 }
-
-// export function tempTest() {
-// // let win = new electron.BrowserWindow({frame: true, width: 400, height: 200, webPreferences: {webSecurity: true}});
-// // let newPath = path.join(__dirname + "../../../frontend/components/Popup.html");
-// // win.loadFile(newPath);
-// // win.show();
-// }

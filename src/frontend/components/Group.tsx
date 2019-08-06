@@ -139,9 +139,9 @@ export class ViewList extends React.Component<ViewListProps, { value: string }> 
         <label className="viewLabel">
           <select id="viewDropList" name="viewList" style={{ fontFamily: "sans-serif" }} value="List of Views" onChange={() => { this.handleSubmit(); }}>{viewWidget().map((viewItem) => {
             if (viewItem.viewName.length < 1) {
-              return <option key={viewItem.key} value={this.props.value}>{this.props.value}</option>;
+              return <option className ="drawingOption" key={viewItem.key} value={this.props.value}>{this.props.value}</option>;
             } else {
-            return <option key={viewItem.key} value={viewItem.viewValue}>{viewItem.viewName}</option>;
+            return <option className = "drawingOption" key={viewItem.key} value={viewItem.viewValue}>{viewItem.viewName}</option>;
             }
           })}List of Views</select>
         </label>

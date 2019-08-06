@@ -455,7 +455,6 @@ export default class App extends React.Component<{}, AppState> {
 
   /** Makes calls on initial start-up to set-up the app */
   private async makeCalls() {
-    console.log("IN MAKE CALLS" + this.state.projectName + this.state.iModelName);
     if (this.state.projectName.length < 1 || this.state.iModelName.length < 1) {
       await this._getCorrectProjectName();
     } else {

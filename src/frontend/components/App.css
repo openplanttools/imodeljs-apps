@@ -22,8 +22,50 @@
   position: absolute;
   top: 0;
   left: 20px;
+  transition-duration: .2s;
+  transition: all .4s ease;
 }
 
+.drawingOption:hover {
+  transform: scale(1.25);
+  -moz-transform: scale(1.5, 1.25);
+  -ms-transform: scale(1.5, 1.25);
+  -webkit-transform: scale(1.5, 1.25);
+  -o-transform: scale(1.5, 1.25);
+}
+
+.tool:hover {
+  scale: 1.5;
+}
+
+.menu {
+  transition-duration: .2s;
+  transition: all .3s ease;
+}
+
+.menu:hover {
+scale: 1.2;
+}
+
+.reload {
+  transition-duration: .2s;
+  transition: all .3s ease;
+}
+
+.reload:hover {
+  scale: 1.2;
+}
+
+.text:hover {
+  scale: 1.15;
+}
+
+.toolbar:hover {
+  scale: 1.25;
+}
+option:hover {
+  scale: 3;
+}
 .app-header .viewlabel {
   position: absolute;
   width: 60px;
