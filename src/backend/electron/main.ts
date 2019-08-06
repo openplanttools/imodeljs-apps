@@ -104,7 +104,7 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
         }
         electron.dialog.showMessageBox({
           title: messages.initialTitle,
-          message: `${messages.currentProject} ${jsonObject.project_name} Current iModel: ${jsonObject.imodel_name}`,
+          message: `${messages.currentProject} ${jsonObject.project_name}${messages.currentiModel}${jsonObject.imodel_name}`,
           buttons: buttonsArray,
         }, (index: number) => {
           // Conditionals dealing with the outcomes of the buttons on the startup screen
@@ -131,7 +131,7 @@ export function displayConfig(jsonObject: any) {
   if (manager.mainWindow) {
     electron.dialog.showMessageBox(manager.mainWindow, {
       title: messages.configurationTitle,
-      message: `Project: ${jsonObject.project_name} iModel: ${jsonObject.imodel_name}`,
+      message: `${messages.project}${jsonObject.project_name} ${messages.imodel}${jsonObject.imodel_name}`,
     });
   }
 }

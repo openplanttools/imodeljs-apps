@@ -22,6 +22,8 @@
   position: absolute;
   top: 0;
   left: 20px;
+  transition-duration: .2s;
+  transition: all .4s ease;
 }
 
 .drawingOption:hover {
@@ -36,9 +38,26 @@
   scale: 1.5;
 }
 
+.menu {
+  transition-duration: .2s;
+  transition: all .3s ease;
+}
+
+.menu:hover {
+scale: 1.2;
+}
+
+.reload {
+  transition-duration: .2s;
+  transition: all .3s ease;
+}
+
+.reload:hover {
+  scale: 1.2;
+}
+
 .text:hover {
   scale: 1.15;
-  transition-duration: .2s;
 }
 
 .toolbar:hover {
