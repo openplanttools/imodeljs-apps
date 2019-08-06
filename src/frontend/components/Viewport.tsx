@@ -8,6 +8,7 @@ import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { ViewportComponent } from "@bentley/ui-components";
 import { viewWithUnifiedSelection } from "@bentley/presentation-components";
 import Toolbar from "./Toolbar";
+import PropertiesButton from "./PropertiesButton";
 
 // create a HOC viewport component that supports unified selection
 // tslint:disable-next-line:variable-name
@@ -21,21 +22,37 @@ export interface Props {
   viewDefinitionId: Id64String;
   /** ID of the presentation rule set to use for unified selection */
   rulesetId: string;
+  /** whether or not to show the properties button in the viewport */
+  showPropertiesButton: boolean;
 }
 
 /** Viewport component for the viewer app */
 export default class SimpleViewportComponent extends React.Component<Props> {
   /** Renders the Viewport */
   public render() {
-    return (
-      <>
-        <SimpleViewport
-          imodel={this.props.imodel}
-          ruleset={this.props.rulesetId}
-          viewDefinitionId={this.props.viewDefinitionId}
-        />
-        <Toolbar />
-      </>
-    );
+    if (this.props.showPropertiesButton) { // display the properties button in the viewport
+      return (
+        <>
+          <SimpleViewport
+            imodel={this.props.imodel}
+            ruleset={this.props.rulesetId}
+            viewDefinitionId={this.props.viewDefinitionId}
+          />
+          <Toolbar />
+          <PropertiesButton />
+        </>
+      );
+    } else { // don't display the properties button in the viewport
+      return (
+        <>
+          <SimpleViewport
+            imodel={this.props.imodel}
+            ruleset={this.props.rulesetId}
+            viewDefinitionId={this.props.viewDefinitionId}
+          />
+          <Toolbar />
+        </>
+      );
+    }
   }
 }

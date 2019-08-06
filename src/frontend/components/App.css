@@ -97,7 +97,7 @@ option:hover {
   width: 50px;
   /* right: 50px; */
   right: 5px;
-  padding-top: 3px;
+  padding-top: 2px;
 }
 
 .app-header .menu {
@@ -121,6 +121,7 @@ option:hover {
   height: 80%;
   align-self: auto;
   margin-left: 45%;
+  top: 25%;
 }
 
 .app .app-header .button-reload-imodel {

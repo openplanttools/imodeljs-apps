@@ -57,9 +57,13 @@ export function getInitialView() {
   return initialView;
 }
 
+// delay constants
+const SHORT: number = 100;
+const LONG: number = 1000;
+
 // Changes the App's view definition
-export function changeView(viewId: string) {
-  thisApp.updateView(viewId);
+export async function changeView(viewId: string) {
+  await thisApp.updateView(viewId);
 }
 
 /** Handles onClick for the Properties toolbar button */
@@ -95,6 +99,7 @@ export interface AppState {
   menuOpened: boolean;
   menuName: string;
   shouldCall: boolean;
+  displayProperties: boolean;
 }
 
 /** A component the renders the whole application UI */
@@ -118,6 +123,8 @@ export default class App extends React.Component<{}, AppState> {
       menuOpened: false,
       menuName: "+",
       shouldCall: false,
+      // change to hide properties when no element selected
+      displayProperties: true, // false,
     };
     // tslint:disable-next-line: no-floating-promises
     // this.makeCalls();
@@ -272,6 +279,10 @@ export default class App extends React.Component<{}, AppState> {
         }
       });
     }
+    // uncomment to hide properties when no element selected
+    // this.setState({
+    //   displayProperties: !selection.isEmpty,
+    // });
   }
 
   /** Function for if there is no internet connection */
@@ -352,9 +363,12 @@ export default class App extends React.Component<{}, AppState> {
   /** Updates the App's view definition
    * @param viewId the string of the ID for the new view definition
    */
-  public updateView(viewId: string) {
+  public async updateView(viewId: string) {
     // tslint:disable-next-line: no-floating-promises
     this._onIModelSelected(this.state.imodel, viewId);
+
+    // clear the selection
+    Presentation.selection.clearSelection("", this.state.imodel as IModelConnection);
   }
 
   /** Handles iModel open event
@@ -376,14 +390,13 @@ export default class App extends React.Component<{}, AppState> {
       // auto-fit-view
       let delayLength: number;
       if (viewId) {
-        delayLength = 100;
+        delayLength = SHORT;
       } else {
-        delayLength = 1000;
+        delayLength = LONG;
       }
       // tslint:disable-next-line: no-floating-promises
-      autoFitView(delayLength);
+      await autoFitView(delayLength);
 
-      fitView();
     } catch (e) {
       // If failed, close the imodel and reset the state
       if (this.state.offlineIModel) {
@@ -504,7 +517,7 @@ export default class App extends React.Component<{}, AppState> {
     } else {
       // If we do have an imodel and view definition id - render imodel components
       view = <GroupWidget view={""} />;
-      ui = (<IModelComponents imodel={this.state.imodel} viewDefinitionId={this.state.viewDefinitionId} menuOpened={this.state.menuOpened} title={""} />);
+      ui = (<IModelComponents imodel={this.state.imodel} viewDefinitionId={this.state.viewDefinitionId} menuOpened={this.state.menuOpened} title={""} displayProperties={this.state.displayProperties} />);
     }
     // Render the app
     return (
@@ -521,7 +534,7 @@ export default class App extends React.Component<{}, AppState> {
           </div>
           <div className="reload">
             <OpenIModelButton accessToken={this.state.user.accessToken} offlineIModel={this.state.offlineIModel} onIModelSelected={this._onIModelSelected}
-              imodelName={this.state.iModelName} projectName={this.state.projectName} initialButton={true}/>
+              imodelName={this.state.iModelName} projectName={this.state.projectName} initialButton={true} />
           </div>
           {/* <div className="menu">
             <Button size={ButtonSize.Default} buttonType={ButtonType.Primary} className="expand-menu" onClick={this.menuClick}
@@ -626,11 +639,23 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
         const mainList = (document.getElementById("viewDropList")) as HTMLSelectElement;
         mainList.options[0].innerHTML = initialView.code.value as string;
         mainList.options[0].value = initialView.id as string;
+        console.log("HERE!!!!!!!!!!");
+        for (const elem of mainList.options) {
+          console.log(elem.innerHTML);
+          console.log(elem.value);
+        }
+        console.log("HERE!!!!!!!!!!");
       }
     }
+
+    // clear the selection
+    // if (thisApp.state.imodel) {
+    //   Presentation.selection.clearSelection("", thisApp.state.imodel as IModelConnection);
+    // }
+
     // auto-fit-view
     // tslint:disable-next-line: no-floating-promises
-    autoFitView(100);
+    await autoFitView(SHORT);
   }
 
   /** Performs onClick on initial start-up */
@@ -658,12 +683,14 @@ interface IModelComponentsProps {
   viewDefinitionId: Id64String;
   menuOpened: boolean;
   title: string;
+  displayProperties: boolean;
 }
 
 /** The live state for an iModel component */
 interface IModelComponentState {
   iModel: IModelConnection;
   viewId: Id64String;
+  displayProperties: boolean;
 }
 
 /** Renders a viewport, and properties if the menu is open */
@@ -675,6 +702,7 @@ export class IModelComponents extends React.PureComponent<IModelComponentsProps,
     this.state = {
       iModel: this.props.imodel,
       viewId: this.props.viewDefinitionId,
+      displayProperties: this.props.displayProperties,
     };
   }
 
@@ -687,6 +715,7 @@ export class IModelComponents extends React.PureComponent<IModelComponentsProps,
     // Updates the view ID when a new view is selected
     this.setState(() => ({
       viewId: this.props.viewDefinitionId,
+      displayProperties: this.props.displayProperties,
     }));
 
     // Open with Menu expanded
@@ -694,7 +723,7 @@ export class IModelComponents extends React.PureComponent<IModelComponentsProps,
       return (
         <div className="app-content">
           <div className="left" id="viewport1">
-            <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={this.state.viewId} />
+            <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={this.state.viewId} showPropertiesButton={this.state.displayProperties} />
           </div>
           <div className="right">
             <PropertiesWidget imodel={this.props.imodel} rulesetId={rulesetId} />
@@ -705,7 +734,7 @@ export class IModelComponents extends React.PureComponent<IModelComponentsProps,
       return (
         <div className="app-content">
           <div className="top-left-expanded" id="viewport1">
-            <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={this.state.viewId} />
+            <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={this.state.viewId} showPropertiesButton={this.state.displayProperties} />
           </div>
         </div>
       );

@@ -98,7 +98,6 @@ export class ViewList extends React.Component<ViewListProps, { value: string }> 
 
   /** Handles new form submission of dropdown elements from the list */
   public handleSubmit() {
-
     // alert('A name was submitted: ' + this.state);
     // gets the document list and casts it to a select element
     const mainList = (document.getElementById("viewDropList")) as HTMLSelectElement;
@@ -129,6 +128,13 @@ export class ViewList extends React.Component<ViewListProps, { value: string }> 
 
       // Updates the App with the selected view definition
       changeView(viewContainer.viewObject.viewValue);
+
+      console.log("HERE!!!!!!!!!!");
+      for (const elem of mainList.options) {
+        console.log(elem.innerHTML);
+        console.log(elem.value);
+      }
+      console.log("HERE!!!!!!!!!!");
     }
   }
 
