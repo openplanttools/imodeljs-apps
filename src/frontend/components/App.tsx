@@ -285,6 +285,9 @@ export default class App extends React.Component<{}, AppState> {
     // this.setState({
     //   displayProperties: !selection.isEmpty,
     // });
+    this.setState({
+      elementSelected: !selection.isEmpty,
+    });
   }
 
   /** Function for if there is no internet connection */
@@ -724,6 +727,7 @@ export class IModelComponents extends React.PureComponent<IModelComponentsProps,
     this.setState(() => ({
       viewId: this.props.viewDefinitionId,
       displayProperties: this.props.displayProperties,
+      elementSelected: this.props.elementSelected,
     }));
 
     // Open with Menu expanded
@@ -731,23 +735,25 @@ export class IModelComponents extends React.PureComponent<IModelComponentsProps,
       return (
         <div className="app-content">
           <div className="left" id="viewport1">
-            <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={this.state.viewId} showPropertiesButton={this.state.displayProperties} />
+            <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={this.state.viewId}
+              showPropertiesButton={this.state.displayProperties} elementSelected={this.state.elementSelected} />
           </div>
           <div className="right">
             <PropertiesWidget imodel={this.props.imodel} rulesetId={rulesetId} />
             <div className="close-menu">
               <Button size={ButtonSize.Default} buttonType={ButtonType.Hollow} className="button-reload-imodel" onClick={thisApp.menuClick}
-                title="Close Properties"> <img src="closenew.png" alt="Close"></img>
+                title="Close Properties"> <img src="close.png" alt="Close"></img>
               </Button>
             </div>
           </div>
         </div>
-      );
+        );
     } else { // Open with Menu collapsed
       return (
         <div className="app-content">
           <div className="top-left-expanded" id="viewport1">
-            <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={this.state.viewId} showPropertiesButton={this.state.displayProperties} />
+            <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={this.state.viewId}
+              showPropertiesButton={this.state.displayProperties} elementSelected={this.state.elementSelected} />
           </div>
         </div>
       );

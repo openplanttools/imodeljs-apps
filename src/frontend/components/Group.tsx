@@ -127,13 +127,18 @@ export class ViewList extends React.Component<ViewListProps, { value: string }> 
       };
 
       // Updates the App with the selected view definition
+      // tslint:disable-next-line: no-floating-promises
       changeView(viewContainer.viewObject.viewValue);
 
+      // tslint:disable-next-line: no-console
       console.log("HERE!!!!!!!!!!");
       for (const elem of mainList.options) {
+        // tslint:disable-next-line: no-console
         console.log(elem.innerHTML);
+        // tslint:disable-next-line: no-console
         console.log(elem.value);
       }
+      // tslint:disable-next-line: no-console
       console.log("HERE!!!!!!!!!!");
     }
   }

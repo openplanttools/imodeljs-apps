@@ -24,6 +24,8 @@ export interface Props {
   rulesetId: string;
   /** whether or not to show the properties button in the viewport */
   showPropertiesButton: boolean;
+  /** whether or not an element is selected in the viewport */
+  elementSelected: boolean;
 }
 
 /** Viewport component for the viewer app */
@@ -39,7 +41,7 @@ export default class SimpleViewportComponent extends React.Component<Props> {
             viewDefinitionId={this.props.viewDefinitionId}
           />
           <Toolbar />
-          <PropertiesButton />
+          <PropertiesButton elementSelected={this.props.elementSelected} />
         </>
       );
     } else { // don't display the properties button in the viewport
