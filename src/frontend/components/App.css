@@ -190,6 +190,14 @@ option:hover {
   width: 30%;
 }
 
+.app-content .right .close-menu {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  height: 20px;
+  width: 20px;
+}
+
 .app-content .right .top {
   position: absolute;
   top: 0;

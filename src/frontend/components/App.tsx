@@ -100,6 +100,7 @@ export interface AppState {
   menuName: string;
   shouldCall: boolean;
   displayProperties: boolean;
+  elementSelected: boolean;
 }
 
 /** A component the renders the whole application UI */
@@ -125,6 +126,7 @@ export default class App extends React.Component<{}, AppState> {
       shouldCall: false,
       // change to hide properties when no element selected
       displayProperties: true, // false,
+      elementSelected: false,
     };
     // tslint:disable-next-line: no-floating-promises
     // this.makeCalls();
@@ -369,6 +371,9 @@ export default class App extends React.Component<{}, AppState> {
 
     // clear the selection
     Presentation.selection.clearSelection("", this.state.imodel as IModelConnection);
+    this.setState({
+      elementSelected: false,
+    });
   }
 
   /** Handles iModel open event
@@ -517,7 +522,8 @@ export default class App extends React.Component<{}, AppState> {
     } else {
       // If we do have an imodel and view definition id - render imodel components
       view = <GroupWidget view={""} />;
-      ui = (<IModelComponents imodel={this.state.imodel} viewDefinitionId={this.state.viewDefinitionId} menuOpened={this.state.menuOpened} title={""} displayProperties={this.state.displayProperties} />);
+      ui = (<IModelComponents imodel={this.state.imodel} viewDefinitionId={this.state.viewDefinitionId} menuOpened={this.state.menuOpened} title={""}
+        displayProperties={this.state.displayProperties} elementSelected={this.state.elementSelected} />);
     }
     // Render the app
     return (
@@ -649,10 +655,9 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
     }
 
     // clear the selection
-    // if (thisApp.state.imodel) {
-    //   Presentation.selection.clearSelection("", thisApp.state.imodel as IModelConnection);
-    // }
-
+    if (thisApp.state.imodel) {
+      Presentation.selection.clearSelection("", thisApp.state.imodel as IModelConnection);
+    }
     // auto-fit-view
     // tslint:disable-next-line: no-floating-promises
     await autoFitView(SHORT);
@@ -684,6 +689,7 @@ interface IModelComponentsProps {
   menuOpened: boolean;
   title: string;
   displayProperties: boolean;
+  elementSelected: boolean;
 }
 
 /** The live state for an iModel component */
@@ -691,6 +697,7 @@ interface IModelComponentState {
   iModel: IModelConnection;
   viewId: Id64String;
   displayProperties: boolean;
+  elementSelected: boolean;
 }
 
 /** Renders a viewport, and properties if the menu is open */
@@ -703,6 +710,7 @@ export class IModelComponents extends React.PureComponent<IModelComponentsProps,
       iModel: this.props.imodel,
       viewId: this.props.viewDefinitionId,
       displayProperties: this.props.displayProperties,
+      elementSelected: this.props.elementSelected,
     };
   }
 
@@ -727,6 +735,11 @@ export class IModelComponents extends React.PureComponent<IModelComponentsProps,
           </div>
           <div className="right">
             <PropertiesWidget imodel={this.props.imodel} rulesetId={rulesetId} />
+            <div className="close-menu">
+              <Button size={ButtonSize.Default} buttonType={ButtonType.Hollow} className="button-reload-imodel" onClick={thisApp.menuClick}
+                title="Close Properties"> <img src="closenew.png" alt="Close"></img>
+              </Button>
+            </div>
           </div>
         </div>
       );
