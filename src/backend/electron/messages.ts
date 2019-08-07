@@ -7,3 +7,4 @@ export const errorMessage = "Warning! The current settings file is incomplete!";
 export const currentiModel = " Current iModel: ";
 export const project = "Project: ";
 export const imodel = "iModel: ";
+export const closeProperties = "Close Properties";

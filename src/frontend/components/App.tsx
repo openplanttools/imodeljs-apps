@@ -21,9 +21,10 @@ import distinctColors = require("distinct-colors");
 import { ColorDef, ViewDefinitionProps } from "@bentley/imodeljs-common";
 import TitleBar from "./Title";
 import { ipcRenderer, Event } from "electron";
-import { GroupWidget } from "./Group";
+import { GroupWidget, viewContainer } from "./Group";
 import { fitView } from "./Toolbar";
 import { delay } from "q";
+import * as messages from "../../backend/electron/messages";
 // tslint:disable: no-console
 // cSpell:ignore imodels
 
@@ -646,14 +647,29 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
       // once the views have been loaded, update the select view dropdown list
       if (!!views3D && !!views2D) {
         const mainList = (document.getElementById("viewDropList")) as HTMLSelectElement;
-        mainList.options[0].innerHTML = initialView.code.value as string;
-        mainList.options[0].value = initialView.id as string;
-        console.log("HERE!!!!!!!!!!");
-        for (const elem of mainList.options) {
-          console.log(elem.innerHTML);
-          console.log(elem.value);
+        if (mainList) {
+          // marks all options selected fields as false
+          for (const elem of mainList.options) {
+            elem.selected = false;
+          }
+
+          mainList.options[mainList.selectedIndex].selected = true;
+
+          // updates the primary node of the select element
+          mainList.options[0].innerHTML = initialView.code.value as string;
+          mainList.options[0].value = initialView.id as string;
+          viewContainer.setNewView(mainList.options[mainList.selectedIndex].innerText);
+
+          // stores a view data object representing the view selected
+          viewContainer.viewObject = {
+            viewName: mainList.options[mainList.selectedIndex].innerHTML,
+            viewValue: mainList.options[mainList.selectedIndex].value,
+          };
+
+          // Updates the App with the selected view definition
+          // tslint:disable-next-line: no-floating-promises
+          changeView(viewContainer.viewObject.viewValue);
         }
-        console.log("HERE!!!!!!!!!!");
       }
     }
 
@@ -668,7 +684,6 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
 
   /** Performs onClick on initial start-up */
   public componentWillMount() {
-
     // tslint:disable-next-line: no-floating-promises
     this._onClick();
   }
@@ -742,7 +757,7 @@ export class IModelComponents extends React.PureComponent<IModelComponentsProps,
             <PropertiesWidget imodel={this.props.imodel} rulesetId={rulesetId} />
             <div className="close-menu">
               <Button size={ButtonSize.Default} buttonType={ButtonType.Hollow} className="button-reload-imodel" onClick={thisApp.menuClick}
-                title="Close Properties"> <img src="close.png" alt="Close"></img>
+                title={messages.closeProperties}> <img src="close.png" alt="Close"></img>
               </Button>
             </div>
           </div>
