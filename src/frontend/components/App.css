@@ -60,6 +60,10 @@ scale: 1.2;
   scale: 1.15;
 }
 
+.viewlabel:hover {
+  scale: 1.15;
+}
+
 .toolbar:hover {
   scale: 1.25;
 }
@@ -67,7 +71,14 @@ option:hover {
   scale: 3;
 }
 
-.properties:hover {
+.properties-normal:hover {
+  scale: 1.25;
+}
+option:hover {
+  scale: 3;
+}
+
+.properties-highlighted:hover {
   scale: 1.25;
 }
 option:hover {
@@ -81,6 +92,8 @@ option:hover {
   right: 375px;
   padding-top: 16px;
   font-size: 12px;
+  transition-duration: .2s;
+  transition: all .4s ease;
 }
 
 .app-header .view {
