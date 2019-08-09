@@ -36,10 +36,12 @@ let currentProject: Project;
 let currentIModel: string;
 let views3D: ViewDefinitionProps[];
 let views2D: ViewDefinitionProps[];
+let viewMap: Map<string, ViewDefinitionProps>;
 let currentProjectName: string = "";
 let currentIModelName: string = "";
 let initialDrawingName: string = "";
 let initialView: ViewDefinitionProps;
+let currentView: ViewDefinitionProps;
 
 // Getters for instance variables
 export function getCurrentProject() {
@@ -68,9 +70,8 @@ export async function changeView(viewId: string) {
 }
 
 /** Handles onClick for the Properties toolbar button */
-export function propertiesClick() {
-  // tslint:disable-next-line: no-floating-promises
-  thisApp.menuClick();
+export async function propertiesClick() {
+  await thisApp.menuClick();
 }
 
 /** Auto-fits the view
@@ -129,15 +130,13 @@ export default class App extends React.Component<{}, AppState> {
       displayProperties: true, // false,
       elementSelected: false,
     };
-    // tslint:disable-next-line: no-floating-promises
     // this.makeCalls();
     thisApp = this;
   }
 
   /** React method, activates when the application will be mounted, making initial calls on start-up */
-  public componentWillMount() {
-    // tslint:disable-next-line: no-floating-promises
-    this.makeCalls();
+  public async componentWillMount() {
+    await this.makeCalls();
   }
 
   /** Gets the current desired project as saved either from the settings.json file or from the Config.App singleton */
@@ -181,18 +180,16 @@ export default class App extends React.Component<{}, AppState> {
   }
 
   /** React method, after a component mounted sets up non-ui portions */
-  public componentDidMount() {
-    // tslint:disable-next-line: no-floating-promises
+  public async componentDidMount() {
     // Subscribe for unified selection changes
     Presentation.selection.selectionChange.addListener(this._onSelectionChanged);
 
     // Initialize authorization state, and add listener to changes
     SimpleViewerApp.oidcClient.onUserStateChanged.addListener(this._onUserStateChanged);
     if (SimpleViewerApp.oidcClient.isAuthorized) {
-      SimpleViewerApp.oidcClient.getAccessToken(new FrontendRequestContext()) // tslint:disable-line: no-floating-promises
+      await SimpleViewerApp.oidcClient.getAccessToken(new FrontendRequestContext())
         .then((accessToken: AccessToken | undefined) => {
           this.setState((prev) => ({ user: { ...prev.user, accessToken, isLoading: false } }));
-          // tslint:disable-next-line: no-floating-promises
         });
     }
   }
@@ -332,18 +329,26 @@ export default class App extends React.Component<{}, AppState> {
 
     // if a view ID is provided, return the provided view ID
     if (viewId) {
+      currentView = viewMap.get(viewId) as ViewDefinitionProps;
       return viewId!;
     } else { // otherwise, load all the available views and pick one by default
       views3D = [];
       views2D = [];
+      viewMap = new Map<string, ViewDefinitionProps>();
       for (const elem of acceptedViewSpecs) {
+        // fill the 3D and 2D arrays
         if (elem.classFullName === "BisCore:OrthographicViewDefinition") {
           views3D[views3D.length] = elem;
+          // fill the view map
+          viewMap.set(elem.id! as string, elem);
         } else if (elem.classFullName === "BisCore:DrawingViewDefinition") {
           views2D[views2D.length] = elem;
+          // find the initial view
           if ((elem.code.value as string).toLowerCase() === initialDrawingName.toLowerCase()) {
             initialView = elem;
           }
+          // fill the view map
+          viewMap.set(elem.id! as string, elem);
         }
       }
       views3D.sort(this.viewSort);
@@ -351,6 +356,7 @@ export default class App extends React.Component<{}, AppState> {
       if (!initialView) { // if no ID to a valid view is provided, get the first view
         initialView = views2D[0];
       }
+      currentView = initialView;
       return initialView.id!;
     }
   }
@@ -370,8 +376,7 @@ export default class App extends React.Component<{}, AppState> {
    * @param viewId the string of the ID for the new view definition
    */
   public async updateView(viewId: string) {
-    // tslint:disable-next-line: no-floating-promises
-    this._onIModelSelected(this.state.imodel, viewId);
+    await this._onIModelSelected(this.state.imodel, viewId);
 
     // clear the selection
     Presentation.selection.clearSelection("", this.state.imodel as IModelConnection);
@@ -396,6 +401,9 @@ export default class App extends React.Component<{}, AppState> {
       const viewDefinitionId = imodel ? await this.getViewDefinitionId(imodel, viewId) : undefined;
       this.setState({ imodel, viewDefinitionId });
 
+      console.log("VIEW DEFINIITION ID");
+      console.log(viewDefinitionId);
+      console.log((viewMap.get(viewDefinitionId as string) as ViewDefinitionProps).code.value);
       // auto-fit-view
       let delayLength: number;
       if (viewId) {
@@ -403,7 +411,6 @@ export default class App extends React.Component<{}, AppState> {
       } else {
         delayLength = LONG;
       }
-      // tslint:disable-next-line: no-floating-promises
       await autoFitView(delayLength);
 
     } catch (e) {
@@ -477,9 +484,12 @@ export default class App extends React.Component<{}, AppState> {
   /** Handles iModel open event
    * @param imodel the iModel connection
    */
-  private async onIModelSelected(imodel: IModelConnection | undefined) {
-    // tslint:disable-next-line: no-floating-promises
-    this._onIModelSelected(imodel);
+  private async onIModelSelected(imodel: IModelConnection | undefined, viewId?: string) {
+    if (viewId) {
+      await this._onIModelSelected(imodel, viewId);
+    } else {
+      await this._onIModelSelected(imodel);
+    }
   }
 
   /** Handles on-click for initial open iModel button
@@ -507,6 +517,8 @@ export default class App extends React.Component<{}, AppState> {
 
   /** Renders the app */
   public render() {
+    console.log("IS LOADING!??!?!?!?!");
+    console.log(this.state.user.isLoading);
     let view: React.ReactNode;
     let ui: React.ReactNode;
 
@@ -520,7 +532,6 @@ export default class App extends React.Component<{}, AppState> {
       ui = (<SignIn onSignIn={this._onStartSignin} onOffline={this._onOffline} />);
     } else if (!this.state.imodel || !this.state.viewDefinitionId) {
       // if we don't have an imodel / view definition id - render a button that initiates imodel open
-      // tslint:disable-next-line: no-floating-promises
       view = (<></>);
       ui = (<span className="open-imodel"><Spinner size={SpinnerSize.XLarge} /></span>);
     } else {
@@ -565,7 +576,7 @@ interface OpenIModelButtonProps {
   projectName: string;
   accessToken: AccessToken | undefined;
   offlineIModel: boolean;
-  onIModelSelected: (imodel: IModelConnection | undefined) => void;
+  onIModelSelected: (imodel: IModelConnection | undefined, viewId?: string) => void;
   getConfigData?: () => void;
   initialButton?: boolean;
 }
@@ -620,8 +631,8 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
   /** Handles iModel open event
    * @param imodel the iModel connection
    */
-  private async onIModelSelected(imodel: IModelConnection | undefined) {
-    this.props.onIModelSelected(imodel);
+  private async onIModelSelected(imodel: IModelConnection | undefined, viewId?: string) {
+    this.props.onIModelSelected(imodel, viewId);
     this.setState({ isLoading: false });
   }
 
@@ -642,7 +653,7 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
       } catch (e) {
         // alert(e.message);
       }
-      await this.onIModelSelected(imodel);
+      await this.onIModelSelected(imodel, currentView.id!);
 
       // once the views have been loaded, update the select view dropdown list
       if (!!views3D && !!views2D) {
@@ -656,8 +667,8 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
           mainList.options[mainList.selectedIndex].selected = true;
 
           // updates the primary node of the select element
-          mainList.options[0].innerHTML = initialView.code.value as string;
-          mainList.options[0].value = initialView.id as string;
+          mainList.options[0].innerHTML = currentView.code.value as string;
+          mainList.options[0].value = currentView.id as string;
           viewContainer.setNewView(mainList.options[mainList.selectedIndex].innerText);
 
           // stores a view data object representing the view selected
@@ -667,25 +678,17 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
           };
 
           // Updates the App with the selected view definition
-          // tslint:disable-next-line: no-floating-promises
-          changeView(viewContainer.viewObject.viewValue);
+          await changeView(viewContainer.viewObject.viewValue);
         }
       }
     }
-
-    // clear the selection
-    if (thisApp.state.imodel) {
-      Presentation.selection.clearSelection("", thisApp.state.imodel as IModelConnection);
-    }
-    // auto-fit-view
-    // tslint:disable-next-line: no-floating-promises
-    await autoFitView(SHORT);
+    this.setState({ isLoading: false });
+    thisApp.render();
   }
 
   /** Performs onClick on initial start-up */
-  public componentWillMount() {
-    // tslint:disable-next-line: no-floating-promises
-    this._onClick();
+  public async componentWillMount() {
+    await this._onClick();
   }
 
   /** Renders the open iModel button */
