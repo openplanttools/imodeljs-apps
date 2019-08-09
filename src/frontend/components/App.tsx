@@ -517,8 +517,6 @@ export default class App extends React.Component<{}, AppState> {
 
   /** Renders the app */
   public render() {
-    console.log("IS LOADING!??!?!?!?!");
-    console.log(this.state.user.isLoading);
     let view: React.ReactNode;
     let ui: React.ReactNode;
 
@@ -623,7 +621,6 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
       throw new Error(`iModel with name "${imodelName}" does not exist in project "${projectName}".`);
     }
     currentIModel = imodels[0].wsgId;
-
     // Returns
     return { projectId: currentProject.wsgId, imodelId: imodels[0].wsgId };
   }
@@ -633,7 +630,6 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
    */
   private async onIModelSelected(imodel: IModelConnection | undefined, viewId?: string) {
     this.props.onIModelSelected(imodel, viewId);
-    this.setState({ isLoading: false });
   }
 
   /** Handles on-click for open iModel button */
@@ -653,6 +649,7 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
       } catch (e) {
         // alert(e.message);
       }
+      this.setState({ isLoading: false });
       await this.onIModelSelected(imodel, currentView.id!);
 
       // once the views have been loaded, update the select view dropdown list
@@ -682,8 +679,6 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
         }
       }
     }
-    this.setState({ isLoading: false });
-    thisApp.render();
   }
 
   /** Performs onClick on initial start-up */
@@ -693,11 +688,12 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
 
   /** Renders the open iModel button */
   public render() {
+    console.log("TEST!!!!!!");
+    console.log(this.state.isLoading);
     return (
       <Button size={ButtonSize.Default} buttonType={ButtonType.Primary} className="button-reload-imodel" onClick={this._onClick}
         title={this.state.isLoading ? "Refreshing..." : "Refresh"}>
-        {this.state.isLoading ? undefined : <img src="refresh.png" alt="Refresh"></img>}
-        {this.state.isLoading ? <span style={{ marginLeft: "8px" }}><Spinner size={SpinnerSize.Small} /></span> : undefined}
+        {this.state.isLoading ? <span style={{ marginLeft: "8px" }}><Spinner size={SpinnerSize.Small} /></span> : <img src="refresh.png" alt="Refresh"></img>}
       </Button>
     );
   }
