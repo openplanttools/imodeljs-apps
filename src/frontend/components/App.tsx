@@ -21,7 +21,7 @@ import distinctColors = require("distinct-colors");
 import { ColorDef, ViewDefinitionProps } from "@bentley/imodeljs-common";
 import TitleBar from "./Title";
 import { ipcRenderer, Event } from "electron";
-import { GroupWidget, viewContainer } from "./Group";
+import { GroupWidget } from "./Group";
 import { fitView } from "./Toolbar";
 import { delay } from "q";
 import * as messages from "../../backend/electron/messages";
@@ -64,9 +64,12 @@ export function getInitialView() {
 const SHORT: number = 100;
 const LONG: number = 1000;
 
-// Changes the App's view definition
-export async function changeView(viewId: string) {
-  await thisApp.updateView(viewId);
+// Updates the App's view definition
+export async function updateView(viewId: string) {
+  await thisApp.onIModelSelected(thisApp.state.imodel, viewId);
+
+  // clear the selection
+  clearSelection();
 }
 
 /** Handles onClick for the Properties toolbar button */
@@ -74,14 +77,26 @@ export async function propertiesClick() {
   await thisApp.menuClick();
 }
 
-/** Auto-fits the view
+/** Auto-fits the view (if the configuration permits it to do so)
  * @param delayLength the number of milliseconds to wait for the view to load before performing auto-fit
  */
 async function autoFitView(delayLength: number) {
   if (Config.App.get("auto_fit_view")) {
+    // hard-coded fix to wait for viewer to finish loading
     await delay(delayLength);
+    // simulates clicking the fit view button
     fitView();
   }
+}
+
+/** Clears the elements selected in the viewer */
+function clearSelection() {
+  // clears the elements selected (removes highlighting and properties from menu)
+  Presentation.selection.clearSelection("", thisApp.state.imodel as IModelConnection);
+  // updates the app state to indicate no elements are now selected
+  thisApp.setState({
+    elementSelected: false,
+  });
 }
 
 /** React state of the App component */
@@ -126,7 +141,7 @@ export default class App extends React.Component<{}, AppState> {
       menuOpened: false,
       menuName: "+",
       shouldCall: false,
-      // change to hide properties when no element selected
+      // ***change to hide properties when no element selected***
       displayProperties: true, // false,
       elementSelected: false,
     };
@@ -279,7 +294,7 @@ export default class App extends React.Component<{}, AppState> {
         }
       });
     }
-    // uncomment to hide properties when no element selected
+    // ***uncomment to hide properties button & menu when no element selected***
     // this.setState({
     //   displayProperties: !selection.isEmpty,
     // });
@@ -327,35 +342,38 @@ export default class App extends React.Component<{}, AppState> {
       throw new Error("No valid view definitions for selected iModel. Please select another one.");
     }
 
-    // if a view ID is provided, return the provided view ID
     if (viewId) {
+      // if a view ID is provided, use that to update the current view and return its ID
       currentView = viewMap.get(viewId) as ViewDefinitionProps;
       return viewId!;
-    } else { // otherwise, load all the available views and pick one by default
+    } else {
+      // otherwise, load all the available views in the arrays/maps and pick one
       views3D = [];
       views2D = [];
       viewMap = new Map<string, ViewDefinitionProps>();
       for (const elem of acceptedViewSpecs) {
-        // fill the 3D and 2D arrays
         if (elem.classFullName === "BisCore:OrthographicViewDefinition") {
+          // 3D views
           views3D[views3D.length] = elem;
-          // fill the view map
           viewMap.set(elem.id! as string, elem);
         } else if (elem.classFullName === "BisCore:DrawingViewDefinition") {
+          // 2D views
           views2D[views2D.length] = elem;
-          // find the initial view
+          viewMap.set(elem.id! as string, elem);
+          // check if the initial drawing name provided in the config file is actually one of the 2D views
           if ((elem.code.value as string).toLowerCase() === initialDrawingName.toLowerCase()) {
             initialView = elem;
           }
-          // fill the view map
-          viewMap.set(elem.id! as string, elem);
         }
       }
+      // sort the view definitions in ABC order
       views3D.sort(this.viewSort);
       views2D.sort(this.viewSort);
-      if (!initialView) { // if no ID to a valid view is provided, get the first view
+      if (!initialView) {
+        // if the initial draiwng name didn't match any of the actual 2D views, select the first 2D drawing by default
         initialView = views2D[0];
       }
+      // use the initial view to update the current view and return its ID
       currentView = initialView;
       return initialView.id!;
     }
@@ -372,24 +390,11 @@ export default class App extends React.Component<{}, AppState> {
     return valA.localeCompare(valB);
   }
 
-  /** Updates the App's view definition
-   * @param viewId the string of the ID for the new view definition
-   */
-  public async updateView(viewId: string) {
-    await this._onIModelSelected(this.state.imodel, viewId);
-
-    // clear the selection
-    Presentation.selection.clearSelection("", this.state.imodel as IModelConnection);
-    this.setState({
-      elementSelected: false,
-    });
-  }
-
   /** Handles iModel open event
    * @param imodelId the iModel connection
    * @param viewId the string of the ID for the new view definition (if given & valid)
    */
-  private _onIModelSelected = async (imodel: IModelConnection | undefined, viewId?: string) => {
+  public onIModelSelected = async (imodel: IModelConnection | undefined, viewId?: string) => {
     console.log("In _onIMODEL" + imodel + " THIS IS THE IMODEL CONNECTION");
     if (!imodel) {
       // Reset the state when imodel is closed
@@ -401,9 +406,6 @@ export default class App extends React.Component<{}, AppState> {
       const viewDefinitionId = imodel ? await this.getViewDefinitionId(imodel, viewId) : undefined;
       this.setState({ imodel, viewDefinitionId });
 
-      console.log("VIEW DEFINIITION ID");
-      console.log(viewDefinitionId);
-      console.log((viewMap.get(viewDefinitionId as string) as ViewDefinitionProps).code.value);
       // auto-fit-view
       let delayLength: number;
       if (viewId) {
@@ -430,7 +432,7 @@ export default class App extends React.Component<{}, AppState> {
     return split[split.length - 1];
   }
 
-  /** Handles full screen menu button state change */
+  /** Handles full screen menu button state change (DEPRECIATED) */
   public menuClick = async () => {
     this.setState({
       menuOpened: !this.state.menuOpened,
@@ -479,17 +481,6 @@ export default class App extends React.Component<{}, AppState> {
 
     // Returns
     return { projectId: currentProject.wsgId, imodelId: imodels[0].wsgId };
-  }
-
-  /** Handles iModel open event
-   * @param imodel the iModel connection
-   */
-  private async onIModelSelected(imodel: IModelConnection | undefined, viewId?: string) {
-    if (viewId) {
-      await this._onIModelSelected(imodel, viewId);
-    } else {
-      await this._onIModelSelected(imodel);
-    }
   }
 
   /** Handles on-click for initial open iModel button
@@ -552,15 +543,9 @@ export default class App extends React.Component<{}, AppState> {
             {view}
           </div>
           <div className="reload">
-            <OpenIModelButton accessToken={this.state.user.accessToken} offlineIModel={this.state.offlineIModel} onIModelSelected={this._onIModelSelected}
+            <OpenIModelButton accessToken={this.state.user.accessToken} offlineIModel={this.state.offlineIModel} onIModelSelected={this.onIModelSelected}
               imodelName={this.state.iModelName} projectName={this.state.projectName} initialButton={true} />
           </div>
-          {/* <div className="menu">
-            <Button size={ButtonSize.Default} buttonType={ButtonType.Primary} className="expand-menu" onClick={this.menuClick}
-              title={this.state.menuName === "+" ? "Expand Menu" : "Collapse Menu"}>
-              <span>{this.state.menuName}</span>
-            </Button>
-          </div> */}
         </div>
         {ui}
       </div>
@@ -650,34 +635,12 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
         // alert(e.message);
       }
       this.setState({ isLoading: false });
+
+      // ensure iModel is reloaded with current drawing displayed
       await this.onIModelSelected(imodel, currentView.id!);
 
-      // once the views have been loaded, update the select view dropdown list
-      if (!!views3D && !!views2D) {
-        const mainList = (document.getElementById("viewDropList")) as HTMLSelectElement;
-        if (mainList) {
-          // marks all options selected fields as false
-          for (const elem of mainList.options) {
-            elem.selected = false;
-          }
-
-          mainList.options[mainList.selectedIndex].selected = true;
-
-          // updates the primary node of the select element
-          mainList.options[0].innerHTML = currentView.code.value as string;
-          mainList.options[0].value = currentView.id as string;
-          viewContainer.setNewView(mainList.options[mainList.selectedIndex].innerText);
-
-          // stores a view data object representing the view selected
-          viewContainer.viewObject = {
-            viewName: mainList.options[mainList.selectedIndex].innerHTML,
-            viewValue: mainList.options[mainList.selectedIndex].value,
-          };
-
-          // Updates the App with the selected view definition
-          await changeView(viewContainer.viewObject.viewValue);
-        }
-      }
+      // clear the selection
+      clearSelection();
     }
   }
 
@@ -688,8 +651,6 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
 
   /** Renders the open iModel button */
   public render() {
-    console.log("TEST!!!!!!");
-    console.log(this.state.isLoading);
     return (
       <Button size={ButtonSize.Default} buttonType={ButtonType.Primary} className="button-reload-imodel" onClick={this._onClick}
         title={this.state.isLoading ? "Refreshing..." : "Refresh"}>

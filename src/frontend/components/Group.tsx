@@ -7,7 +7,7 @@ import * as React from "react";
 import viewWidget from "./ViewList";
 import "../../common/configuration.js";
 import "./Group.scss";
-import { changeView } from "./App";
+import { updateView } from "./App";
 
 // event emitter bound function to be called from App.tsx and create changes in the AppState
 // class to contain the current view chosen and return it to App.tsx
@@ -128,7 +128,7 @@ export class ViewList extends React.Component<ViewListProps, { value: string }> 
 
       // Updates the App with the selected view definition
       // tslint:disable-next-line: no-floating-promises
-      changeView(viewContainer.viewObject.viewValue);
+      updateView(viewContainer.viewObject.viewValue);
     }
   }
 

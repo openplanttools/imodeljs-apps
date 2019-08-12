@@ -98,15 +98,15 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
         const jsonObject = JSON.parse(data);
         // tslint:disable-next-line:no-console
         console.log(error);
-        let buttonsArray = ["Continue with current configuration", "Select new configuration file", "Exit"];
+        let buttonsArray = [messages.configDialogDefault, messages.configDialogSelect, messages.configDialogExit];
         let validFile: boolean = true;
         if (jsonObject.project_name.length < 1 || jsonObject.imodel_name < 1) {
           validFile = false;
-          buttonsArray = ["Select new configuration file", "Exit"];
+          buttonsArray = [messages.configDialogSelect, messages.configDialogExit];
         }
         electron.dialog.showMessageBox({
           title: messages.initialTitle,
-          message: validFile ? `${messages.currentProject}${jsonObject.project_name}${messages.currentiModel}${jsonObject.imodel_name}` : `No current project/iModel selected.`,
+          message: validFile ? `${messages.currentProject}${jsonObject.project_name}${messages.currentiModel}${jsonObject.imodel_name}` : messages.configDialogNoDefault,
           buttons: buttonsArray,
           cancelId: validFile ? 2 : 1, // closes the application if the window is closed
         }, (index: number) => {
@@ -176,6 +176,7 @@ export function createFileSelectionWindow(event?: electron.Event) {
 export const fileSelectionData = (filePath: string[], event?: electron.Event) => {
   const configObject: any = "";
   if (!filePath) { // if the window is closed without a file selected, closes the application without error
+    // NOTE: should maybe try to return to the original dialog
     electron.app.quit();
     return;
   }
