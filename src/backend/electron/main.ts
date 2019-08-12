@@ -99,20 +99,24 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
         // tslint:disable-next-line:no-console
         console.log(error);
         let buttonsArray = ["Continue with current configuration", "Select new configuration file", "Exit"];
+        let validFile: boolean = true;
         if (jsonObject.project_name.length < 1 || jsonObject.imodel_name < 1) {
+          validFile = false;
           buttonsArray = ["Select new configuration file", "Exit"];
         }
         electron.dialog.showMessageBox({
           title: messages.initialTitle,
-          message: `${messages.currentProject} ${jsonObject.project_name}${messages.currentiModel}${jsonObject.imodel_name}`,
+          message: validFile ? `${messages.currentProject}${jsonObject.project_name}${messages.currentiModel}${jsonObject.imodel_name}` : `No current project/iModel selected.`,
           buttons: buttonsArray,
+          cancelId: validFile ? 2 : 1, // closes the application if the window is closed
         }, (index: number) => {
           // Conditionals dealing with the outcomes of the buttons on the startup screen
-          if (index === 2) {
+
+          if (index === 2 || (index === 1 && !validFile)) {
             electron.app.quit();
-          } else if (index === 1) {
+          } else if ((index === 1 && validFile) || (index === 0 && !validFile)) {
             createFileSelectionWindow();
-          } else if (index === 0) {
+          } else if (index === 0 && validFile) {
             if (manager.mainWindow) {
               manager.mainWindow.show();
             }
@@ -171,6 +175,10 @@ export function createFileSelectionWindow(event?: electron.Event) {
  */
 export const fileSelectionData = (filePath: string[], event?: electron.Event) => {
   const configObject: any = "";
+  if (!filePath) { // if the window is closed without a file selected, closes the application without error
+    electron.app.quit();
+    return;
+  }
   electronFs.readFile(filePath[0], (error: Error | null, data: any) => {
     if (error) {
       // tslint:disable-next-line:no-console
