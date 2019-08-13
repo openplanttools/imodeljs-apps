@@ -10,6 +10,22 @@
   overflow: hidden;
 }
 
+.app .button-open-imodel {
+  width: 500px;
+  margin: 30vh auto auto auto;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.app .open-imodel {
+  position: relative;
+  width: 100%;
+  height: 80%;
+  align-self: auto;
+  margin-left: 45%;
+  top: 25%;
+}
+
 .app-header {
   position: relative;
   height: 50px;
@@ -26,23 +42,85 @@
   transition: all .4s ease;
 }
 
-.drawingOption:hover {
-  transform: scale(1.25);
-  -moz-transform: scale(1.5, 1.25);
-  -ms-transform: scale(1.5, 1.25);
-  -webkit-transform: scale(1.5, 1.25);
-  -o-transform: scale(1.5, 1.25);
+.app-header .viewlabel {
+  position: absolute;
+  width: 60px;
+  right: 375px;
+  padding-top: 16px;
+  font-size: 12px;
+  transition-duration: .2s;
+  transition: all .4s ease;
 }
 
-.tool:hover {
-  scale: 1.5;
+.app-header .view {
+  position: absolute;
+  width: 300px;
+  right: 75px;
+  padding-top: 15px;
+  padding-bottom: 5px;
+}
+
+.app-header .reload {
+  position: absolute;
+  width: 50px;
+  right: 5px;
+  padding-top: 2px;
+}
+
+.app-content {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+.app-content .viewport {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 70%;
+}
+
+.app-content .viewport-expanded {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.app-content .properties {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 30%;
+}
+
+.app-content .properties .bottom .bottom-middle {
+  align-self: center;
+  border: solid black;
+  border-width: thin;
+  padding-left: 10px;
+}
+
+.app-content .properties .bottom .sub {
+  overflow-y: auto;
+}
+
+.app-content .properties .close-menu {
+  position: absolute;
+  top: 0;
+  right: 20px;
+  height: 15px;
+  width: 15px;
+  transform: scale(.75);
 }
 
 .menu {
   transition-duration: .2s;
   transition: all .3s ease;
 }
-
 .menu:hover {
   scale: 1.2;
 }
@@ -51,9 +129,12 @@
   transition-duration: .2s;
   transition: all .3s ease;
 }
-
 .reload:hover {
   scale: 1.2;
+}
+
+.tool:hover {
+  scale: 1.5;
 }
 
 .text:hover {
@@ -71,6 +152,14 @@ option:hover {
   scale: 3;
 }
 
+.drawingOption:hover {
+  transform: scale(1.25);
+  -moz-transform: scale(1.5, 1.25);
+  -ms-transform: scale(1.5, 1.25);
+  -webkit-transform: scale(1.5, 1.25);
+  -o-transform: scale(1.5, 1.25);
+}
+
 .properties-normal:hover {
   transform: scale(1.25,1.25);
 }
@@ -85,151 +174,9 @@ option:hover {
   scale: 3;
 }
 
-.app-header .viewlabel {
-  position: absolute;
-  width: 60px;
-  /* right: 425px; */
-  right: 375px;
-  padding-top: 16px;
-  font-size: 12px;
-  transition-duration: .2s;
-  transition: all .4s ease;
-}
-
-.app-header .view {
-  position: absolute;
-  width: 300px;
-  /* right: 125px; */
-  right: 75px;
-  padding-top: 15px;
-  padding-bottom: 5px;
-}
-
-.app-header .reload {
-  position: absolute;
-  width: 50px;
-  /* right: 50px; */
-  right: 5px;
-  padding-top: 2px;
-}
-
-.app-header .menu {
-  position: absolute;
-  width: 50px;
-  right: 450px;
-  padding-top: 3px;
-  padding-bottom: 3px;
-}
-
-.app .button-open-imodel {
-  width: 500px;
-  margin: 30vh auto auto auto;
-  padding-left: 0;
-  padding-right: 0;
-}
-
-.app .open-imodel {
-  position: relative;
-  width: 100%;
-  height: 80%;
-  align-self: auto;
-  margin-left: 45%;
-  top: 25%;
-}
-
-.app .app-header .button-reload-imodel {
-  font-size: 18px;
-  color: black;
-}
-
-.app .app-header .expand-menu {
-  font-size: 36px;
-  color: white;
-}
-
-.app-content {
-  position: relative;
-  height: 100%;
-  width: 100%;
-}
-
-.app-content .left {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 70%;
-}
-
 .components-property-grid-wrapper {
   width: 100%;
   height: 100%;
   overflow-y: auto;
   overflow: auto;
-}
-
- .app-content .right .bottom .sub {
-   overflow-y: auto;
-  }
-
-.app-content .top-left-expanded {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-}
-
-.app-content .bottom {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  height: 30%;
-  width: 70%;
-}
-
-.app-content .right .bottom .bottom-middle {
-  align-self: center;
-  border: solid black;
-  border-width: thin;
-  padding-left: 10px;
-}
-
-.app-content .right {
-  position: absolute;
-  top: 0;
-  right: 0;
-  height: 100%;
-  width: 30%;
-}
-
-.app-content .right .close-menu {
-  position: absolute;
-  top: 0;
-  right: 20px;
-  height: 15px;
-  width: 15px;
-  transform: scale(.75);
-}
-
-.app-content .right .top {
-  position: absolute;
-  top: 0;
-  height: 50%;
-  width: 100%;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  border: solid black;
-  border-width: thin;
-}
-
-.app-content .right .bottom {
-  position: absolute;
-  bottom: 0;
-  height: 50%;
-  width: 100%;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
 }

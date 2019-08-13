@@ -709,11 +709,11 @@ export class IModelComponents extends React.PureComponent<IModelComponentsProps,
     if (this.props.menuOpened) {
       return (
         <div className="app-content">
-          <div className="left" id="viewport1">
+          <div className="viewport" id="viewport">
             <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={this.state.viewId}
               showPropertiesButton={this.state.displayProperties} elementSelected={this.state.elementSelected} />
           </div>
-          <div className="right">
+          <div className="properties">
             <PropertiesWidget imodel={this.props.imodel} rulesetId={rulesetId} />
             <div className="close-menu">
               <Button size={ButtonSize.Default} buttonType={ButtonType.Hollow} className="button-reload-imodel" onClick={thisApp.menuClick}
@@ -726,7 +726,7 @@ export class IModelComponents extends React.PureComponent<IModelComponentsProps,
     } else { // Open with Menu collapsed
       return (
         <div className="app-content">
-          <div className="top-left-expanded" id="viewport1">
+          <div className="viewport-expanded" id="viewport">
             <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={this.state.viewId}
               showPropertiesButton={this.state.displayProperties} elementSelected={this.state.elementSelected} />
           </div>
