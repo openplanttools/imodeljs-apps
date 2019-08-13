@@ -34,6 +34,6 @@ export default class SimpleViewportComponent extends React.Component<Props> {
 }
 
 /** Enables toggling the Properties widget in the toolbar */
-const properties = () => {
-  propertiesClick();
-};
+async function properties() {
+  await propertiesClick();
+}

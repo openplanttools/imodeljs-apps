@@ -44,7 +44,7 @@
 }
 
 .menu:hover {
-scale: 1.2;
+  scale: 1.2;
 }
 
 .reload {
@@ -72,14 +72,14 @@ option:hover {
 }
 
 .properties-normal:hover {
-  scale: 1.25;
+  transform: scale(1.25,1.25);
 }
 option:hover {
   scale: 3;
 }
 
 .properties-highlighted:hover {
-  scale: 1.25;
+  transform: scale(1.25,1.25);
 }
 option:hover {
   scale: 3;
@@ -209,6 +209,7 @@ option:hover {
   right: 20px;
   height: 15px;
   width: 15px;
+  transform: scale(.75);
 }
 
 .app-content .right .top {
