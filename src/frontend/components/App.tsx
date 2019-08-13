@@ -224,8 +224,6 @@ export default class App extends React.Component<{}, AppState> {
    */
   public async changeView(newDrawingId: string, vp: ScreenViewport, doFit?: boolean) {
     const view = vp.view;
-    if (!(view instanceof DrawingViewState)) // This only works if the viewport is showing a DrawingView
-      return;
 
     const newView = view.clone(); // Make a copy of the current ViewState. This keeps the set of categories displayed and DisplayStyle
     (newView.baseModelId as Id64String) = newDrawingId; // Change the base model id (cast is necessary since it's marked as readonly after its been constructed)
@@ -709,7 +707,11 @@ export class IModelComponents extends React.PureComponent<IModelComponentsProps,
     if (this.props.menuOpened) {
       return (
         <div className="app-content">
-          <div className="viewport" id="viewport">
+          <div className="viewport-3d" id="viewport-3d">
+            <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={get3DViews()[0].id!}
+              showPropertiesButton={false} elementSelected={this.state.elementSelected} />
+          </div>
+          <div className="viewport-2d" id="viewport-2d">
             <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={this.state.viewId}
               showPropertiesButton={this.state.displayProperties} elementSelected={this.state.elementSelected} />
           </div>
@@ -726,7 +728,11 @@ export class IModelComponents extends React.PureComponent<IModelComponentsProps,
     } else { // Open with Menu collapsed
       return (
         <div className="app-content">
-          <div className="viewport-expanded" id="viewport">
+          <div className="viewport-3d-expanded" id="viewport-3d">
+            <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={get3DViews()[0].id!}
+              showPropertiesButton={false} elementSelected={this.state.elementSelected} />
+          </div>
+          <div className="viewport-2d-expanded" id="viewport-2d">
             <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={this.state.viewId}
               showPropertiesButton={this.state.displayProperties} elementSelected={this.state.elementSelected} />
           </div>

@@ -73,20 +73,36 @@
   width: 100%;
 }
 
-.app-content .viewport {
+.app-content .viewport-3d {
   position: absolute;
   top: 0;
-  left: 0;
+  left: 0%;
   height: 100%;
-  width: 70%;
+  width: 35%;
 }
 
-.app-content .viewport-expanded {
+.app-content .viewport-3d-expanded {
   position: absolute;
   top: 0;
-  left: 0;
+  left: 0%;
   height: 100%;
-  width: 100%;
+  width: 50%;
+}
+
+.app-content .viewport-2d {
+  position: absolute;
+  top: 0;
+  left: 35%;
+  height: 100%;
+  width: 35%;
+}
+
+.app-content .viewport-2d-expanded {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: 100%;
+  width: 50%;
 }
 
 .app-content .properties {
