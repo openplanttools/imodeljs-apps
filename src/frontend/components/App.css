@@ -162,7 +162,7 @@
 }
 
 .toolbar:hover {
-  scale: 1.25;
+  scale: 1.1;
 }
 option:hover {
   scale: 3;
@@ -177,14 +177,14 @@ option:hover {
 }
 
 .properties-normal:hover {
-  transform: scale(1.25,1.25);
+  transform: scale(1.2);
 }
 option:hover {
   scale: 3;
 }
 
 .properties-highlighted:hover {
-  transform: scale(1.25,1.25);
+  transform: scale(1.2);
 }
 option:hover {
   scale: 3;

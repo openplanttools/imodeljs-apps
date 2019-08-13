@@ -22,7 +22,7 @@ import { ColorDef, ViewDefinitionProps } from "@bentley/imodeljs-common";
 import TitleBar from "./Title";
 import { ipcRenderer, Event } from "electron";
 import { GroupWidget } from "./Group";
-import { fitView } from "./Toolbar";
+import { fitTheView } from "./Toolbar";
 import { delay } from "q";
 import * as messages from "../../backend/electron/messages";
 // tslint:disable: no-console
@@ -85,7 +85,7 @@ async function autoFitView(delayLength: number) {
     // hard-coded fix to wait for viewer to finish loading
     await delay(delayLength);
     // simulates clicking the fit view button
-    fitView();
+    fitTheView();
   }
 }
 
@@ -224,6 +224,8 @@ export default class App extends React.Component<{}, AppState> {
    */
   public async changeView(newDrawingId: string, vp: ScreenViewport, doFit?: boolean) {
     const view = vp.view;
+    if (!(view instanceof DrawingViewState)) // This only works if the viewport is showing a DrawingView
+      return;
 
     const newView = view.clone(); // Make a copy of the current ViewState. This keeps the set of categories displayed and DisplayStyle
     (newView.baseModelId as Id64String) = newDrawingId; // Change the base model id (cast is necessary since it's marked as readonly after its been constructed)
@@ -709,11 +711,11 @@ export class IModelComponents extends React.PureComponent<IModelComponentsProps,
         <div className="app-content">
           <div className="viewport-3d" id="viewport-3d">
             <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={get3DViews()[0].id!}
-              showPropertiesButton={false} elementSelected={this.state.elementSelected} />
+              showPropertiesButton={false} elementSelected={this.state.elementSelected} is3D={true} />
           </div>
           <div className="viewport-2d" id="viewport-2d">
             <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={this.state.viewId}
-              showPropertiesButton={this.state.displayProperties} elementSelected={this.state.elementSelected} />
+              showPropertiesButton={this.state.displayProperties} elementSelected={this.state.elementSelected} is3D={false} />
           </div>
           <div className="properties">
             <PropertiesWidget imodel={this.props.imodel} rulesetId={rulesetId} />
@@ -730,11 +732,11 @@ export class IModelComponents extends React.PureComponent<IModelComponentsProps,
         <div className="app-content">
           <div className="viewport-3d-expanded" id="viewport-3d">
             <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={get3DViews()[0].id!}
-              showPropertiesButton={false} elementSelected={this.state.elementSelected} />
+              showPropertiesButton={false} elementSelected={this.state.elementSelected} is3D={true} />
           </div>
           <div className="viewport-2d-expanded" id="viewport-2d">
             <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={this.state.viewId}
-              showPropertiesButton={this.state.displayProperties} elementSelected={this.state.elementSelected} />
+              showPropertiesButton={this.state.displayProperties} elementSelected={this.state.elementSelected} is3D={false} />
           </div>
         </div>
       );

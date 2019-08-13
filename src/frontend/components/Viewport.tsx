@@ -26,6 +26,8 @@ export interface Props {
   showPropertiesButton: boolean;
   /** whether or not an element is selected in the viewport */
   elementSelected: boolean;
+/** whether or not the viewport is in 3D */
+  is3D: boolean;
 }
 
 /** Viewport component for the viewer app */
@@ -40,7 +42,7 @@ export default class SimpleViewportComponent extends React.Component<Props> {
             ruleset={this.props.rulesetId}
             viewDefinitionId={this.props.viewDefinitionId}
           />
-          <Toolbar />
+          <Toolbar is3D={this.props.is3D} />
           <PropertiesButton elementSelected={this.props.elementSelected} />
         </>
       );
@@ -52,7 +54,7 @@ export default class SimpleViewportComponent extends React.Component<Props> {
             ruleset={this.props.rulesetId}
             viewDefinitionId={this.props.viewDefinitionId}
           />
-          <Toolbar />
+          <Toolbar is3D={this.props.is3D} />
         </>
       );
     }
