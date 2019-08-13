@@ -67,6 +67,9 @@ const LONG: number = 1000;
 // Updates the App's view definition
 export async function updateView(viewId: string) {
   await thisApp.onIModelSelected(thisApp.state.imodel, viewId);
+
+  // clear the selection
+  clearSelection();
 }
 
 /** Handles onClick for the Properties toolbar button */
@@ -412,9 +415,6 @@ export default class App extends React.Component<{}, AppState> {
       }
       await autoFitView(delayLength);
 
-      // clear the selection
-      clearSelection();
-
     } catch (e) {
       // If failed, close the imodel and reset the state
       if (this.state.offlineIModel) {
@@ -638,6 +638,9 @@ export class OpenIModelButton extends React.PureComponent<OpenIModelButtonProps,
 
       // ensure iModel is reloaded with current drawing displayed
       await this.onIModelSelected(imodel, currentView.id!);
+
+      // clear the selection
+      clearSelection();
     }
   }
 
