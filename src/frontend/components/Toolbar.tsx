@@ -11,7 +11,7 @@ import {
 import "./Components.scss";
 
 /** React properties for the toolbar */
-export interface ToolbarProps {
+interface ToolbarProps {
   /** whether or not the viewport is in 3D */
   is3D: boolean;
 }
@@ -36,58 +36,28 @@ export default class Toolbar extends React.PureComponent<ToolbarProps, ToolbarSt
    */
 
   /** Enables making a selection in the viewport */
-  public select() {
-    console.log("SELECT");
-    // this.setState({ currentSelection: ToolbarSelection.select });
-
-    // if (this.state.currentSelection === ToolbarSelection.select) {
-      console.log("SELECT SUCCESS");
-      IModelApp.tools.run(SelectionTool.toolId);
-    // }
+  private _select = () => {
+    IModelApp.tools.run(SelectionTool.toolId);
   }
 
   /** Fits the view in the viewport */
-  public fitView() {
-    console.log("FITVIEW");
-    // this.setState({ currentSelection: ToolbarSelection.fitView });
-
-    // if (this.state.currentSelection === ToolbarSelection.fitView) {
-      console.log("FITVIEW SUCCESS");
-      IModelApp.tools.run(FitViewTool.toolId, IModelApp.viewManager.selectedView);
-    // }
+  private _fitView = () => {
+    IModelApp.tools.run(FitViewTool.toolId, IModelApp.viewManager.selectedView);
   }
 
   /** Enables rotating in the viewport */
-  public rotate() {
-    console.log("ROTATE");
-    // this.setState({ currentSelection: ToolbarSelection.rotate });
-
-    // if (this.state.currentSelection === ToolbarSelection.rotate) {
-      console.log("ROTATE SUCCESS");
-      IModelApp.tools.run(RotateViewTool.toolId, IModelApp.viewManager.selectedView);
-    // }
+  private _rotate = () => {
+    IModelApp.tools.run(RotateViewTool.toolId, IModelApp.viewManager.selectedView);
   }
 
   /** Enables panning in the viewport */
-  public pan() {
-    console.log("PAN");
-    // this.setState({ currentSelection: ToolbarSelection.pan });
-
-    // if (this.state.currentSelection === ToolbarSelection.pan) {
-      console.log("PAN SUCCESS");
-      IModelApp.tools.run(PanViewTool.toolId, IModelApp.viewManager.selectedView);
-    // }
+  private _pan = () => {
+    IModelApp.tools.run(PanViewTool.toolId, IModelApp.viewManager.selectedView);
   }
 
   /** Enables zooming in the viewport */
-  public zoom() {
-    console.log("ZOOM");
-    // this.setState({ currentSelection: ToolbarSelection.zoom });
-
-    // if (this.state.currentSelection === ToolbarSelection.zoom) {
-      console.log("ZOOM SUCCESS");
-      IModelApp.tools.run(ZoomViewTool.toolId, IModelApp.viewManager.selectedView);
-    // }
+  private _zoom = () => {
+    IModelApp.tools.run(ZoomViewTool.toolId, IModelApp.viewManager.selectedView);
   }
 
   /** Renders the properties button */
@@ -95,20 +65,20 @@ export default class Toolbar extends React.PureComponent<ToolbarProps, ToolbarSt
     if (this.props.is3D) { // enable rotate if in 3D
       return (
         <div className="toolbar">
-          <a href="#" className="tool" title={SelectionTool.flyover} onClick={this.select}><span className="icon icon-cursor"></span></a>
-          <a href="#" className="tool" title={FitViewTool.flyover} onClick={this.fitView}><span className="icon icon-fit-to-view"></span></a>
-          <a href="#" className="tool" title={RotateViewTool.flyover} onClick={this.rotate}><span className="icon icon-gyroscope"></span></a>
-          <a href="#" className="tool" title={PanViewTool.flyover} onClick={this.pan}><span className="icon icon-hand-2"></span></a>
-          <a href="#" className="tool" title={ZoomViewTool.flyover} onClick={this.zoom}><span className="icon icon-zoom"></span></a>
+          <a href="#" className="tool" title={SelectionTool.flyover} onClick={this._select}><span className="icon icon-cursor"></span></a>
+          <a href="#" className="tool" title={FitViewTool.flyover} onClick={this._fitView}><span className="icon icon-fit-to-view"></span></a>
+          <a href="#" className="tool" title={RotateViewTool.flyover} onClick={this._rotate}><span className="icon icon-gyroscope"></span></a>
+          <a href="#" className="tool" title={PanViewTool.flyover} onClick={this._pan}><span className="icon icon-hand-2"></span></a>
+          <a href="#" className="tool" title={ZoomViewTool.flyover} onClick={this._zoom}><span className="icon icon-zoom"></span></a>
         </div>
       );
     } else { // disable rotate if in 2D
       return (
         <div className="toolbar">
-          <a href="#" className="tool" title={SelectionTool.flyover} onClick={this.select}><span className="icon icon-cursor"></span></a>
-          <a href="#" className="tool" title={FitViewTool.flyover} onClick={this.fitView}><span className="icon icon-fit-to-view"></span></a>
-          <a href="#" className="tool" title={PanViewTool.flyover} onClick={this.pan}><span className="icon icon-hand-2"></span></a>
-          <a href="#" className="tool" title={ZoomViewTool.flyover} onClick={this.zoom}><span className="icon icon-zoom"></span></a>
+          <a href="#" className="tool" title={SelectionTool.flyover} onClick={this._select}><span className="icon icon-cursor"></span></a>
+          <a href="#" className="tool" title={FitViewTool.flyover} onClick={this._fitView}><span className="icon icon-fit-to-view"></span></a>
+          <a href="#" className="tool" title={PanViewTool.flyover} onClick={this._pan}><span className="icon icon-hand-2"></span></a>
+          <a href="#" className="tool" title={ZoomViewTool.flyover} onClick={this._zoom}><span className="icon icon-zoom"></span></a>
         </div>
       );
     }
