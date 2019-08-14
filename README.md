@@ -10,6 +10,32 @@
 - Provide the credentials of the iModel to view.
 - An electron application opens up and presents the iModel.
 
+### **Prerequisites**
+
+- Download and Install
+  - [**Git**](https://git-scm.com/downloads)
+  - [**Node.Js**](https://nodejs.org/en/download/current)
+    - npm is installed with Node.js (https://www.npmjs.com/get-npm)
+
+### **Recommendations**
+
+- Download and Install
+    - [**Visual Studio Code**](https://code.visualstudio.com/docs/?dv=win)
+      - Visual Studio Code is being used for ReactJs part development, because it has convenient environment and big community.
+    - [**Notepad++**](https://notepad-plus-plus.org/download/v7.7.1.html)
+    - [**Google Chrome**](https://www.google.com/chrome/b/)
+    - [**Tslint**](https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-typescript-tslint-plugin)
+    - [**Azure CLI**](https://dev.azure.com/bentleycs)
+
+### **References**
+- [**Getting Started Installing Git**](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+- [**Electron**](https://electronjs.org/)
+- [**npm**](https://www.w3schools.com/nodejs/nodejs_npm.asp)
+- [**Electron in Git**](https://github.com/Microsoft/vscode-recipes/tree/master/Electron)
+- [**Debugging in the Visual Studio Code**](https://code.visualstudio.com/docs/editor/debugging)
+
+
+
 ### **Install**
 
 1. If you do not already have a project, create a new project with the default settings by clicking [here for **Production**](https://imodeljs.github.io/iModelJs-docs-output/getting-started/registration-dashboard/) or [here for **QA**](http://builds.bentley.com/prgbuilds/AzureBuilds/iModelJsDocs/public/getting-started/registration-dashboard/).
@@ -109,9 +135,6 @@ See **docs/Plant-Viewer-Set-Up.md**.
 
 See **docs/Pull-Request-Guide.md**.
 
-## **Git Developer Guide**
-
-Before using Git on windows command prompt or git bash, you will need to install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
 
 ### **Set up local git repository**
 
