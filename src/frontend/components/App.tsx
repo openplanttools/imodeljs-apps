@@ -22,7 +22,7 @@ import { ColorDef, ViewDefinitionProps } from "@bentley/imodeljs-common";
 import TitleBar from "./Title";
 import { ipcRenderer, Event } from "electron";
 import { GroupWidget } from "./Group";
-import { fitView } from "./Toolbar";
+import { fitTheView } from "./Toolbar";
 import { delay } from "q";
 import * as messages from "../../backend/electron/messages";
 // tslint:disable: no-console
@@ -85,7 +85,7 @@ async function autoFitView(delayLength: number) {
     // hard-coded fix to wait for viewer to finish loading
     await delay(delayLength);
     // simulates clicking the fit view button
-    fitView();
+    fitTheView();
   }
 }
 
@@ -709,9 +709,13 @@ export class IModelComponents extends React.PureComponent<IModelComponentsProps,
     if (this.props.menuOpened) {
       return (
         <div className="app-content">
-          <div className="viewport" id="viewport">
+          <div className="viewport-3d" id="viewport-3d">
+            <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={get3DViews()[0].id!}
+              showPropertiesButton={false} elementSelected={this.state.elementSelected} is3D={true} />
+          </div>
+          <div className="viewport-2d" id="viewport-2d">
             <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={this.state.viewId}
-              showPropertiesButton={this.state.displayProperties} elementSelected={this.state.elementSelected} />
+              showPropertiesButton={this.state.displayProperties} elementSelected={this.state.elementSelected} is3D={false} />
           </div>
           <div className="properties">
             <PropertiesWidget imodel={this.props.imodel} rulesetId={rulesetId} />
@@ -726,9 +730,13 @@ export class IModelComponents extends React.PureComponent<IModelComponentsProps,
     } else { // Open with Menu collapsed
       return (
         <div className="app-content">
-          <div className="viewport-expanded" id="viewport">
+          <div className="viewport-3d-expanded" id="viewport-3d">
+            <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={get3DViews()[0].id!}
+              showPropertiesButton={false} elementSelected={this.state.elementSelected} is3D={true} />
+          </div>
+          <div className="viewport-2d-expanded" id="viewport-2d">
             <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={this.state.viewId}
-              showPropertiesButton={this.state.displayProperties} elementSelected={this.state.elementSelected} />
+              showPropertiesButton={this.state.displayProperties} elementSelected={this.state.elementSelected} is3D={false} />
           </div>
         </div>
       );
