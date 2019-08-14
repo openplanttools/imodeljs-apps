@@ -10,7 +10,34 @@
 - Provide the credentials of the iModel to view.
 - An electron application opens up and presents the iModel.
 
-### **Install**
+### **Prerequisites**
+
+- Download and Install
+  - [**Git**](https://git-scm.com/downloads)
+  - [**Node.Js**](https://nodejs.org/en/download/current)
+    - npm is installed with Node.js (https://www.npmjs.com/get-npm)
+
+### **Recommendations**
+
+- Download and Install
+    - [**Visual Studio Code**](https://code.visualstudio.com/docs/?dv=win)
+      - Visual Studio Code is being used for ReactJs part development, because it has convenient environment and big community.
+    - [**Notepad++**](https://notepad-plus-plus.org/download/v7.7.1.html)
+    - [**Google Chrome**](https://www.google.com/chrome/b/)
+    - [**Tslint**](https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-typescript-tslint-plugin)
+    - [**Mocha**](https://mochajs.org/)
+    - [**Azure CLI**](https://dev.azure.com/bentleycs)
+
+### **References**
+- [**Getting Started Installing Git**](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+- [**Electron**](https://electronjs.org/)
+- [**npm**](https://www.w3schools.com/nodejs/nodejs_npm.asp)
+- [**Electron in Git**](https://github.com/Microsoft/vscode-recipes/tree/master/Electron)
+- [**Debugging in the Visual Studio Code**](https://code.visualstudio.com/docs/editor/debugging)
+
+
+
+### **Clone**
 
 1. If you do not already have a project, create a new project with the default settings by clicking [here for **Production**](https://imodeljs.github.io/iModelJs-docs-output/getting-started/registration-dashboard/) or [here for **QA**](http://builds.bentley.com/prgbuilds/AzureBuilds/iModelJsDocs/public/getting-started/registration-dashboard/).
 2. Open the Command Prompt and navigate to where you would like the repository to be created (it will create a new folder called **imodeljs-openplant-viewer**).
@@ -35,6 +62,11 @@
    - `or`
    - **`npm run go`** (builds and runs the application)
 
+   [**Note**]
+   `Before building, determine which iModelHub repository you will be using: Production or QA. Edit the "CLIENT SELECTION" in the` [**.\src\common\configuration.ts**] `file.`
+
+
+
 ### **Run**
 
 1. Type the following command in the terminal to run the application. An electron window will open within seconds.
@@ -55,8 +87,10 @@
 5. To view the element's properties, click on the **Properties** toolbar icon (right of viewport under the Toolbar).
 
 ### **Configuration**
-
-How to change the project/iModel combination you would like to view
+Configurations are currently set in in json format files. These files are .\src\common folder
+When running the viewer, one of these files need to be selected. These files should contain valid iModelHub Project/iModel combinations
+- Example of json contents:
+ {"project_name":"OP_CE_VIEW","imodel_name":"MistyMountainTop","drawing_name":"PID001"}
 
 #### Method 1
 
@@ -101,17 +135,10 @@ How to change the project/iModel combination you would like to view
 5. *NOTE: These are the only files that should normally be merged from DevOps to GitHub. Changes to other files (eg. README.md) are not meant to be merged to the GitHub repository.*
 6. Follow the **Workflow** section above to push your changes to the GitHub repository.
 
-## **Setup Guide**
-
-See **docs/Plant-Viewer-Set-Up.md**.
 
 ## **Pull Request Guide**
 
 See **docs/Pull-Request-Guide.md**.
-
-## **Git Developer Guide**
-
-Before using Git on windows command prompt or git bash, you will need to install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
 
 ### **Set up local git repository**
 

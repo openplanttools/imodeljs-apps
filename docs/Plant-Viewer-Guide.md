@@ -1,4 +1,4 @@
-# Plant Viewer Setup Guide
+# **Plant Viewer**
 
 [[_TOC_]]
 
@@ -10,7 +10,34 @@
 - Provide the credentials of the iModel to view.
 - An electron application opens up and presents the iModel.
 
-### **Install**
+### **Prerequisites**
+
+- Download and Install
+  - [**Git**](https://git-scm.com/downloads)
+  - [**Node.Js**](https://nodejs.org/en/download/current)
+    - npm is installed with Node.js (https://www.npmjs.com/get-npm)
+
+### **Recommendations**
+
+- Download and Install
+    - [**Visual Studio Code**](https://code.visualstudio.com/docs/?dv=win)
+      - Visual Studio Code is being used for ReactJs part development, because it has convenient environment and big community.
+    - [**Notepad++**](https://notepad-plus-plus.org/download/v7.7.1.html)
+    - [**Google Chrome**](https://www.google.com/chrome/b/)
+    - [**Tslint**](https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-typescript-tslint-plugin)
+    - [**Mocha**](https://mochajs.org/)
+    - [**Azure CLI**](https://dev.azure.com/bentleycs)
+
+### **References**
+- [**Getting Started Installing Git**](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+- [**Electron**](https://electronjs.org/)
+- [**npm**](https://www.w3schools.com/nodejs/nodejs_npm.asp)
+- [**Electron in Git**](https://github.com/Microsoft/vscode-recipes/tree/master/Electron)
+- [**Debugging in the Visual Studio Code**](https://code.visualstudio.com/docs/editor/debugging)
+
+
+
+### **Clone**
 
 1. If you do not already have a project, create a new project with the default settings by clicking [here for **Production**](https://imodeljs.github.io/iModelJs-docs-output/getting-started/registration-dashboard/) or [here for **QA**](http://builds.bentley.com/prgbuilds/AzureBuilds/iModelJsDocs/public/getting-started/registration-dashboard/).
 2. Open the Command Prompt and navigate to where you would like the repository to be created (it will create a new folder called **imodeljs-openplant-viewer**).
@@ -23,16 +50,22 @@
 ### **Build**
 
 1. Open src/common/configuration.json, scroll down to the very bottom, and comment/uncomment the lines for your client (Production or QA).
-2. Open the src/common/settings.json, and put the names of the project, iModel, and drawing (optional - if a valid drawing name is given, that drawing will be shown on start-up and after refreshing the iModel).
-3. Save your changes.
-4. Type **[CTRL+`]** to open the terminal in Visual Studio Code.
-5. Type the following command in the terminal to install the dependencies (may take a few minutes).
+2. In the same file, at the very bottom, set auto_fit_view to true or false. This toggles whether to auto-fit each drawing by zooming into it automatically.
+3. Open the src/common/settings.json, and put the names of the project, iModel, and drawing (optional - if a valid drawing name is given, that drawing will be shown on start-up and after refreshing the iModel).
+4. Save your changes.
+5. Type **[CTRL+`]** to open the terminal in Visual Studio Code.
+6. Type the following command in the terminal to install the dependencies (may take a few minutes).
    - **`npm install`**
    - **_This only has to be done once even if you make changes and build again!_**
-6. Type the following command in the terminal to build the applicaiton (should only take a few seconds).
+7. Type the following command in the terminal to build the applicaiton (should only take a few seconds).
    - **`npm run build`**
    - `or`
    - **`npm run go`** (builds and runs the application)
+
+   [**Note**]
+   `Before building, determine which iModelHub repository you will be using: Production or QA. Edit the "CLIENT SELECTION" in the` [**.\src\common\configuration.ts**] `file.`
+
+
 
 ### **Run**
 
@@ -50,14 +83,14 @@
 1. When prompted, **log-in** with your credentials. This grants access to the backend servers that contain the iModel information.
 2. Use the **Drawings** dropdown menu in the header to select a different drawing.
 3. Click on the **refresh icon** in the header to refresh the iModel if it was changed after the viewer was opened.
-4. Click on the **+ icon** in the header to show the menu (Tree and Properties).
-5. When the menu is expanded, click the **- icon** in the header to collapse the menu.
+4. To select an element, click on the **Select Elements** (the mouse / left-most option) in the **Toolbar** (top-right of viewport).
+5. To view the element's properties, click on the **Properties** toolbar icon (right of viewport under the Toolbar).
 
 ### **Configuration**
-
-How to change the project/iModel combination you would like to view
-
-- **As of right now, all projects must be on the QA server.**
+Configurations are currently set in in json format files. These files are .\src\common folder
+When running the viewer, one of these files need to be selected. These files should contain valid iModelHub Project/iModel combinations
+- Example of json contents:
+ {"project_name":"OP_CE_VIEW","imodel_name":"MistyMountainTop","drawing_name":"PID001"}
 
 #### Method 1
 
@@ -91,9 +124,21 @@ How to change the project/iModel combination you would like to view
    - **`git checkout master`**
    - **`git pull origin master`**
 
-## **Git Developer Guide**
+## **Merging DevOps Repository into GitHub Repository**
 
-Before using Git on windows command prompt or git bash, you will need to install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
+1. Have local repositories on your machine for both Azure DevOps and GitHub.
+   - **`git clone https://dev.azure.com/bentleycs/Plant%20Design/_git/imodeljs-openplant-viewer`** will create a folder named **imodeljs-openplant-viewer** for the **Azure DevOps** repository.
+   - **`git clone https://github.com/openplanttools/ElectronPlantViewer`** will create a folder named **ElectronPlantViewer** for the **GitHub repository**.
+2. Ensure both branches are up-to-date by typing **`git pull origin master`** in the terminal in both repositories.
+3. In a file explorer, delete the **public**, **src**, and **test** folders in **ElectronPlantViewer**.
+4. In a file explorer, copy the **public**, **src**, and **test** folders from **imodeljs-openplant-viewer** to **ElectronPlantViewer**.
+5. *NOTE: These are the only files that should normally be merged from DevOps to GitHub. Changes to other files (eg. README.md) are not meant to be merged to the GitHub repository.*
+6. Follow the **Workflow** section above to push your changes to the GitHub repository.
+
+
+## **Pull Request Guide**
+
+See **docs/Pull-Request-Guide.md**.
 
 ### **Set up local git repository**
 
