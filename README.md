@@ -25,6 +25,7 @@
     - [**Notepad++**](https://notepad-plus-plus.org/download/v7.7.1.html)
     - [**Google Chrome**](https://www.google.com/chrome/b/)
     - [**Tslint**](https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-typescript-tslint-plugin)
+    - [**Mocha**](https://mochajs.org/)
     - [**Azure CLI**](https://dev.azure.com/bentleycs)
 
 ### **References**
@@ -127,14 +128,10 @@ How to change the project/iModel combination you would like to view
 5. *NOTE: These are the only files that should normally be merged from DevOps to GitHub. Changes to other files (eg. README.md) are not meant to be merged to the GitHub repository.*
 6. Follow the **Workflow** section above to push your changes to the GitHub repository.
 
-## **Setup Guide**
-
-See **docs/Plant-Viewer-Set-Up.md**.
 
 ## **Pull Request Guide**
 
 See **docs/Pull-Request-Guide.md**.
-
 
 ### **Set up local git repository**
 
