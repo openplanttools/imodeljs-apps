@@ -37,7 +37,7 @@
 
 
 
-### **Install**
+### **Clone**
 
 1. If you do not already have a project, create a new project with the default settings by clicking [here for **Production**](https://imodeljs.github.io/iModelJs-docs-output/getting-started/registration-dashboard/) or [here for **QA**](http://builds.bentley.com/prgbuilds/AzureBuilds/iModelJsDocs/public/getting-started/registration-dashboard/).
 2. Open the Command Prompt and navigate to where you would like the repository to be created (it will create a new folder called **imodeljs-openplant-viewer**).
@@ -62,6 +62,11 @@
    - `or`
    - **`npm run go`** (builds and runs the application)
 
+   [**Note**]
+   `Before building, determine which iModelHub repository you will be using: Production or QA. Edit the "CLIENT SELECTION" in the` [**.\src\common\configuration.ts**] `file.`
+
+
+
 ### **Run**
 
 1. Type the following command in the terminal to run the application. An electron window will open within seconds.
@@ -82,8 +87,10 @@
 5. To view the element's properties, click on the **Properties** toolbar icon (right of viewport under the Toolbar).
 
 ### **Configuration**
-
-How to change the project/iModel combination you would like to view
+Configurations are currently set in in json format files. These files are .\src\common folder
+When running the viewer, one of these files need to be selected. These files should contain valid iModelHub Project/iModel combinations
+- Example of json contents:
+ {"project_name":"OP_CE_VIEW","imodel_name":"MistyMountainTop","drawing_name":"PID001"}
 
 #### Method 1
 
