@@ -42,6 +42,24 @@
   transition: all .4s ease;
 }
 
+.app-header .layoutlabel {
+  position: absolute;
+  width: 60px;
+  right: 625px;
+  padding-top: 16px;
+  font-size: 12px;
+  transition-duration: .2s;
+  transition: all .4s ease;
+}
+
+.app-header .layout {
+  position: absolute;
+  width: 175px;
+  right: 450px;
+  padding-top: 15px;
+  padding-bottom: 5px;
+}
+
 .app-header .viewlabel {
   position: absolute;
   width: 60px;
@@ -210,6 +228,10 @@
 }
 
 .text:hover {
+  scale: 1.15;
+}
+
+.layoutlabel:hover {
   scale: 1.15;
 }
 

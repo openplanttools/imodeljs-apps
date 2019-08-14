@@ -6,7 +6,7 @@ import styled from "styled-components";
 import * as React from "react";
 import viewWidget from "./ViewList";
 import "../../common/configuration.js";
-import "./Group.scss";
+import "./ViewGroup.scss";
 import { updateView } from "./App";
 
 // event emitter bound function to be called from App.tsx and create changes in the AppState
@@ -53,17 +53,17 @@ export const viewContainer = new ViewContainer();
 /** Group Widget controller class, formats and spaces the collcetion of tools associated with developing a new view */
 // This method formats the required pieces in HTML
 // tslint:disable-next-line: variable-name
-export interface GroupProps {
+export interface ViewGroupProps {
   view: string;
 }
 
 /** The GroupWidget to hold the ViewList */
-export class GroupWidget extends React.Component<GroupProps, { value: string }> {
-  /** Renders the GroupWidget */
+export class ViewGroupWidget extends React.Component<ViewGroupProps, { value: string }> {
+  /** Renders the ViewGroupWidget */
   public render() {
     return (
       <div>
-        <link rel="stylesheet" href="./Group.scss" type="text/css" />
+        <link rel="stylesheet" href="./ViewGroup.scss" type="text/css" />
         <div className="viewDropList">
           <ViewList value = {this.props.view}/>
         </div>

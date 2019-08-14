@@ -21,10 +21,11 @@ import distinctColors = require("distinct-colors");
 import { ColorDef, ViewDefinitionProps } from "@bentley/imodeljs-common";
 import TitleBar from "./Title";
 import { ipcRenderer, Event } from "electron";
-import { GroupWidget } from "./Group";
+import { ViewGroupWidget } from "./ViewGroup";
 import { fitTheView } from "./Toolbar";
 import { delay } from "q";
 import * as messages from "../../backend/electron/messages";
+import { LayoutGroupWidget } from "./LayoutGroup";
 // tslint:disable: no-console
 // cSpell:ignore imodels
 
@@ -70,6 +71,11 @@ export async function updateView(viewId: string) {
 
   // clear the selection
   clearSelection();
+}
+
+// Updates the App's layout ID
+export function updateLayout(layoutId: string) {
+  thisApp.setState({ layoutID: layoutId });
 }
 
 /** Handles onClick for the Properties toolbar button */
@@ -120,6 +126,7 @@ export interface AppState {
   elementSelected: boolean;
   is3DCollapsed: boolean;
   is2DCollapsed: boolean;
+  layoutID: string;
 }
 
 /** A component the renders the whole application UI */
@@ -148,6 +155,7 @@ export default class App extends React.Component<{}, AppState> {
       elementSelected: false,
       is3DCollapsed: false,
       is2DCollapsed: false,
+      layoutID: "Left: 2D | Right: 3D", // change this to default layout as well as in LayoutList.tsx
     };
     // this.makeCalls();
     thisApp = this;
@@ -512,27 +520,32 @@ export default class App extends React.Component<{}, AppState> {
 
   /** Renders the app */
   public render() {
+    let layout: React.ReactNode;
     let view: React.ReactNode;
     let ui: React.ReactNode;
 
     if (this.state.user.isLoading || window.location.href.includes(this._signInRedirectUri)) {
       // If user is currently being loaded, just say that
+      layout = (<></>);
       view = (<></>);
       ui = `${IModelApp.i18n.translate("SimpleViewer:signing-in")}...`;
     } else if (!this.state.user.accessToken && !this.state.offlineIModel) {
       // If user doesn't have an access token, show sign in page
+      layout = (<></>);
       view = (<></>);
       ui = (<SignIn onSignIn={this._onStartSignin} onOffline={this._onOffline} />);
     } else if (!this.state.imodel || !this.state.viewDefinitionId) {
       // if we don't have an imodel / view definition id - render a button that initiates imodel open
+      layout = (<></>);
       view = (<></>);
       ui = (<span className="open-imodel"><Spinner size={SpinnerSize.XLarge} /></span>);
     } else {
       // If we do have an imodel and view definition id - render imodel components
-      view = <GroupWidget view={""} />;
+      layout = <LayoutGroupWidget layout={""} />;
+      view = <ViewGroupWidget view={""} />;
       ui = (<IModelComponents imodel={this.state.imodel} viewDefinitionId={this.state.viewDefinitionId} menuOpened={this.state.menuOpened} title={""}
         displayProperties={this.state.displayProperties} elementSelected={this.state.elementSelected}
-        is3DCollapsed={this.state.is3DCollapsed} is2DCollapsed={this.state.is2DCollapsed} />);
+        is3DCollapsed={this.state.is3DCollapsed} is2DCollapsed={this.state.is2DCollapsed} layoutID={this.state.layoutID} />);
     }
     // Render the app
     return (
@@ -540,6 +553,12 @@ export default class App extends React.Component<{}, AppState> {
         <div className="app-header">
           <div className="text">
             <TitleBar projectName={this.state.projectName} drawingName={this.state.drawingName} iModelName={this.state.iModelName} />
+          </div>
+          <div className="layoutlabel">
+            Layout:
+          </div>
+          <div className="layout">
+            {layout}
           </div>
           <div className="viewlabel">
             Drawings:
@@ -675,6 +694,7 @@ interface IModelComponentsProps {
   elementSelected: boolean;
   is3DCollapsed: boolean;
   is2DCollapsed: boolean;
+  layoutID: string;
 }
 
 /** The live state for an iModel component */
@@ -685,6 +705,7 @@ interface IModelComponentState {
   elementSelected: boolean;
   is3DCollapsed: boolean;
   is2DCollapsed: boolean;
+  layoutID: string;
 }
 
 /** Renders a viewport, and properties if the menu is open */
@@ -700,6 +721,7 @@ export class IModelComponents extends React.PureComponent<IModelComponentsProps,
       elementSelected: this.props.elementSelected,
       is3DCollapsed: this.props.is3DCollapsed,
       is2DCollapsed: this.props.is2DCollapsed,
+      layoutID: this.props.layoutID,
     };
   }
 
@@ -716,6 +738,7 @@ export class IModelComponents extends React.PureComponent<IModelComponentsProps,
       elementSelected: this.props.elementSelected,
       is3DCollapsed: this.props.is3DCollapsed,
       is2DCollapsed: this.props.is2DCollapsed,
+      layoutID: this.props.layoutID,
     }));
 
     if (this.props.menuOpened) { // Open with Menu expanded
