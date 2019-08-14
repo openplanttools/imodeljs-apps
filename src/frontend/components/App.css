@@ -73,7 +73,7 @@
   width: 100%;
 }
 
-.app-content .viewport-3d {
+.app-content .viewport-left {
   position: absolute;
   top: 0;
   left: 0%;
@@ -81,7 +81,7 @@
   width: 35%;
 }
 
-.app-content .viewport-3d-expanded {
+.app-content .viewport-left-extended {
   position: absolute;
   top: 0;
   left: 0%;
@@ -89,7 +89,7 @@
   width: 50%;
 }
 
-.app-content .viewport-2d {
+.app-content .viewport-right {
   position: absolute;
   top: 0;
   left: 35%;
@@ -97,12 +97,68 @@
   width: 35%;
 }
 
-.app-content .viewport-2d-expanded {
+.app-content .viewport-right-extended {
   position: absolute;
   top: 0;
   left: 50%;
   height: 100%;
   width: 50%;
+}
+
+.app-content .viewport-top {
+  position: absolute;
+  top: 0;
+  left: 0%;
+  height: 50%;
+  width: 70%;
+}
+
+.app-content .viewport-top-extended {
+  position: absolute;
+  top: 0;
+  left: 0%;
+  height: 50%;
+  width: 100%;
+}
+
+.app-content .viewport-bottom {
+  position: absolute;
+  top: 50%;
+  left: 0%;
+  height: 50%;
+  width: 70%;
+}
+
+.app-content .viewport-bottom-extended {
+  position: absolute;
+  top: 50%;
+  left: 0%;
+  height: 50%;
+  width: 100%;
+}
+
+.app-content .viewport-expanded {
+  position: absolute;
+  top: 0;
+  left: 0%;
+  height: 100%;
+  width: 70%;
+}
+
+.app-content .viewport-expanded-extended {
+  position: absolute;
+  top: 0;
+  left: 0%;
+  height: 100%;
+  width: 100%;
+}
+
+.app-content .viewport-collapsed {
+  position: absolute;
+  top: 0;
+  left: 0%;
+  height: 0%;
+  width: 0%;
 }
 
 .app-content .properties {

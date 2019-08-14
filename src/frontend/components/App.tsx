@@ -29,7 +29,7 @@ import * as messages from "../../backend/electron/messages";
 // cSpell:ignore imodels
 
 // Setting instance variables for multi-class usage
-let thisApp: App;
+export let thisApp: App;
 let requestContext: AuthorizedFrontendRequestContext | undefined;
 let connectClient: ConnectClient | undefined;
 let currentProject: Project;
@@ -118,6 +118,8 @@ export interface AppState {
   shouldCall: boolean;
   displayProperties: boolean;
   elementSelected: boolean;
+  is3DCollapsed: boolean;
+  is2DCollapsed: boolean;
 }
 
 /** A component the renders the whole application UI */
@@ -144,6 +146,8 @@ export default class App extends React.Component<{}, AppState> {
       // ***change to hide properties when no element selected***
       displayProperties: true, // false,
       elementSelected: false,
+      is3DCollapsed: false,
+      is2DCollapsed: false,
     };
     // this.makeCalls();
     thisApp = this;
@@ -527,7 +531,8 @@ export default class App extends React.Component<{}, AppState> {
       // If we do have an imodel and view definition id - render imodel components
       view = <GroupWidget view={""} />;
       ui = (<IModelComponents imodel={this.state.imodel} viewDefinitionId={this.state.viewDefinitionId} menuOpened={this.state.menuOpened} title={""}
-        displayProperties={this.state.displayProperties} elementSelected={this.state.elementSelected} />);
+        displayProperties={this.state.displayProperties} elementSelected={this.state.elementSelected}
+        is3DCollapsed={this.state.is3DCollapsed} is2DCollapsed={this.state.is2DCollapsed} />);
     }
     // Render the app
     return (
@@ -668,6 +673,8 @@ interface IModelComponentsProps {
   title: string;
   displayProperties: boolean;
   elementSelected: boolean;
+  is3DCollapsed: boolean;
+  is2DCollapsed: boolean;
 }
 
 /** The live state for an iModel component */
@@ -676,6 +683,8 @@ interface IModelComponentState {
   viewId: Id64String;
   displayProperties: boolean;
   elementSelected: boolean;
+  is3DCollapsed: boolean;
+  is2DCollapsed: boolean;
 }
 
 /** Renders a viewport, and properties if the menu is open */
@@ -689,6 +698,8 @@ export class IModelComponents extends React.PureComponent<IModelComponentsProps,
       viewId: this.props.viewDefinitionId,
       displayProperties: this.props.displayProperties,
       elementSelected: this.props.elementSelected,
+      is3DCollapsed: this.props.is3DCollapsed,
+      is2DCollapsed: this.props.is2DCollapsed,
     };
   }
 
@@ -703,19 +714,20 @@ export class IModelComponents extends React.PureComponent<IModelComponentsProps,
       viewId: this.props.viewDefinitionId,
       displayProperties: this.props.displayProperties,
       elementSelected: this.props.elementSelected,
+      is3DCollapsed: this.props.is3DCollapsed,
+      is2DCollapsed: this.props.is2DCollapsed,
     }));
 
-    // Open with Menu expanded
-    if (this.props.menuOpened) {
+    if (this.props.menuOpened) { // Open with Menu expanded
       return (
         <div className="app-content">
-          <div className="viewport-3d" id="viewport-3d">
-            <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={get3DViews()[0].id!}
-              showPropertiesButton={false} elementSelected={this.state.elementSelected} is3D={true} />
-          </div>
-          <div className="viewport-2d" id="viewport-2d">
+          <div className={this.state.is2DCollapsed ? "viewport-collapsed" : (this.state.is3DCollapsed ? "viewport-expanded" : "viewport-left")} id="viewport-2d">
             <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={this.state.viewId}
-              showPropertiesButton={this.state.displayProperties} elementSelected={this.state.elementSelected} is3D={false} />
+              showPropertiesButton={false} elementSelected={this.state.elementSelected} is3D={false} isCollapsed={this.state.is2DCollapsed} />
+          </div>
+          <div className={this.state.is3DCollapsed ? "viewport-collapsed" : (this.state.is2DCollapsed ? "viewport-expanded" : "viewport-right")} id="viewport-3d">
+            <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={get3DViews()[0].id!}
+              showPropertiesButton={this.state.displayProperties} elementSelected={this.state.elementSelected} is3D={true} isCollapsed={this.state.is3DCollapsed} />
           </div>
           <div className="properties">
             <PropertiesWidget imodel={this.props.imodel} rulesetId={rulesetId} />
@@ -730,13 +742,13 @@ export class IModelComponents extends React.PureComponent<IModelComponentsProps,
     } else { // Open with Menu collapsed
       return (
         <div className="app-content">
-          <div className="viewport-3d-expanded" id="viewport-3d">
-            <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={get3DViews()[0].id!}
-              showPropertiesButton={false} elementSelected={this.state.elementSelected} is3D={true} />
-          </div>
-          <div className="viewport-2d-expanded" id="viewport-2d">
+          <div className={this.state.is2DCollapsed ? "viewport-collapsed" : (this.state.is3DCollapsed ? "viewport-expanded-extended" : "viewport-left-extended")} id="viewport-2d">
             <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={this.state.viewId}
-              showPropertiesButton={this.state.displayProperties} elementSelected={this.state.elementSelected} is3D={false} />
+              showPropertiesButton={false} elementSelected={this.state.elementSelected} is3D={false} isCollapsed={this.state.is2DCollapsed} />
+          </div>
+          <div className={this.state.is3DCollapsed ? "viewport-collapsed" : (this.state.is2DCollapsed ? "viewport-expanded-extended" : "viewport-right-extended")} id="viewport-3d">
+            <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={get3DViews()[0].id!}
+              showPropertiesButton={this.state.displayProperties} elementSelected={this.state.elementSelected} is3D={true} isCollapsed={this.state.is3DCollapsed} />
           </div>
         </div>
       );

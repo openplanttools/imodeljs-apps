@@ -26,8 +26,10 @@ export interface Props {
   showPropertiesButton: boolean;
   /** whether or not an element is selected in the viewport */
   elementSelected: boolean;
-/** whether or not the viewport is in 3D */
+  /** whether or not the viewport is in 3D */
   is3D: boolean;
+/** whether or not the viewport is collapsed */
+  isCollapsed: boolean;
 }
 
 /** Viewport component for the viewer app */
@@ -42,7 +44,7 @@ export default class SimpleViewportComponent extends React.Component<Props> {
             ruleset={this.props.rulesetId}
             viewDefinitionId={this.props.viewDefinitionId}
           />
-          <Toolbar is3D={this.props.is3D} />
+          <Toolbar is3D={this.props.is3D} isCollapsed={this.props.isCollapsed} />
           <PropertiesButton elementSelected={this.props.elementSelected} />
         </>
       );
@@ -54,7 +56,7 @@ export default class SimpleViewportComponent extends React.Component<Props> {
             ruleset={this.props.rulesetId}
             viewDefinitionId={this.props.viewDefinitionId}
           />
-          <Toolbar is3D={this.props.is3D} />
+          <Toolbar is3D={this.props.is3D} isCollapsed={this.props.isCollapsed} />
         </>
       );
     }
