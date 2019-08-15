@@ -173,10 +173,10 @@
 
 .app-content .viewport-collapsed {
   position: absolute;
-  top: 0;
-  left: 0%;
-  height: 0%;
-  width: 0%;
+  top: -10%;
+  left: -10%;
+  height: 1%;
+  width: 1%;
 }
 
 .app-content .properties {

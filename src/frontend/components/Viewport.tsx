@@ -15,7 +15,7 @@ import PropertiesButton from "./PropertiesButton";
 const SimpleViewport = viewWithUnifiedSelection(ViewportComponent);
 
 /** React properties for the viewport component */
-export interface Props {
+export interface ViewportProps {
   /** iModel whose contents should be displayed in the viewport */
   imodel: IModelConnection;
   /** View definition to use when the viewport is first loaded */
@@ -28,12 +28,13 @@ export interface Props {
   elementSelected: boolean;
   /** whether or not the viewport is in 3D */
   is3D: boolean;
-/** whether or not the viewport is collapsed */
-  isCollapsed: boolean;
+  /** determines whether the title should say to expand or collapse the view */
+  title: string;
 }
 
 /** Viewport component for the viewer app */
-export default class SimpleViewportComponent extends React.Component<Props> {
+export default class SimpleViewportComponent extends React.Component<ViewportProps> {
+
   /** Renders the Viewport */
   public render() {
     if (this.props.showPropertiesButton) { // display the properties button in the viewport
@@ -44,7 +45,7 @@ export default class SimpleViewportComponent extends React.Component<Props> {
             ruleset={this.props.rulesetId}
             viewDefinitionId={this.props.viewDefinitionId}
           />
-          <Toolbar is3D={this.props.is3D} isCollapsed={this.props.isCollapsed} />
+          <Toolbar is3D={this.props.is3D} title={this.props.title} />
           <PropertiesButton elementSelected={this.props.elementSelected} />
         </>
       );
@@ -56,7 +57,7 @@ export default class SimpleViewportComponent extends React.Component<Props> {
             ruleset={this.props.rulesetId}
             viewDefinitionId={this.props.viewDefinitionId}
           />
-          <Toolbar is3D={this.props.is3D} isCollapsed={this.props.isCollapsed} />
+          <Toolbar is3D={this.props.is3D} title={this.props.title} />
         </>
       );
     }

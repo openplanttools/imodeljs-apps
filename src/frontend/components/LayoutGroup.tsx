@@ -77,7 +77,6 @@ export class LayoutList extends React.Component<LayoutListProps, { value: string
       mainList.options[0].value = mainList.options[mainList.selectedIndex].value;
 
       // Updates the App with the selected layout
-      console.log(mainList.options[0].value);
       updateLayout(mainList.options[0].value);
     }
   }
