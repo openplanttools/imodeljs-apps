@@ -9,47 +9,6 @@ import "../../common/configuration.js";
 import "./LayoutGroup.scss";
 import { updateLayout } from "./App";
 
-// event emitter bound function to be called from App.tsx and create changes in the AppState
-// class to contain the current layout chosen and return it to App.tsx
-export class LayoutContainer {
-
-  // instance variables, storing layout name as a string and an object, the object is useful because it can be assigned
-  // as a property and dynamically allocated in react components
-  public currentLayout: string;
-  public layoutObject: {
-    layoutName: string,
-    layoutValue: string,
-    key?: string,
-  };
-
-  // initializes variables to dummy values
-  constructor() {
-    this.currentLayout = "initial_value";
-    this.layoutObject = {
-      layoutName: "initial_value",
-      layoutValue: "initial_value",
-      key: "initial_value",
-    };
-  }
-
-  /** Sets the name of the current layout to the provided name
-   * @param layout the provided name
-   */
-  public setNewLayout(layout: string) {
-    this.currentLayout = layout;
-  }
-
-  /** Returns the name of the current layout
-   * @return the name of the current layout
-   */
-  public updateLayout(): string {
-    return this.currentLayout;
-  }
-}
-
-// The LayoutContainer to hold the GroupWidget
-export const layoutContainer = new LayoutContainer();
-
 /** Group Widget controller class, formats and spaces the collcetion of tools associated with developing a new layout */
 // This method formats the required pieces in HTML
 // tslint:disable-next-line: variable-name
@@ -113,22 +72,13 @@ export class LayoutList extends React.Component<LayoutListProps, { value: string
       } else {
         this.prevIndex = mainList.selectedIndex;
       }
-
       // updates the primary node of the select element
       mainList.options[0].innerHTML = mainList.options[mainList.selectedIndex].innerText;
       mainList.options[0].value = mainList.options[mainList.selectedIndex].value;
 
-      layoutContainer.setNewLayout(mainList.options[mainList.selectedIndex].innerText);
-
-      // stores a layout data object representing the layout selected
-      layoutContainer.layoutObject = {
-        layoutName: mainList.options[mainList.selectedIndex].innerHTML,
-        layoutValue: mainList.options[mainList.selectedIndex].value,
-      };
-
       // Updates the App with the selected layout
-      // tslint:disable-next-line: no-floating-promises
-      updateLayout(layoutContainer.layoutObject.layoutValue);
+      console.log(mainList.options[0].value);
+      updateLayout(mainList.options[0].value);
     }
   }
 
@@ -141,7 +91,7 @@ export class LayoutList extends React.Component<LayoutListProps, { value: string
             if (layoutItem.layoutName.length < 1) {
               return <option className ="drawingOption" key={layoutItem.key} value={this.props.value}>{this.props.value}</option>;
             } else {
-              return <option className = "drawingOption" key={layoutItem.key} value={layoutItem.viewValue}>{layoutItem.layoutName}</option>;
+              return <option className = "drawingOption" key={layoutItem.key} value={layoutItem.layoutValue}>{layoutItem.layoutName}</option>;
             }
           })}List of Layouts</select>
         </label>

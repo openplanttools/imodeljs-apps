@@ -6,7 +6,10 @@ import * as React from "react";
 import { Id64String, OpenMode } from "@bentley/bentleyjs-core";
 import { Range3d } from "@bentley/geometry-core";
 import { AccessToken, ConnectClient, IModelQuery, Project, Config } from "@bentley/imodeljs-clients";
-import { IModelApp, IModelConnection, FrontendRequestContext, AuthorizedFrontendRequestContext, DrawingViewState, ScreenViewport, EmphasizeElements, FeatureOverrideType } from "@bentley/imodeljs-frontend";
+import {
+  IModelApp, IModelConnection, FrontendRequestContext, AuthorizedFrontendRequestContext,
+  DrawingViewState, ScreenViewport, EmphasizeElements, FeatureOverrideType,
+} from "@bentley/imodeljs-frontend";
 import { Presentation, SelectionChangeEventArgs, ISelectionProvider } from "@bentley/presentation-frontend";
 import { Button, ButtonSize, ButtonType, Spinner, SpinnerSize } from "@bentley/ui-core";
 import { SignIn } from "@bentley/ui-components";
@@ -155,7 +158,7 @@ export default class App extends React.Component<{}, AppState> {
       elementSelected: false,
       is3DCollapsed: false,
       is2DCollapsed: false,
-      layoutID: "Left: 2D | Right: 3D", // change this to default layout as well as in LayoutList.tsx
+      layoutID: "left-2d-right-3d", // change this to default layout as well as in LayoutList.tsx
     };
     // this.makeCalls();
     thisApp = this;
@@ -741,16 +744,37 @@ export class IModelComponents extends React.PureComponent<IModelComponentsProps,
       layoutID: this.props.layoutID,
     }));
 
+    let layout2D: string;
+    let layout3D: string;
+    if (this.state.layoutID === "left-2d-right-3d") {
+      layout2D = "viewport-left";
+      layout3D = "viewport-right";
+    } else if (this.state.layoutID === "left-3d-right-2d") {
+      layout2D = "viewport-right";
+      layout3D = "viewport-left";
+    } else if (this.state.layoutID === "top-2d-bottom-3d") {
+      layout2D = "viewport-top";
+      layout3D = "viewport-bottom";
+    } else if (this.state.layoutID === "top-3d-bottom-2d") {
+      layout2D = "viewport-bottom";
+      layout3D = "viewport-top";
+    } else {
+      layout2D = "";
+      layout3D = "";
+    }
+
     if (this.props.menuOpened) { // Open with Menu expanded
       return (
         <div className="app-content">
-          <div className={this.state.is2DCollapsed ? "viewport-collapsed" : (this.state.is3DCollapsed ? "viewport-expanded" : "viewport-left")} id="viewport-2d">
+          <div className={this.state.is2DCollapsed ? "viewport-collapsed" : (this.state.is3DCollapsed ? "viewport-expanded" : layout2D)} id="viewport-2d">
             <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={this.state.viewId}
-              showPropertiesButton={false} elementSelected={this.state.elementSelected} is3D={false} isCollapsed={this.state.is2DCollapsed} />
+              showPropertiesButton={layout2D === "viewport-right" || layout2D === "viewport-top" ? this.state.displayProperties : false}
+              elementSelected={this.state.elementSelected} is3D={false} isCollapsed={this.state.is2DCollapsed} />
           </div>
-          <div className={this.state.is3DCollapsed ? "viewport-collapsed" : (this.state.is2DCollapsed ? "viewport-expanded" : "viewport-right")} id="viewport-3d">
+          <div className={this.state.is3DCollapsed ? "viewport-collapsed" : (this.state.is2DCollapsed ? "viewport-expanded" : layout3D)} id="viewport-3d">
             <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={get3DViews()[0].id!}
-              showPropertiesButton={this.state.displayProperties} elementSelected={this.state.elementSelected} is3D={true} isCollapsed={this.state.is3DCollapsed} />
+              showPropertiesButton={layout3D === "viewport-right" || layout3D === "viewport-top" ? this.state.displayProperties : false}
+              elementSelected={this.state.elementSelected} is3D={true} isCollapsed={this.state.is3DCollapsed} />
           </div>
           <div className="properties">
             <PropertiesWidget imodel={this.props.imodel} rulesetId={rulesetId} />
@@ -765,13 +789,15 @@ export class IModelComponents extends React.PureComponent<IModelComponentsProps,
     } else { // Open with Menu collapsed
       return (
         <div className="app-content">
-          <div className={this.state.is2DCollapsed ? "viewport-collapsed" : (this.state.is3DCollapsed ? "viewport-expanded-extended" : "viewport-left-extended")} id="viewport-2d">
+          <div className={this.state.is2DCollapsed ? "viewport-collapsed" : (this.state.is3DCollapsed ? "viewport-expanded-extended" : layout2D + "-extended")} id="viewport-2d">
             <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={this.state.viewId}
-              showPropertiesButton={false} elementSelected={this.state.elementSelected} is3D={false} isCollapsed={this.state.is2DCollapsed} />
+              showPropertiesButton={layout2D === "viewport-right" || layout2D === "viewport-top" ? this.state.displayProperties : false}
+              elementSelected={this.state.elementSelected} is3D={false} isCollapsed={this.state.is2DCollapsed} />
           </div>
-          <div className={this.state.is3DCollapsed ? "viewport-collapsed" : (this.state.is2DCollapsed ? "viewport-expanded-extended" : "viewport-right-extended")} id="viewport-3d">
+          <div className={this.state.is3DCollapsed ? "viewport-collapsed" : (this.state.is2DCollapsed ? "viewport-expanded-extended" : layout3D + "-extended")} id="viewport-3d">
             <ViewportContentControl imodel={this.props.imodel} rulesetId={rulesetId} viewDefinitionId={get3DViews()[0].id!}
-              showPropertiesButton={this.state.displayProperties} elementSelected={this.state.elementSelected} is3D={true} isCollapsed={this.state.is3DCollapsed} />
+              showPropertiesButton={layout3D === "viewport-right" || layout3D === "viewport-top" ? this.state.displayProperties : false}
+              elementSelected={this.state.elementSelected} is3D={true} isCollapsed={this.state.is3DCollapsed} />
           </div>
         </div>
       );
