@@ -185,6 +185,11 @@
   right: 0;
   height: 100%;
   width: 30%;
+  background-color: #4d575f;
+}
+
+.app-content .properties .header {
+  padding-left: 10px;
 }
 
 .app-content .properties .bottom .bottom-middle {

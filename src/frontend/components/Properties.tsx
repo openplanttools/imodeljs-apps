@@ -68,8 +68,11 @@ export default class SimplePropertiesComponent extends React.PureComponent<Props
   public render() {
     return (
       <>
-        <h3 data-testid="property-pane-component-header">{IModelApp.i18n.translate("SimpleViewer:components.properties")}</h3>
-        <div style={{ flex: "1", height: "calc(100% - 50px)"}}>
+        {/* TODO: need a space between properties text and the edge */}
+        <div className="header">
+          <h2 data-testid="property-pane-component-header">{" " + IModelApp.i18n.translate("SimpleViewer:components.properties")}</h2>
+        </div>
+        <div style={{ flex: "1", height: "calc(100% - 50px)" }}>
           <SimplePropertyGrid
             orientation={Orientation.Horizontal}
             dataProvider={this.getDataProvider(this.props)}

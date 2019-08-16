@@ -85,7 +85,7 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
         preload: path.resolve("preload.js"),
         experimentalFeatures: true, // Needed for CSS Grid support
       },
-      autoHideMenuBar: true,
+      autoHideMenuBar: true, // toggles the visibiliy of the menu bar
       show: false,
     });
 
