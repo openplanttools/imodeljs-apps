@@ -68,7 +68,6 @@ export default class SimplePropertiesComponent extends React.PureComponent<Props
   public render() {
     return (
       <>
-        {/* TODO: need a space between properties text and the edge */}
         <div className="header">
           <h2 data-testid="property-pane-component-header">{" " + IModelApp.i18n.translate("SimpleViewer:components.properties")}</h2>
         </div>
