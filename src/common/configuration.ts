@@ -10,7 +10,6 @@ import { Config } from "@bentley/imodeljs-clients";
 export const enum UseBackend {
   /** Use local simple-viewer-app backend */
   Local = 0,
-
   /** Use deployed Navigator backend */
   Navigator = 1,
 }
@@ -32,15 +31,16 @@ export default function setupEnv() {
     // of running this sample on localhost, ensure your registration includes http://localhost:3000/signin-callback as a
     // valid redirect URI.
     // -----------------------------------------------------------------------------------------------------------
-    imjs_browser_test_client_id: "imodeljs-spa-test-2686",
+    imjs_buddi_resolve_url_using_region: "4",
+    imjs_browser_test_client_id: "spa-TndE76P2OLOLZMumh7nx5yHjR",
     // Set this to the registered clientId
     // Note: "imodeljs-spa-test-2686" is setup to work with the (default) localhost redirect URI below
 
-    imjs_browser_test_redirect_uri: "http://localhost:3000/signin-callback",
+    imjs_browser_test_redirect_uri: "electron://frontend/signin-callback",
     // Set this to be the registered redirect URI
     // Note: "http://localhost:3000/signin-callback" is setup to work with the (default) clientId above
 
-    imjs_browser_test_scope: "openid email profile organization imodelhub context-registry-service:read-only",
+    imjs_browser_test_scope: "openid email profile organization imodelhub context-registry-service reality-data:read imodeljs-router",
     // Set this to be the scopes of services the application needs to access
     // Note: The default value set above ensures the minimal working of the application
   });

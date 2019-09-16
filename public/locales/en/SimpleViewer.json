@@ -1,5 +1,5 @@
 {
-  "welcome-message": "Welcome to Simple Viewer App",
+  "welcome-message": "Sample App",
   "signing-in": "Signing-in",
   "components": {
     "imodel-picker": {
