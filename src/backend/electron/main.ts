@@ -10,6 +10,11 @@ import * as configurationData from "../../common/iModel.Settings.json";
 import * as electronFs from "fs";
 import * as messages from "./messages";
 
+/**
+ * Initializes Electron backend
+ */
+const manager = new IModelJsElectronManager(path.join(__dirname, "..", "..", "webresources"));
+
 /** Method to change the iModelName stored in the config.json
  * @param iModelName string wsgId of the new iModel
  */
@@ -39,6 +44,11 @@ export const readData = (event?: electron.Event, arg?: string) => {
       event.sender.send("readConfigResults", jsonObject);
     }
   });
+
+  if (manager.mainWindow) {
+     manager.mainWindow.setTitle(messages.mainTitle);
+  }
+
   return configObject;
 };
 
@@ -68,17 +78,14 @@ export const changeDrawingName = (drawingName: string) => {
   electronFs.writeFileSync(path.join(__dirname, "../../common/iModel.Settings.json"), stringifiedConfig);
 };
 
-/**
- * Initializes Electron backend
- */
-const manager = new IModelJsElectronManager(path.join(__dirname, "..", "..", "webresources"));
+
 export default function initialize(rpcs: RpcInterfaceDefinition[]) {
   // Much of electron and iModelJS's functionality is wrapped in promises, so this nested async function is needed to avoid unhandled promise exceptions
   (async () => { // tslint:disable-line:no-floating-promises
     await manager.initialize({
       width: 1280,
       height: 800,
-      title: "Plant Viewer",
+      title: messages.mainTitle,
 
       // Web preferences deal with the paths the main electron window will use
       webPreferences: {
@@ -105,7 +112,7 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
           buttonsArray = [messages.configDialogSelect, messages.configDialogExit];
         }
         electron.dialog.showMessageBox({
-          title: messages.initialTitle,
+          title: messages.mainTitle,
           message: validFile ? `${messages.currentProject}${jsonObject.project_name}${messages.currentiModel}${jsonObject.imodel_name}` : messages.configDialogNoDefault,
           buttons: buttonsArray,
           cancelId: validFile ? 2 : 1, // closes the application if the window is closed
@@ -118,7 +125,10 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
             createFileSelectionWindow();
           } else if (index === 0 && validFile) {
             if (manager.mainWindow) {
+              manager.mainWindow.setTitle(messages.mainTitle);
+              // manager.mainWindow.setAutoHideMenuBar(true);
               manager.mainWindow.show();
+              // does not work manager.mainWindow.setTitle(messages.mainTitle);
             }
           }
         });

@@ -1,6 +1,6 @@
 {
-  "name": "@bentley/simple-viewer-app",
-  "description": "OpenPlant Viewer",
+  "name": "@bentley/imodeljs-openplant-viewer",
+  "description": "Plant Linkage",
   "license": "MIT",
   "author": {
     "name": "Bentley Systems, Inc.",

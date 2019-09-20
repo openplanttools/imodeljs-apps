@@ -11,10 +11,10 @@ import { IModelJsExpressServer } from "@bentley/express-server";
  */
 export default async function initialize(rpcs: RpcInterfaceDefinition[]) {
   // tell BentleyCloudRpcManager which RPC interfaces to handle
-  const rpcConfig = BentleyCloudRpcManager.initializeImpl({ info: { title: "simple-viewer-app", version: "v1.0" } }, rpcs);
+  const rpcConfig = BentleyCloudRpcManager.initializeImpl({ info: { title: "imodeljs-openplant-viewer", version: "v1.0" } }, rpcs);
 
   const port = Number(process.env.PORT || 3001);
   const server = new IModelJsExpressServer(rpcConfig.protocol);
   await server.initialize(port);
-  console.log("RPC backend for simple-viewer-app listening on port " + port);
+  console.log("RPC backend for imodeljs-openplant-viewer listening on port " + port);
 }
