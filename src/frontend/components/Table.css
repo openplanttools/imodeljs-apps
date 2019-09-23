@@ -1,0 +1,6 @@
+th,
+td,
+tr {
+  max-width:100%;
+  white-space:nowrap;
+}

@@ -1,54 +1,64 @@
-/*---------------------------------------------------------------------------------------------
-* Copyright (c) 2019 Bentley Systems, Incorporated. All rights reserved.
-* Licensed under the MIT License. See LICENSE.md in the project root for license terms.
-*--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { IModelConnection } from "@bentley/imodeljs-frontend";
-import { Table } from "@bentley/ui-components";
-import {
-  IPresentationTableDataProvider,
-  PresentationTableDataProvider,
-  tableWithUnifiedSelection,
-} from "@bentley/presentation-components";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./Table.css";
 
-// create a HOC table component that supports unified selection
-// tslint:disable-next-line:variable-name
-const SimpleTable = tableWithUnifiedSelection(Table);
-
-/** React properties for the table component, that accepts an iModel connection with ruleset id */
-export interface IModelConnectionProps {
-  /** iModel whose contents should be displayed in the table */
-  imodel: IModelConnection;
-  /** ID of the presentation rule set to use for creating the content displayed in the table */
-  rulesetId: string;
+interface TableProps {
+  data: any;
 }
 
-/** React properties for the table component, that accepts a data provider */
-export interface DataProviderProps {
-  /** Custom property pane data provider. */
-  dataProvider: IPresentationTableDataProvider;
-}
+export class Table extends React.Component<TableProps, {}> {
+  constructor(props: any) {
+    super(props);
+  }
 
-/** React properties for the table component */
-export type Props = IModelConnectionProps | DataProviderProps;
+  public getRows() {
+    let rows: any;
+    let data: any = [];
+    data = this.props.data;
+    // tslint:disable-next-line:no-console
+    console.log(data);
 
-/** Table component for the viewer app */
-export default class SimpleTableComponent extends React.PureComponent<Props> {
-  private getDataProvider(props: Props) {
-    if ((props as any).dataProvider) {
-      const providerProps = props as DataProviderProps;
-      return providerProps.dataProvider;
+    if (data != undefined) {
+      rows = data.map((bcases: any) => (
+        <tr key={bcases.id}>
+          <td> {bcases.className} </td>
+          <td> {bcases.userLabel} </td>
+          <td> {bcases.dEVICE_TYPE_CODE} </td>
+          <td> {bcases.nUMBER} </td>
+          <td> {bcases.sTATE} </td>
+          <td> {bcases.mANUFACTURER} </td>
+          <td className="table-secondary"> {bcases.mANU_ADDRESS} </td>
+          <td> {bcases.sUNIT} </td>
+          <td> {bcases.sERVICE} </td>
+          <td> {bcases.sPLANT_AREA} </td>
+        </tr>
+      ));
     } else {
-      const imodelProps = props as IModelConnectionProps;
-      return new PresentationTableDataProvider({ imodel: imodelProps.imodel, ruleset: imodelProps.rulesetId });
+      rows = <span></span>;
     }
+    console.log(rows);
+    return rows;
   }
 
   public render() {
     return (
-      <div style={{ height: "100%" }}>
-        <SimpleTable dataProvider={this.getDataProvider(this.props)} />
-      </div>
+      <table className="table" style={{ marginTop: 50 }}>
+        <thead className="thead-dark">
+          <tr>
+            <th scope="col">Class Name</th>
+            <th scope="col">User Label</th>
+            <th scope="col">Device Type Code</th>
+            <th scope="col">Number</th>
+            <th scope="col">State</th>
+            <th scope="col">Manufacturer</th>
+            <th scope="col">Manufacturer Address</th>
+            <th scope="col">Unit</th>
+            <th scope="col"> Service</th>
+            <th scope="col"> Plant Area </th>
+          </tr>
+        </thead>
+        <tbody>{this.getRows()}</tbody>
+      </table>
     );
   }
 }

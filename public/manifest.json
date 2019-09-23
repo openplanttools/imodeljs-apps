@@ -1,6 +1,6 @@
 {
-  "short_name": "simple-viewer-app",
-  "name": "Simple Viewer App",
+  "short_name": "plantsight-data-linker",
+  "name": "PlantSight DataLinker",
   "icons": [
     {
       "src": "favicon.ico",
