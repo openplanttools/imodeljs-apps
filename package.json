@@ -1,6 +1,6 @@
 {
-  "name": "@bentley/simple-viewer-app",
-  "description": "Simple Viewer App",
+  "name": "@bentley/plantsight-data-linker",
+  "description": "PlantSight DataLinker",
   "license": "MIT",
   "author": {
     "name": "Bentley Systems, Inc.",
@@ -47,6 +47,10 @@
         {
           "source": "./public/**/*",
           "dest": "./lib/webresources"
+        },
+        {
+          "source": "./src/**/*.json",
+          "dest": "./lib"
         },
         {
           "source": "./src/frontend/plugins/public/**/*",
@@ -106,7 +110,6 @@
     "chai-jest-snapshot": "^2.0.0",
     "child_process": "^1.0.2",
     "express": "^4",
-    "fsevents": "^1.2.9",
     "guid-typescript": "^1.0.9",
     "inspire-tree": "^5.0.1",
     "jquery": "^3.4.1",

@@ -72,3 +72,12 @@
   display: flex;
   flex-direction: column;
 }
+
+.open-imodel {
+  position: relative;
+  width: 100%;
+  height: 80%;
+  align-self: auto;
+  margin-left: 45%;
+  top: 25%;
+}

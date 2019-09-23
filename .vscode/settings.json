@@ -8,9 +8,10 @@
     "*.snap": "javascript"
   },
   "files.exclude": {
+    "**/*.TileCache*": true,
     "**/lib/**": true,
     "**/node_modules/**": true,
-    "**/*.TileCache*": true,
+    "**/SampleApp-win32-x64/**": true
   },
   "files.insertFinalNewline": true,
   "files.trimFinalNewlines": true,

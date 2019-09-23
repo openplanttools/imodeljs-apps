@@ -4,16 +4,18 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { Id64String } from "@bentley/bentleyjs-core";
-import { AccessToken,  Config } from "@bentley/imodeljs-clients";
+import { AccessToken, Config } from "@bentley/imodeljs-clients";
 import { IModelApp, IModelConnection, FrontendRequestContext } from "@bentley/imodeljs-frontend";
 import { Presentation, SelectionChangeEventArgs, ISelectionProvider } from "@bentley/presentation-frontend";
+import { Spinner, SpinnerSize } from "@bentley/ui-core";
 
 import { SignIn } from "@bentley/ui-components";
 import { SimpleViewerApp } from "../api/SimpleViewerApp";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import {Page} from "./Imodels";
+import { Page } from "./Imodels";
+import {ipcRenderer} from "electron";
 
 // tslint:disable: no-console
 // cSpell:ignore imodels
@@ -27,6 +29,8 @@ export interface AppState {
   offlineIModel: boolean;
   imodel?: IModelConnection;
   viewDefinitionId?: Id64String;
+  projectName?: any;
+  iModelName?: any;
 }
 
 /** A component the renders the whole application UI */
@@ -42,6 +46,20 @@ export default class App extends React.Component<{}, AppState> {
       },
       offlineIModel: false,
     };
+  }
+
+  public async componentWillMount() {
+    await new Promise(resolve => {
+      ipcRenderer.send("readConfig", "project");
+      ipcRenderer.on("readConfigResults", (event: Event, configObject: any) => {
+        console.log("Recieved ReadConfigResults",event);
+        this.setState(() => ({
+          projectName: configObject.project_name,
+          iModelName: configObject.imodel_name,
+        }));
+        resolve(configObject);
+      });
+    });
   }
 
   public componentDidMount() {
@@ -115,20 +133,21 @@ export default class App extends React.Component<{}, AppState> {
 
   /** The component's render method */
   public render() {
-    let ui: React.ReactNode;
+    let ui;
     console.log("Renderer Called");
     if (this.state.user.isLoading || window.location.href.includes(this._signInRedirectUri)) {
       // if user is currently being loaded, just tell that
       ui = `${IModelApp.i18n.translate("SimpleViewer:signing-in")}...`;
+      ui = (<span className="open-imodel"><Spinner size={SpinnerSize.Large} /></span>);
     } else if (!this.state.user.accessToken && !this.state.offlineIModel) {
       // if user doesn't have and access token, show sign in page
       console.log("Inside Sign in");
       ui = (<SignIn onSignIn={this._onStartSignin} onRegister={this._onRegister} onOffline={this._onOffline} />);
     }
 
-    if (this.state.user.accessToken) {
+    if (this.state.user.accessToken && this.state.projectName && this.state.iModelName) {
       // if we don't have an imodel / view definition id - render a button that initiates imodel open
-      ui = (<Page token={this.state.user.accessToken} />);
+      ui = (<Page token={this.state.user.accessToken} projectName={this.state.projectName} imodelName={this.state.iModelName} />);
     }
     if (this.state.user.accessToken)
       console.log(this.state.user.accessToken);

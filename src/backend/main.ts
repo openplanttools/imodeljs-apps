@@ -10,19 +10,14 @@ import { Presentation } from "@bentley/presentation-backend";
 import getSupportedRpcs from "../common/rpcs";
 import { RpcInterfaceDefinition } from "@bentley/imodeljs-common";
 import setupEnv from "../common/configuration";
-import { execute, db } from "./Database";
+import {readData} from "./electron/main";
 
-ipcMain.on("executeQuery", async (event: Event, arg: any) => {
-  console.log(event);
-  const result: any = await execute(arg);
-  console.log(result);
-  event.sender.send("readResultSet", result);
-});
-
-electron.on("before-quit", () => {
-  console.log("QUitting the app");
-  db.close();
-});
+ipcMain.on("readConfig", (event: Event, arg: any) => {
+  if (event) {
+    console.log(arg);
+  }
+  readData(event, arg);
+  });
 
 // setup environment
 setupEnv();
@@ -54,4 +49,24 @@ Presentation.initialize({
   const rpcs = getSupportedRpcs();
   // do initialize
   init(rpcs);
+
+  ipcMain.on("executeQuery", async (event: Event, arg: any) => {
+    console.log(event);
+    var connection = (await import("./electron/main")).conn;
+    console.log(connection);
+    let result: any = "";
+    await connection.execute(arg).then((data: any) => {
+      console.log(data);
+      result = data
+    });
+    console.log(result);
+    event.sender.send("readResultSet", result);
+  });
+
+  electron.on("before-quit", async () => {
+    console.log("QUitting the app");
+    var connection = (await import("./electron/main")).conn;
+    console.log(connection);
+    connection.close();
+  });
 })();
