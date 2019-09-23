@@ -28,9 +28,8 @@
     "test:e2e:start-app": "env-cmd ./lib/webresources/config.json run-p \"start:webserver\" \"start:backend\"",
     "test:e2e:test-app": "mocha --opts ./test/end-to-end/mocha.opts \"test/end-to-end/**/*.test.ts*\"",
     "test:electron": "mocha --opts ./test/electron/mocha.opts \"test/electron/**/*.test.ts*\"",
-    "package": "electron-packager . LockReleaser --platform=win32 --arch=x64 --overwrite",
-    "start": "node ./lib/frontend/components/Database.js",
-    "buildD": "tsc --v"
+    "package": "electron-packager . PlantSight DataLinker --platform=win32 --arch=x64 --overwrite",
+    "installAll": "npm install fsevents -f --save && npm install  && electron-rebuild -m=./node_modules/sqlite3"
   },
   "iModelJs": {
     "buildModule": {
@@ -110,6 +109,7 @@
     "chai-jest-snapshot": "^2.0.0",
     "child_process": "^1.0.2",
     "express": "^4",
+    "fsevents": "^2.0.7",
     "guid-typescript": "^1.0.9",
     "inspire-tree": "^5.0.1",
     "jquery": "^3.4.1",
