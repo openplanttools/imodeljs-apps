@@ -1,0 +1,18 @@
+{
+  "welcome-message": "Data Console",
+  "signing-in": "Signing in",
+  "components": {
+    "imodel-picker": {
+      "open-imodel": "Open iModel"
+    },
+    "properties": "Properties",
+    "table": "Table",
+    "tree": "Tree"
+  },
+  "tools": {
+    "select": "Select Element",
+    "rotate": "Rotate",
+    "pan": "Pan",
+    "zoom": "Zoom"
+  }
+}

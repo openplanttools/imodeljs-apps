@@ -1,0 +1,155 @@
+{
+  "name": "@bentley/imodeljs-openplant-viewer",
+  "description": "Plant Linkage",
+  "license": "MIT",
+  "author": {
+    "name": "Bentley Systems, Inc.",
+    "url": "http://www.bentley.com"
+  },
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "buildIModelJsModule",
+    "go": "npm run clean && npm run build && npm run electron",
+    "electron": "electron lib/backend/main.js",
+    "start:webserver": "node ./node_modules/@bentley/imodeljs-webserver/lib/WebServer.js --port=3000 --resources=./lib/webresources/",
+    "start:backend": "node lib/backend/main.js",
+    "start:servers": "npm run start:makeconfig && env-cmd ./lib/webresources/config.json run-p \"start:webserver\" \"start:backend\"",
+    "start:makeconfig": "strip-json-comments --no-whitespace ./src/common/config.json > ./lib/webresources/config.json",
+    "clean": "rimraf lib",
+    "build:mobile-backend": "tsc 1>&2 && webpack --config ./node_modules/@bentley/webpack-tools/mobile/backend.config.js --env.outdir=./lib/mobile --env.entry=./lib/backend/main.js --env.bundlename=main ",
+    "test": "npm run test:unit && npm run test:integration && npm run test:e2e",
+    "test:unit": "mocha --opts ./test/unit/mocha.opts \"test/unit/**/*.test.ts*\"",
+    "test:integration": "mocha --opts ./test/integration/mocha.opts \"test/integration/**/*.test.ts*\"",
+    "test:e2e": "start-server-and-test test:e2e:start-app http-get://localhost:3000 test:e2e:test-app",
+    "test:e2e:makeconfig": "strip-json-comments --no-whitespace ./test/end-to-end/config.json > ./lib/webresources/config.json",
+    "test:e2e:start-app": "npm run test:e2e:makeconfig && env-cmd ./lib/webresources/config.json run-p \"start:webserver\" \"start:backend\"",
+    "test:e2e:test-app": "mocha --opts ./test/end-to-end/mocha.opts \"test/end-to-end/**/*.test.ts*\"",
+    "test:electron": "mocha --opts ./test/electron/mocha.opts \"test/electron/**/*.test.ts*\""
+  },
+  "iModelJs": {
+    "buildModule": {
+      "type": "application",
+      "sourceResources": [
+        {
+          "source": "./src/**/*.scss",
+          "dest": "./lib"
+        },
+        {
+          "source": "./src/**/*.css",
+          "dest": "./lib"
+        },
+        {
+          "source": "./src/**/*.html",
+          "dest": "./lib"
+        },
+        {
+          "source": "./public/**/*",
+          "dest": "./lib/webresources"
+        },
+        {
+          "source": "./src/**/*.json",
+          "dest": "./lib"
+        },
+        {
+          "source": "./src/frontend/plugins/public/**/*",
+          "dest": "./lib/webresources"
+        }
+      ],
+      "webpack": {
+        "dest": "./lib/webresources",
+        "entry": "./lib/frontend/index.js",
+        "bundleName": "main",
+        "styleSheets": true,
+        "htmlTemplate": "./src/frontend/index.html"
+      }
+    }
+  },
+  "dependencies": {
+    "@bentley/bentleyjs-core": "1.0.0",
+    "@bentley/config-loader": "1.0.0",
+    "@bentley/electron-manager": "1.0.0",
+    "@bentley/express-server": "1.0.0",
+    "@bentley/geometry-core": "1.0.0",
+    "@bentley/icons-generic-webfont": "^0.0.9",
+    "@bentley/imodeljs-backend": "1.0.0",
+    "@bentley/imodeljs-clients": "1.0.0",
+    "@bentley/imodeljs-clients-backend": "1.0.0",
+    "@bentley/imodeljs-common": "1.0.0",
+    "@bentley/imodeljs-frontend": "1.0.0",
+    "@bentley/imodeljs-i18n": "1.0.0",
+    "@bentley/imodeljs-quantity": "1.0.0",
+    "@bentley/imodeljs-webserver": "1.0.0",
+    "@bentley/presentation-backend": "1.0.0",
+    "@bentley/presentation-common": "1.0.0",
+    "@bentley/presentation-components": "1.0.0",
+    "@bentley/presentation-frontend": "1.0.0",
+    "@bentley/presentation-testing": "1.0.0",
+    "@bentley/ui-components": "1.0.0",
+    "@bentley/ui-core": "1.0.0",
+    "@types/node": "^12.0.12",
+    "@types/styled-components": "^4.1.16",
+    "body-parser": "^1.18",
+    "bunyan": "^1.8.12",
+    "chai-jest-snapshot": "^2.0.0",
+    "chroma-js": "^2.0.3",
+    "components": "^0.1.0",
+    "distinct-colors": "^1.0.4",
+    "express": "^4",
+    "inspire-tree": "^5.0.1",
+    "iterate-object": "^1.3.3",
+    "lodash": "^4.17.11",
+    "prop-types": "^15.7.2",
+    "r-json": "^1.2.9",
+    "react": "^16.4.2",
+    "react-dnd": "^5.0.0",
+    "react-dnd-html5-backend": "^5.0.1",
+    "react-dom": "^16.4.2",
+    "react-icons": "^3.7.0",
+    "react-redux": "^5.0.7",
+    "redux": "^4.0.0",
+    "set-value": "^3.0.1",
+    "styled": "^1.0.0",
+    "styled-components": "^4.3.2"
+  },
+  "devDependencies": {
+    "@bentley/build-tools": "1.0.0",
+    "@bentley/webpack-tools": "1.0.0",
+    "@types/body-parser": "^1.17",
+    "@types/bunyan": "^1.8",
+    "@types/chai": "^4.1.7",
+    "@types/chroma-js": "^1.4.1",
+    "@types/express": "^4",
+    "@types/jsdom": "^12.2.0",
+    "@types/mocha": "^5.2.5",
+    "@types/puppeteer": "^1.10.0",
+    "@types/react": "^16.4.14",
+    "@types/react-dom": "^16.0.7",
+    "chai": "^4.2.0",
+    "chromedriver": "^2.34.1",
+    "electron": "^4.0.1",
+    "electron-chromedriver": "^3.0.0",
+    "env-cmd": "^8.0.2",
+    "ignore-styles": "^5.0.1",
+    "jsdom": "^13.0.0",
+    "jsdom-global": "^3.0.2",
+    "mocha": "^5.2.0",
+    "nodemon": "^1.18.4",
+    "npm-run-all": "^4.1.3",
+    "puppeteer": "^1.10.0",
+    "react-testing-library": "^5.3.2",
+    "rimraf": "^2.6.2",
+    "sinon": "^7.2.0",
+    "spectron": "^5.0.0",
+    "start-server-and-test": "^1.7.11",
+    "strip-json-comments-cli": "^1.0.1",
+    "ts-node": "^7.0.1",
+    "typemoq": "^2.1.0",
+    "typescript": "^3.2.2",
+    "webpack": "^4.20.2",
+    "webpack-cli": "^3.1.0",
+    "xmlhttprequest": "^1.8.0"
+  },
+  "homepage": "http://localhost:3000/",
+  "proxy": "http://localhost:5000"
+}
