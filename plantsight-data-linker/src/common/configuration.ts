@@ -31,8 +31,11 @@ export default function setupEnv() {
     // of running this sample on localhost, ensure your registration includes http://localhost:3000/signin-callback as a
     // valid redirect URI.
     // -----------------------------------------------------------------------------------------------------------
-    imjs_buddi_resolve_url_using_region: "4",
+    //imjs_buddi_resolve_url_using_region: "103",
     imjs_browser_test_client_id: "spa-TndE76P2OLOLZMumh7nx5yHjR",
+
+
+
     // Set this to the registered clientId
     // Note: "imodeljs-spa-test-2686" is setup to work with the (default) localhost redirect URI below
 

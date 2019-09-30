@@ -5,9 +5,10 @@ import {
   AuthorizedFrontendRequestContext,
   IModelConnection
 } from "@bentley/imodeljs-frontend";
-import { Table } from "./Table";
+import { Table, stringManipulator } from "./Table";
 import { ipcRenderer, Event } from "electron";
 import {IModelApp} from "@bentley/imodeljs-frontend";
+import { Spinner, SpinnerSize } from "@bentley/ui-core";
 
 interface PageState {
   projectId: any;
@@ -16,6 +17,8 @@ interface PageState {
   projects: any;
   elements: any;
   iModelId: any;
+  iModelConnection: any;
+  databaseResult: any;
 }
 
 interface PageProps {
@@ -180,14 +183,15 @@ export class Page extends React.Component<PageProps, PageState> {
       iModelId
     );
     console.log("Imodel Connection: ", iModel);
+    this.setState({iModelConnection:iModel});
     let equipments = [];
     let elementProps = await iModel.query("SELECT * FROM ProcessPhysical:EQUIPMENT");
     for await (const item of elementProps) {
-      console.log(item);
-      console.log(item["mANUFACTURER"]);
+      //console.log(item);
+      //console.log(item["mANUFACTURER"]);
       equipments.push(item);
     }
-    console.log(elementProps);
+    console.log(equipments);
     const sql = `SELECT * from Manufacturer`;
     let qResult: any = [];
     await new Promise(resolve => {
@@ -203,12 +207,30 @@ export class Page extends React.Component<PageProps, PageState> {
         console.log(resultSet);
       });
     }).then(result => qResult = result);
-    console.log(qResult);
-    const manAddr = qResult != undefined ? qResult.find((item: any) => item.Name == "Manu1") : "";
-    console.log(manAddr);
-    equipments.map((item) => item["mANU_ADDRESS"] = manAddr.Address);
-    console.log(equipments);
+    //console.log(qResult);
+    this.setState({databaseResult: qResult});
+
+    for (let i = 0; i < equipments.length; ++i) {
+      let manufacturer = equipments[i]["mANUFACTURER"];
+      //console.log("Manufacturer: ", manufacturer);
+      const className = equipments[i]["className"].split('.')[1];
+      equipments[i]["className"] = stringManipulator( className);
+      console.log( equipments[i]["className"]);
+      let manAddr = qResult != undefined ? qResult.find((item: any) => item.Name == manufacturer) : undefined;
+      console.log(equipments[i]);
+      if (manAddr) { equipments[i]["mANUFACTURER_ADDRESS"] = manAddr.Address; }
+      else {equipments[i]["mANUFACTURER_ADDRESS"] = ""};
+
+    }
+
     this.setState({ elements: equipments });
+
+    //elementProps = await iModel.query("SELECT * FROM meta.ECPropertyDef");
+    //for await (const item of elementProps) {
+      //console.log(item);
+      //console.log(item["mANUFACTURER"]);
+      //console.log(item);
+    //}
 
     if (iModel) await iModel.close();
   }
@@ -225,82 +247,30 @@ export class Page extends React.Component<PageProps, PageState> {
     }
   }
 
-  public getProjectUI() {
-    if (this.state && this.state.projects) {
-      return (
-        <div className="form-group">
-          <label
-            style={{ marginRight: 20 }}
-            className="font-weight-bold"
-            htmlFor="projectList"
-          >
-            Project List
-          </label>
-          <select
-            onChange={e => this.onProjectSelectChange(e)}
-            id="so"
-            style={{ width: 350 }}
-            className="custom-select custom-select-sm "
-          >
-            {/* <option value="None">None</option> */}
-            <option style={{ backgroundColor: "#00904444" }}></option>
-            {this.getProjectsList()}
-          </select>
-        </div>
-      );
-    }
-
-    return <span></span>;
-  }
-
-  public getImodelsUI() {
-    if (this.state && this.state.iModels) {
-      return (
-        <div className="form-group">
-          <label
-            style={{ marginRight: 20 }}
-            className="font-weight-bold"
-            htmlFor="projectList"
-          >
-            Imodels List
-          </label>
-          <select
-            onChange={e => this.oniModelSelectChange(e)}
-            id="so"
-            style={{ width: 350 }}
-            className="custom-select custom-select-sm "
-          >
-            {/* <option value="None">None</option> */}
-            <option style={{ backgroundColor: "#00904444" }}></option>
-            {this.getIModelsList()}
-          </select>
-        </div>
-      );
-    }
-
-    return <span></span>;
-  }
-
   public renderTable() {
-    if (this.state && this.state.elements) {
+    if (this.state && this.state.elements && this.state.iModelConnection && this.state.databaseResult) {
       return (
         <Table
-          data={this.state.elements}
+          data={this.state.elements} iModelConn={this.state.iModelConnection} dbResult={this.state.databaseResult}
         />
       );
     }
     return " ";
   }
 
+  public showSpinner() {
+    if (!this.state || !this.state.elements){
+      return <span className="open-imodel"><Spinner size={SpinnerSize.Large} /></span>;
+    }
+    return <></>;
+  }
+
   public render() {
     return (
-      <div style={{ margin: "0 auto", marginTop: 50 }} className=".bg-light">
-        <form onSubmit={e => this.handleSubmit(e)}>
-          <div>{this.getProjectUI()}</div>
-          <div>{this.getImodelsUI()}</div>
-        </form>
-        <div className="pre-scrollable" style={{ maxWidth: 800, overflowX: "auto" }}>{this.renderTable()}</div>
-      </div>
+        <>
+        {this.showSpinner()}
+        {this.renderTable()}
+        </>
     );
   }
 }

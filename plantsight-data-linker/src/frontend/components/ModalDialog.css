@@ -1,0 +1,13 @@
+.modal.custom {
+  outline:none;
+
+}
+
+.modal.custom .modal-dialog {
+  width:30%;
+  margin-right:0px;
+}
+
+.modal.left.fade.show .modal-dialog {
+  left: 0;
+}
