@@ -6,7 +6,8 @@
     "baseUrl": "./node_modules",
     "outDir": "./lib",
     "strict": false,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "esModuleInterop": true
   },
   "include": [
     "./**/*.ts",

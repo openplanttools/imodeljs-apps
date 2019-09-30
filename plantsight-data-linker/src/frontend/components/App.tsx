@@ -143,22 +143,17 @@ export default class App extends React.Component<{}, AppState> {
       // if user doesn't have and access token, show sign in page
       console.log("Inside Sign in");
       ui = (<SignIn onSignIn={this._onStartSignin} onRegister={this._onRegister} onOffline={this._onOffline} />);
-    }
-
-    if (this.state.user.accessToken && this.state.projectName && this.state.iModelName) {
+    } else if (this.state.user.accessToken && this.state.projectName && this.state.iModelName) {
       // if we don't have an imodel / view definition id - render a button that initiates imodel open
       ui = (<Page token={this.state.user.accessToken} projectName={this.state.projectName} imodelName={this.state.iModelName} />);
+    } else {
+      ui = (<span className="open-imodel"><Spinner size={SpinnerSize.Large} /></span>);
     }
     if (this.state.user.accessToken)
       console.log(this.state.user.accessToken);
     // render the app
     return (
-      <div className="app .bg-secondary">
-        <div className="app-header">
-          <h2>{IModelApp.i18n.translate("SimpleViewer:welcome-message")}</h2>
-        </div>
-        {ui}
-      </div>
+        <>{ui}</>
     );
   }
 }

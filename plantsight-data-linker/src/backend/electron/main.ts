@@ -26,8 +26,8 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
     // tslint:disable-line:no-floating-promises
 
     await manager.initialize({
-      width: 800,
-      height: 700,
+      width: 980,
+      height: 600,
       webPreferences: {
         experimentalFeatures: true // Needed for CSS Grid support
       },
@@ -73,16 +73,18 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
   })();
 }
 
-function selectDatabase() {
+function  selectDatabase() {
   if (manager.mainWindow) {
   dialog.showOpenDialog(manager.mainWindow, {
     title: "Select external database file",
     properties: ['openFile'],
     filters: [{ name: 'All Files', extensions: ['db'] }]
-  }, (path: any) => {
+  }, async (path: any) => {
     console.log(path[0]);
     conn = new SqlConnection(path[0]);
-    console.log(conn);
+    const tableNames: any = await conn.GetTableNames();
+    console.log(tableNames);
+    conn.GetColNames(tableNames[1]);
     if (manager.mainWindow) {
       manager.mainWindow.show();
     }

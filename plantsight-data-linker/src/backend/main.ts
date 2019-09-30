@@ -3,7 +3,7 @@
  * Licensed under the MIT License. See LICENSE.md in the project root for license terms.
  *--------------------------------------------------------------------------------------------*/
 import * as path from "path";
-import { app as electron, ipcMain, Event } from "electron";
+import { app as electron, ipcMain, Event, app } from "electron";
 import { Logger } from "@bentley/bentleyjs-core";
 import { IModelHost } from "@bentley/imodeljs-backend";
 import { Presentation } from "@bentley/presentation-backend";
@@ -68,5 +68,6 @@ Presentation.initialize({
     var connection = (await import("./electron/main")).conn;
     console.log(connection);
     connection.close();
+    app.exit();
   });
 })();
