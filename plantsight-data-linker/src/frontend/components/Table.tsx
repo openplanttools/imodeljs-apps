@@ -3,15 +3,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./Table.css";
 import * as _ from "lodash";
 import MUIDataTable, {SelectableRows} from "mui-datatables";
-import * as path from "path";
-import {remote} from "electron";
-const electronFs = remote.require("fs");
-const app = remote.app;
-//import "materialize-css/dist/css/materialize.css";
-//import "materialize-css/dist/js/materialize";
-// import * as $ from "jquery";
+import * as messages from "../../backend/electron/messages";
 
-const columnSettingPath = "\\..\\common\\ColumnSettings.json";
+
 interface TableProps {
   data: any;
   iModelConn: any;
@@ -28,71 +22,25 @@ export class Table extends React.Component<TableProps, TableState> {
     super(props);
   }
 
-  public onColumnViewChange(changedColumn: string, action: string) {
-    console.log(changedColumn, "   ", action);
-    /*let jsonObject:any = [];
-      electronFs.readFile(path.join(app.getAppPath(), columnSettingPath), (error: Error | null, data: any) => {
-        if (error) {
-          // tslint:disable-next-line:no-console
-          console.log("error " + error);
-        }
-        console.log(data);
-        if (data && data.length > 0) {
-          jsonObject = JSON.stringify(data);
-          console.log(jsonObject);
-        }
-      });
-    if (action == "remove") {
-
-      jsonObject.push(changedColumn);
-      console.log(jsonObject);
-
-    } else if (action == "add") {
-      if(jsonObject) {
-        jsonObject = jsonObject.filter((col: any) => col!= changedColumn);
-        console.log(jsonObject);
-      }
-
+  public customBodyRendererColumn = (value: any, tableMeta: any, updateValue: any) => {
+    console.log("Value: ",value, " TableMeta: ",tableMeta, " UpdatedValue: ", updateValue);
+    if (value != "" || value) {
+      return (
+        <div style = {{backgroundColor:"#B0BEC5", borderRadius: 5, padding: 5, width:"100%"}}>
+          {value}
+        </div>
+      );
     }
-
-    electronFs.writeFileSync(path.join(app.getAppPath(), columnSettingPath), JSON.stringify(jsonObject));*/
-
-  }
-
-  public setColumnDisplay(columns: any){
-    console.log(app.getAppPath(), columnSettingPath);
-      let jsonObject:any = [];
-      electronFs.readFile(path.join(app.getAppPath(), columnSettingPath), (error: Error | null, data: any) => {
-        if (error) {
-          // tslint:disable-next-line:no-console
-          console.log("error " + error);
-        }
-        console.log(data);
-        if (data && data.length > 0) {
-          jsonObject = JSON.stringify(data);
-          console.log(jsonObject);
-        }
-
-      });
-      if(jsonObject.length != 0) {
-        let options = {display: false};
-        jsonObject = jsonObject.map((col: any) => {
-          if(columns.filter((c: any) => c.name == col).length > 0 ){
-            console.log(col);
-            columns.filter((c: any) => c.name == col)[0]["options"] = options;
-          }
-
-        });
-      }
-      return columns;
+    return(
+      <></>
+    );
   }
 
   public showMUITable() {
 
     if (this.state && this.state.elements) {
       let columns = (Object.keys(this.state.elements[0]).map((item: any) => {
-        console.log(item);
-        let col;
+        let col: any;
         if (String(item) == "geometry" || String(item) == "geometryStream"|| String(item) == "bBoxHigh" || String(item) == "bBoxLow") {
 
           col =  {name: stringManipulator(item.toUpperCase()), options:{display:false} };
@@ -100,21 +48,23 @@ export class Table extends React.Component<TableProps, TableState> {
           col = {name: stringManipulator(item.toUpperCase()), options:{display:true} };
         }
 
+        if (String(item) == "mANUFACTURER_ADDRESS" ) {
+          col["options"] = Object.assign({customBodyRender:this.customBodyRendererColumn},col["options"]);
+        }
+
         return col;
 
       }));
       const rows = this.state.elements.map((item: any) => (Object.values(item).map((i: any) => {
         if (typeof i === "object" && i !== null) {
-          return String(Object.values(i).map( (rowItem: any) => (String(rowItem).replace(/,/g, ' ')  )));
+          return String(Object.values(i).map( (rowItem: any) => (String(rowItem).replace(/,/g, ' ')  ) ));
+        }else if (typeof i == "number") {
+          return String(truncateDecimals(i,2));
         }
 
         return String(i);
 
       })) );
-
-      //columns = this.setColumnDisplay(columns);
-      //console.log("Columns 1 ",columns);
-      //console.log("Rows 1 ",rows);
 
       const data = [
          ...rows
@@ -128,16 +78,18 @@ export class Table extends React.Component<TableProps, TableState> {
         selectableRows: "none" as SelectableRows,
         selectableRowsHeader: false,
         selectableRowsOnClick: false,
-        downloadOptions: {filename: "EquipmentList.csv", title:"Dialog", separator: ","},
-        onColumnViewChange:this.onColumnViewChange
+        downloadOptions: {filename: "EquipmentList.csv", title:"Dialog", separator: ","}
+
       };
 
-      return (<MUIDataTable
-        title={"Equipments List"}
-        data={data}
-        columns={columns as any}
-        options={options}
-      />);
+      return (
+          <MUIDataTable
+            title={messages.tableTitle}
+            data={data}
+            columns={columns as any}
+            options={options}
+          />
+      );
     }
     return <></>;
   }
@@ -145,38 +97,29 @@ export class Table extends React.Component<TableProps, TableState> {
   public componentDidMount() {
     // Doing this becasue different elements have different properties, this distorted the data table.
     const unique = [...new Set(...this.props.data.map((element: any) => (Object.keys(element) )))];
-      //console.log("Unique Columns ",unique);
 
       let properties:any ;
       let dataTable = this.props.data;
       const elems = dataTable.map((element: any) => {
-        //element["geometry"] = "";
-        //element["geometryStream"] = "";
 
         properties = unique.filter((prop: any)=>  !Object.keys(element).includes(prop));
-        //console.log("Diff Properties  ", properties);
 
           properties.map((prop: any) => {
-            //console.log("Element: ",element);
             element[prop] = "";
           });
           let orderedElement:any ={};
           Object.keys(element).sort().forEach((key: any) => {
-            //console.log(element[key]);
             orderedElement[key] = element[key];
           });
-          //console.log(orderedElement);
           return orderedElement;
       });
-      //console.log(elems);
-      //console.log(dataTable);
+
       this.setState({elements: elems});
   }
 
   public getRows() {
     let rows: any;
     let data: any = [];
-    // tslint:disable-next-line:no-console
     console.log(data);
 
     if (this.state && this.state.elements) {
@@ -216,8 +159,6 @@ export class Table extends React.Component<TableProps, TableState> {
   public getColumns() {
     let cols: any;
     let data: any = [];
-    // tslint:disable-next-line:no-console
-    console.log(data);
 
     if (this.state && this.state.elements) {
       data = this.state.elements[0];
@@ -226,7 +167,6 @@ export class Table extends React.Component<TableProps, TableState> {
     } else {
       cols = <></>;
     }
-    //console.log(cols);
     return cols;
   }
 
@@ -275,29 +215,14 @@ export class Table extends React.Component<TableProps, TableState> {
     }
   }
 
-  public changeValue(){
-    if (this.state && this.state.elements) {
-
-      let d = this.state.elements;
-      console.log(d[0][Object.keys(d[0])[0]]);
-      d[0][Object.keys(d[0])[0]] = "Hello";
-      console.log(d[0][Object.keys(d[0])[0]]);
-      this.setState({elements:d});
-    }
-  }
-
   public render() {
-
     return (
       <>
       {this.showMUITable()}
-
       </>
-
     );
   }
 }
-
 
 export function stringManipulator(propertyNameBefore: any) {
   var propertyNameAfter: string = '';
@@ -314,3 +239,11 @@ export function stringManipulator(propertyNameBefore: any) {
   }
   return propertyNameAfter;
 }
+
+export function truncateDecimals(number: number, digits: number) {
+  var multiplier = Math.pow(10, digits),
+      adjustedNum = number * multiplier,
+      truncatedNum = Math[adjustedNum < 0 ? 'ceil' : 'floor'](adjustedNum);
+
+  return truncatedNum / multiplier;
+};

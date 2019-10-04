@@ -26,8 +26,8 @@ export default function initialize(rpcs: RpcInterfaceDefinition[]) {
     // tslint:disable-line:no-floating-promises
 
     await manager.initialize({
-      width: 980,
-      height: 600,
+      width: messages.winWidth,
+      height: messages.winHeight,
       webPreferences: {
         experimentalFeatures: true // Needed for CSS Grid support
       },
