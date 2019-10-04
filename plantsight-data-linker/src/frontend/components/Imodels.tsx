@@ -212,25 +212,15 @@ export class Page extends React.Component<PageProps, PageState> {
 
     for (let i = 0; i < equipments.length; ++i) {
       let manufacturer = equipments[i]["mANUFACTURER"];
-      //console.log("Manufacturer: ", manufacturer);
       const className = equipments[i]["className"].split('.')[1];
       equipments[i]["className"] = stringManipulator( className);
-      console.log( equipments[i]["className"]);
+
       let manAddr = qResult != undefined ? qResult.find((item: any) => item.Name == manufacturer) : undefined;
-      console.log(equipments[i]);
       if (manAddr) { equipments[i]["mANUFACTURER_ADDRESS"] = manAddr.Address; }
       else {equipments[i]["mANUFACTURER_ADDRESS"] = ""};
-
     }
 
     this.setState({ elements: equipments });
-
-    //elementProps = await iModel.query("SELECT * FROM meta.ECPropertyDef");
-    //for await (const item of elementProps) {
-      //console.log(item);
-      //console.log(item["mANUFACTURER"]);
-      //console.log(item);
-    //}
 
     if (iModel) await iModel.close();
   }

@@ -12,3 +12,6 @@ export const configDialogDefault = "Continue with current configuration";
 export const configDialogSelect = "Select new configuration file";
 export const configDialogExit = "Exit";
 export const configDialogNoDefault = "No current project/iModel selected";
+export const winHeight = 600;
+export const winWidth = 980;
+export const tableTitle = "Equipments List";
