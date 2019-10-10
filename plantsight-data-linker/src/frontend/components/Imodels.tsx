@@ -1,5 +1,5 @@
 import * as React from "react";
-import { AccessToken, ConnectClient, IModelQuery } from "@bentley/imodeljs-clients";
+import { AccessToken, ConnectClient } from "@bentley/imodeljs-clients";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
   AuthorizedFrontendRequestContext,
@@ -7,7 +7,6 @@ import {
 } from "@bentley/imodeljs-frontend";
 import { Table, stringManipulator } from "./Table";
 import { ipcRenderer, Event } from "electron";
-import {IModelApp} from "@bentley/imodeljs-frontend";
 import { Spinner, SpinnerSize } from "@bentley/ui-core";
 
 interface PageState {
@@ -23,8 +22,7 @@ interface PageState {
 
 interface PageProps {
   token: AccessToken;
-  projectName: any;
-  imodelName: any;
+  displayColumns:any;
 }
 export class Page extends React.Component<PageProps, PageState> {
   public userOwnedIds: any;
@@ -34,56 +32,32 @@ export class Page extends React.Component<PageProps, PageState> {
     super(props);
     // this.handleChangeProjectId.bind(this);
     // this.handleSubmit.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
     this.oniModelSelectChange = this.oniModelSelectChange.bind(this);
   }
 
-  public handleSubmit(e: any) {
-    e.preventDefault();
-    this.fetchImodels();
-  }
+  public async  componentDidMount() {
 
-  private async getIModelInfo(projectName: string, imodelName: string): Promise<{ projectId: string, imodelId: string }> {
-    // Requests a context and connection client to access the iModelHub, and retrieves a list of projects
     const requestContext = await AuthorizedFrontendRequestContext.create();
     const connectClient = new ConnectClient();
 
     // Try catch block gets a project, if the project doesnt exist, throw an alert
-    let currentProject: any;
+    let currentProjects: any;
     try {
-      currentProject = await connectClient.getProject(requestContext, { $filter: `Name+eq+'${projectName}'` });
+      currentProjects = await  connectClient.getProjects(requestContext, {isMRU: true});
+      this.setState({projects: currentProjects});
+      // tslint:disable-next-line:no-console
+      console.log(currentProjects);
     } catch (e) {
       // alert(`Project with name "${projectName}" does not exist.`);
-      throw new Error(`Project with name "${projectName}" does not exist.`);
+      throw new Error(`Project with name does not exist.`);
     }
 
-    // Creates a new iModelQuery to connect to the database, and queries with specified context and project
-    // Then resolves that promise and sends that information to constiuent components that need the data
-    const imodelQuery = new IModelQuery();
-    imodelQuery.byName(imodelName);
-
-    // Gets the specific imodel, returns the project and imodel wsdId's to the functions handling initial startup/rendering
-    const imodels = await IModelApp.iModelClient.iModels.get(requestContext, currentProject.wsgId, imodelQuery);
-    if (imodels.length === 0) {
-      // alert(`iModel with name "${imodelName}" does not exist in project "${projectName}".`);
-      throw new Error(`iModel with name "${imodelName}" does not exist in project "${projectName}".`);
-    }
-
-    this.setState({projectId: currentProject.wsgId, iModelId:  imodels[0].wsgId}, async () => {
-      await this.connectWithDb(currentProject.wsgId, imodels[0].wsgId);
-    });
-    // Returns
-    return { projectId: currentProject.wsgId, imodelId: imodels[0].wsgId };
   }
 
-  public async componentWillMount () {
-    this.getIModelInfo(this.props.projectName, this.props.imodelName);
-  }
-
-  public fetchImodels() {
+  public fetchImodels(pid: any) {
     const http =
       "https://imodelhubapi.bentley.com/sv1.1/Repositories/Context--" +
-      this.state.projectId +
+      pid +
       "/ContextScope/iModel";
 
     // FETCHING IMODELS FROM THE PORJECT
@@ -147,11 +121,67 @@ export class Page extends React.Component<PageProps, PageState> {
 
   public onProjectSelectChange(e: any) {
     e.preventDefault();
+    const pId = e.currentTarget.value;
     // tslint:disable-next-line:no-console
     console.log(e.currentTarget.value);
-    this.setState({ projectId: e.currentTarget.value }, () => {
-      this.fetchImodels();
-    });
+    this.fetchImodels(pId);
+    this.setState({ projectId: e.currentTarget.value })
+  }
+
+  public getProjectUI() {
+    if (this.state && this.state.projects) {
+      return (
+        <div className="form-group">
+          <label
+            style={{ marginRight: 20 }}
+            className="font-weight-bold"
+            htmlFor="projectList"
+          >
+            Project List
+          </label>
+          <select
+            onChange={e => this.onProjectSelectChange(e)}
+            id="so"
+            style={{ width: 350 }}
+            className="custom-select custom-select-sm "
+          >
+            {/* <option value="None">None</option> */}
+            <option style={{ backgroundColor: "#00904444" }}></option>
+            {this.getProjectsList()}
+          </select>
+        </div>
+      );
+    }
+
+    return <></>;
+  }
+
+  public getImodelsUI() {
+    if (this.state && this.state.iModels) {
+      return (
+        <div className="form-group">
+          <label
+            style={{ marginRight: 20 }}
+            className="font-weight-bold"
+            htmlFor="projectList"
+          >
+            Imodels List
+          </label>
+          <select
+            onChange={e => this.oniModelSelectChange(e)}
+            id="so"
+            style={{ width: 350 }}
+            className="custom-select custom-select-sm "
+          >
+            {/* <option value="None">None</option> */}
+            <option style={{ backgroundColor: "#00904444" }}></option>
+            {this.getIModelsList()}
+          </select>
+        </div>
+      );
+    }
+
+    return <></>;
   }
 
 
@@ -226,10 +256,11 @@ export class Page extends React.Component<PageProps, PageState> {
   }
 
   public async oniModelSelectChange(e: any) {
-    const v = e.target.value;
+    const imodelID = e.target.value;
 
     if (this.state && this.state.iModels) {
-      this.setState({ selectediModelId: v }, async () => {
+      await this.connectWithDb(this.state.projectId, imodelID);
+      this.setState({ selectediModelId: imodelID }, async () => {
 
         if (this.state && this.state.projectId) {
         }
@@ -241,7 +272,7 @@ export class Page extends React.Component<PageProps, PageState> {
     if (this.state && this.state.elements && this.state.iModelConnection && this.state.databaseResult) {
       return (
         <Table
-          data={this.state.elements} iModelConn={this.state.iModelConnection} dbResult={this.state.databaseResult}
+          data={this.state.elements} iModelConn={this.state.iModelConnection} dbResult={this.state.databaseResult} displayColumns={this.props.displayColumns}
         />
       );
     }
@@ -249,7 +280,7 @@ export class Page extends React.Component<PageProps, PageState> {
   }
 
   public showSpinner() {
-    if (!this.state || !this.state.elements){
+    if (!this.state || !this.state.elements || !this.state.projectId || !!this.state.selectediModelId){
       return <span className="open-imodel"><Spinner size={SpinnerSize.Large} /></span>;
     }
     return <></>;
@@ -258,7 +289,9 @@ export class Page extends React.Component<PageProps, PageState> {
   public render() {
     return (
         <>
-        {this.showSpinner()}
+
+        {this.getProjectUI()}
+        {this.getImodelsUI()}
         {this.renderTable()}
         </>
     );

@@ -4,12 +4,18 @@ import "./Table.css";
 import * as _ from "lodash";
 import MUIDataTable, {SelectableRows} from "mui-datatables";
 import * as messages from "../../backend/electron/messages";
+import {
+  createMuiTheme,
+  MuiThemeProvider
+} from "@material-ui/core";
+import { ThemeOptions } from "@material-ui/core/styles/createMuiTheme";
 
 
 interface TableProps {
   data: any;
   iModelConn: any;
   dbResult: any;
+  displayColumns:any;
 }
 
 interface TableState {
@@ -26,7 +32,7 @@ export class Table extends React.Component<TableProps, TableState> {
     console.log("Value: ",value, " TableMeta: ",tableMeta, " UpdatedValue: ", updateValue);
     if (value != "" || value) {
       return (
-        <div style = {{backgroundColor:"#B0BEC5", borderRadius: 5, padding: 5, width:"100%"}}>
+        <div className="ManufacturerColumn" style = {{backgroundColor:"#ecf0f1", borderRadius: 3, width:"100%",}}>
           {value}
         </div>
       );
@@ -36,12 +42,62 @@ export class Table extends React.Component<TableProps, TableState> {
     );
   }
 
+
+   materialTheme =() => {
+     return createMuiTheme({
+      overrides: {
+        MUIDataTable:{
+          tableRoot:{
+            borderRight:"2px solid #34495e",
+            borderLeft:"2px solid #34495e",
+            borderTop:"2px solid #34495e",
+            borderBottom:"2px solid #34495e",
+            pointerEvents: "none",
+
+          }
+        },
+
+        MUIDataTableHeadCell: {
+          fixedHeader: {
+            fontSize:12,
+            padding: "5px 10px 5px 10px",
+            fontFamily:"Arial, Verdana, Sans-serif",
+            marginBottom:10,
+            marginRight:10,
+            borderRight:"1px solid grey",
+            borderLeft:"1px solid grey",
+            borderTop:"1px solid grey",
+            backgroundColor:"#ecf0f1"
+          }
+        },
+        MUIDataTableBodyCell: {
+          root: {
+            padding: "5px",
+            fontSize:10,
+            borderRight:"1px solid grey",
+            borderLeft:"1px solid grey",
+            borderTop:"1px solid grey",
+            borderBottom:"1px solid grey",
+            textAlign:"center",
+          },
+
+        }
+      }
+    } as ThemeOptions);
+  }
+
   public showMUITable() {
 
     if (this.state && this.state.elements) {
       let columns = (Object.keys(this.state.elements[0]).map((item: any) => {
+        const colVals = this.state.elements.map((element:any) => element[item]);
+        console.log(colVals);
+        //const isColEmpty = colVals.every((val:any) => String(val) == "" );
         let col: any;
-        if (String(item) == "geometry" || String(item) == "geometryStream"|| String(item) == "bBoxHigh" || String(item) == "bBoxLow") {
+        /*if (isColEmpty) {
+          col =  {name: stringManipulator(item.toUpperCase()), options:{display:false} };
+        }
+        else*/ if (String(item) == "geometry" || String(item) == "geometryStream"|| String(item) == "bBoxHigh" || String(item) == "bBoxLow") {
 
           col =  {name: stringManipulator(item.toUpperCase()), options:{display:false} };
         }else {
@@ -51,6 +107,8 @@ export class Table extends React.Component<TableProps, TableState> {
         if (String(item) == "mANUFACTURER_ADDRESS" ) {
           col["options"] = Object.assign({customBodyRender:this.customBodyRendererColumn},col["options"]);
         }
+
+
 
         return col;
 
@@ -83,12 +141,15 @@ export class Table extends React.Component<TableProps, TableState> {
       };
 
       return (
+        <MuiThemeProvider theme={this.materialTheme()}>
           <MUIDataTable
             title={messages.tableTitle}
             data={data}
             columns={columns as any}
             options={options}
           />
+        </MuiThemeProvider>
+
       );
     }
     return <></>;
@@ -108,13 +169,28 @@ export class Table extends React.Component<TableProps, TableState> {
             element[prop] = "";
           });
           let orderedElement:any ={};
-          Object.keys(element).sort().forEach((key: any) => {
+          this.getColumnNamesForDisplay(Object.keys(element)).forEach((key: any) => {
             orderedElement[key] = element[key];
           });
           return orderedElement;
       });
 
       this.setState({elements: elems});
+  }
+
+  public getColumnNamesForDisplay(keys: any){
+    const colsFromFile = this.props.displayColumns;
+    const cKeys = keys.map((item:any) => item.toLowerCase().replace(/\s/g, '').replace(/_/g, ''))
+    const indices =  colsFromFile.filter((v:any) => {
+      let ind = cKeys.findIndex( (value:any) => v == value )
+      if( ind != -1 ) { return true;} return false;
+    }).map((value:any) => {
+      return cKeys.findIndex((v:any) => v == value)
+    })
+    const cols = indices.map((ind:any) => keys[ind]);
+    console.log(cols);
+    return cols;
+
   }
 
   public getRows() {
