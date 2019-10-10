@@ -13,15 +13,19 @@ Copyright © 2019 Bentley Systems, Incorporated. All rights reserved.
 2. Query PlantSight components
 3. Display queried PlantSight components
 4. Connect to local Vender database
-5. Select a PlantSight queried component 
-    * Show selected PlantSight queried component properties    
+5. Select a PlantSight queried component
+    * Show selected PlantSight queried component properties
 6. Select Vender record
-7. Link PlantSight queried component and Vender selected record 
+7. Link PlantSight queried component and Vender selected record
     * Store PlantSight queried component ID and Vender selected record ID in Vender database
 8. Select PlantSight queried component and if there is a related Vender record:
     * Display queried component properties and Vender data
 
-## Testing
+## Installation
+1. Run this command on terminal: `npm run installAll`
+
+## Build and Execute
+1. Run this command on terminal: `npm run go`
 
 ### Unit tests
 
