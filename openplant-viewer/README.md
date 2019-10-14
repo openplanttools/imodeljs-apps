@@ -1,4 +1,4 @@
-# **Plant Viewer**
+# **OpenPlant Viewer**
 
 [[_TOC_]]
 
