@@ -16,6 +16,7 @@ steps:
   displayName: 'Install Node.js'
 
 - script: |
+    cd openplant-extensibility-sample
     npm run installAll
     npm run build
   displayName: 'npm install and build'
