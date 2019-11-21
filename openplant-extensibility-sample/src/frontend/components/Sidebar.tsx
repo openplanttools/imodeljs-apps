@@ -15,11 +15,15 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
+import RadioIconChecked from '@material-ui/icons/RadioButtonCheckedRounded';
+import RadioIconUnchecked from '@material-ui/icons/RadioButtonUncheckedRounded';
 import { Page } from "./Imodels";
+import "./Sidebar.css";
+import * as Settings from "../../common/Settings.json"
 
-const drawerWidth = 200;
+const drawerWidth = 280;
+export const classNames =  Settings.classNames;
+export let sidebarList: string[];
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -88,15 +92,53 @@ export default function MiniDrawer(props: any) {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-
-  const token = props.token; const displayColumns = props.displayColumns;
+  const [state,setClass] = React.useState({schemaClass:classNames[0], checkedIconIndex:0});
+  const [sidebarListLabels, setSidebarLabels] = React.useState([""]);
+  const displayData = props.displayData; const imodelConnection = props.imodelConnection;
 
   const handleDrawerOpen = () => {
     setOpen(true);
   };
 
+  const getSidebarListLabels = async () => {
+    let displayLabels:any = [];
+    let singleQuotedclassNames = classNames.map(s => `'${s}'`).join(', ');
+    let query = `select distinct p.name, p.displaylabel from meta.ecclassdef p where p.name in (${singleQuotedclassNames})
+                  and p.schema.id=(select p.ecinstanceid from meta.ecschemadef p where p.name='${Settings.schemaName}')`;
+    console.log(query);
+    let elementProps = await imodelConnection.query(query );
+    for await (const item of elementProps) {
+      displayLabels.push(item);
+    }
+    console.log("DisplayLabels ", displayLabels);
+    return classNames.map((cName:any) => {
+      let label = displayLabels.filter( (dLabel: any) => dLabel.name == cName );
+      if (label.length > 0 ){
+        return label[0].displayLabel;
+      }
+      return "";
+
+    });
+  };
+
+  React.useEffect(() => {
+    console.log(sidebarListLabels.length);
+    if (sidebarListLabels.length <= 1){
+      getSidebarListLabels().then((dLabels: string[]) => {
+        console.log( dLabels);
+        sidebarList = dLabels;
+        setSidebarLabels(dLabels);
+      });
+    }
+  });
+
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+
+  const handleOnclickList = (index:any) => {
+    console.log(classNames[index]);
+    setClass({schemaClass:classNames[index], checkedIconIndex:index});
   };
 
   return (
@@ -122,7 +164,7 @@ export default function MiniDrawer(props: any) {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
-            PlantSight DataLinker
+          OpenPlant Extensibility Sample
           </Typography>
         </Toolbar>
       </AppBar>
@@ -147,19 +189,24 @@ export default function MiniDrawer(props: any) {
           </IconButton>
         </div>
         <Divider />
-        <List style={{marginTop:10}}>
-          {['Equipment List', 'Pipeline List', 'Valve List', 'Instrument List'].map((text, index) => (
-            <ListItem button key={text} >
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+        <List style={{marginTop:50}}>
+          {sidebarListLabels.map((text: string, index: number) => (
+            <ListItem button key={text} onClick={() => handleOnclickList(index)}>
+              <ListItemIcon>{index  === state.checkedIconIndex ? <RadioIconChecked /> : <RadioIconUnchecked />}</ListItemIcon>
               <ListItemText primary={text} />
             </ListItem>
           ))}
         </List>
         <Divider />
       </Drawer>
-        <div style={{padding: "43px 2px 2px 2px"}}>
-          <Page token={token} displayColumns={displayColumns} />
-        </div>
+      <div style={{padding: "43px 2px 2px 2px"}}>
+        {console.log(state.schemaClass)}
+        <Page
+        key = {state.schemaClass}
+        displayData={displayData}
+        className={state.schemaClass}
+        imodelConnection = {imodelConnection} />
+      </div>
     </div>
   );
 }

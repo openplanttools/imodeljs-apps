@@ -2,22 +2,63 @@
  * Copyright (c) 2019 Bentley Systems, Incorporated. All rights reserved.
  * Licensed under the MIT License. See LICENSE.md in the project root for license terms.
  *--------------------------------------------------------------------------------------------*/
-import * as path from "path";
 import { app as electron, ipcMain, Event, app } from "electron";
 import { Logger } from "@bentley/bentleyjs-core";
 import { IModelHost } from "@bentley/imodeljs-backend";
-import { Presentation } from "@bentley/presentation-backend";
 import getSupportedRpcs from "../common/rpcs";
 import { RpcInterfaceDefinition } from "@bentley/imodeljs-common";
 import setupEnv from "../common/configuration";
-import {readData} from "./electron/main";
+import {readSettings, readData, readEquipmentCols} from "./electron/main";
+import { SqlConnection } from "./Database";
 
-ipcMain.on("readConfig", (event: Event, arg: any) => {
+const globals:any = global;
+
+ipcMain.on("readSettings", (event: Event, arg: any) => {
   if (event) {
     console.log(arg);
   }
-  readData(event, arg);
-  });
+  readSettings(event, arg);
+});
+
+ipcMain.on("readConfig", (event: Event, arg: any) => {
+    if (event) {
+      console.log(arg);
+    }
+    readData(event, arg);
+});
+
+ipcMain.on("readEquipmentCols", (event: Event, arg: any) => {
+    if (event) {
+      console.log(arg);
+    }
+    readEquipmentCols(event);
+});
+
+ipcMain.on("insertIntoTable", async (event: Event, arg: any) => {
+  if (event) {
+    console.log(arg);
+  }
+
+  let conn: SqlConnection;
+  const dbName = "Vendor-iModelLink.bim";
+  console.log( globals["newSqliteConnection"] );
+
+  if ( globals["newSqliteConnection"] ) {
+    console.log( "SAVED CONN  " );
+    conn = globals["newSqlConnection"];
+  } else {
+    console.log("NEW CONN: ", globals["vendorDbPathSqlite"] + dbName, "  " );
+    conn = new SqlConnection(globals["vendorDbPathSqlite"] + dbName);
+    globals["newSqliteConnection"] = conn;
+  }
+
+  if (arg.length > 0 && conn){
+    conn.createVendorComponentTable();
+    conn.insert(arg.toString());
+    console.log("Inserted Data");
+  }
+});
+
 
 // setup environment
 setupEnv();
@@ -27,13 +68,6 @@ Logger.initializeToConsole();
 
 // initialize imodeljs-backend
 IModelHost.startup();
-
-// initialize presentation-backend
-Presentation.initialize({
-  // Specify location of where application's presentation rule sets are located.
-  // May be omitted if application doesn't have any presentation rules.
-  rulesetDirectories: [path.join("assets", "presentation_rules")]
-});
 
 // invoke platform-specific initialization
 // tslint:disable-next-line:no-floating-promises
@@ -52,7 +86,7 @@ Presentation.initialize({
 
   ipcMain.on("executeQuery", async (event: Event, arg: any) => {
     console.log(event);
-    var connection = (await import("./electron/main")).conn;
+    var connection = globals["vendorDbSqliteConnection"];
     console.log(connection);
     let result: any = "";
     await connection.execute(arg).then((data: any) => {
@@ -65,9 +99,14 @@ Presentation.initialize({
 
   electron.on("before-quit", async () => {
     console.log("QUitting the app");
-    var connection = (await import("./electron/main")).conn;
-    console.log(connection);
-    connection.close();
+    if ( globals["vendorDbSqliteConnection"] ) {
+      globals["vendorDbSqliteConnection"].close();
+      console.log( globals["vendorDbSqliteConnection"] );
+    }
+    if ( globals["vendorDbSqliteConnection"] ) {
+      globals["newSqliteConnection"].close();
+      console.log( globals["newSqliteConnection"] );
+    }
     app.exit();
   });
 })();
