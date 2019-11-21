@@ -4,9 +4,8 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { Id64String } from "@bentley/bentleyjs-core";
-import { AccessToken, Config } from "@bentley/imodeljs-clients";
-import { IModelConnection, FrontendRequestContext } from "@bentley/imodeljs-frontend";
-import { Presentation, SelectionChangeEventArgs, ISelectionProvider } from "@bentley/presentation-frontend";
+import { AccessToken, Config, IModelQuery, ConnectClient } from "@bentley/imodeljs-clients";
+import { IModelConnection, FrontendRequestContext, AuthorizedFrontendRequestContext, IModelApp } from "@bentley/imodeljs-frontend";
 import { Spinner, SpinnerSize } from "@bentley/ui-core";
 
 import { SignIn } from "@bentley/ui-components";
@@ -27,11 +26,11 @@ export interface AppState {
     isLoading?: boolean;
   };
   offlineIModel: boolean;
-  imodel?: IModelConnection;
+  imodelConnection?: IModelConnection;
   viewDefinitionId?: Id64String;
   projectName?: any;
   iModelName?: any;
-  displayColumns:any;
+  displayData:any;
 }
 
 /** A component the renders the whole application UI */
@@ -46,34 +45,42 @@ export default class App extends React.Component<{}, AppState> {
         accessToken: undefined,
       },
       offlineIModel: false,
-      displayColumns:[]
+      displayData:[]
     };
   }
 
-  public async componentWillMount() {
-    await new Promise(resolve => {
-      ipcRenderer.send("readConfig", "project");
-      ipcRenderer.on("readConfigResults", (event: Event, configObject: any) => {
-        console.log("Recieved ReadConfigResults",event);
-        const cols =  configObject["properties"]["DisplayProperties"].filter((v:any) => {
+  private async getIModelInfo(projectName: string, imodelName: string): Promise<{ projectId: string, imodelId: string }> {
+    // Requests a context and connection client to access the iModelHub, and retrieves a list of projects
+    const requestContext = await AuthorizedFrontendRequestContext.create();
+    const connectClient = new ConnectClient();
 
-          if( v.DisplayStatus != "Hide" ) { return true;} return false;
-        }).map((value:any) => {
-          return value.PropertyName.toLowerCase().replace(/\s/g, '').replace(/_/g, '')
-        })
+    // Try catch block gets a project, if the project doesnt exist, throw an alert
+    let currentProject: any;
+    try {
+      currentProject = await connectClient.getProject(requestContext, { $filter: `Name+eq+'${projectName}'` });
+    } catch (e) {
+      // alert(`Project with name "${projectName}" does not exist.`);
+      throw new Error(`Project with name "${projectName}" does not exist.`);
+    }
 
-        this.setState(() => ({
+    // Creates a new iModelQuery to connect to the database, and queries with specified context and project
+    // Then resolves that promise and sends that information to constiuent components that need the data
+    const imodelQuery = new IModelQuery();
+    imodelQuery.byName(imodelName);
 
-          displayColumns: cols
-        }), ()=>{console.log(this.state.displayColumns);});
-        resolve(configObject);
-      });
-    });
+    // Gets the specific imodel, returns the project and imodel wsdId's to the functions handling initial startup/rendering
+    const imodels = await IModelApp.iModelClient.iModels.get(requestContext, currentProject.wsgId, imodelQuery);
+    if (imodels.length === 0) {
+      // alert(`iModel with name "${imodelName}" does not exist in project "${projectName}".`);
+      throw new Error(`iModel with name "${imodelName}" does not exist in project "${projectName}".`);
+    }
+
+    //this.setState({projectId: currentProject.wsgId, iModelId:  imodels[0].wsgId});
+    // Returns
+    return { projectId: currentProject.wsgId, imodelId: imodels[0].wsgId };
   }
 
-  public componentDidMount() {
-    // subscribe for unified selection changes
-    Presentation.selection.selectionChange.addListener(this._onSelectionChanged);
+  public async componentDidMount() {
 
     // Initialize authorization state, and add listener to changes
     SimpleViewerApp.oidcClient.onUserStateChanged.addListener(this._onUserStateChanged);
@@ -85,35 +92,39 @@ export default class App extends React.Component<{}, AppState> {
           this.setState((prev) => ({ user: { ...prev.user, accessToken, isLoading: false } }));
         });
     }
+    let config:any;
+
+      ipcRenderer.send("readConfig", "Config");
+      ipcRenderer.on("readConfigResults", (event: Event, configObject: any) => {
+        console.log("Recieved ReadConfigResults",event);
+        config = configObject;
+      });
+
+      ipcRenderer.send("readSettings", "Settings");
+
+      ipcRenderer.on("readSettingResults", async (event: Event, configObject: any) => {
+        console.log("Recieved ReadConfigResults",event);
+        const cols =  configObject["properties"]["DisplayProperties"].filter((v:any) => {
+
+          if( v.DisplayStatus != "Hide" ) { return true;} return false;
+        }).map((value:any) => {
+          return value.PropertyName.toLowerCase().replace(/\s/g, '').replace(/_/g, '')
+        })
+        const info = await this.getIModelInfo(config.project_name, config.imodel_name);
+        let imodel: IModelConnection | undefined = await IModelConnection.open(info.projectId, info.imodelId);
+        console.log("APP CONN: ", imodel);
+        this.setState(() => ({
+          imodelConnection:imodel,
+          projectName: config.project_name,
+          iModelName: config.imodel_name,
+          displayData: cols
+        }), ()=>{console.log(this.state.displayData);});
+      });
   }
 
   public componentWillUnmount() {
-    // unsubscribe from unified selection changes
-    Presentation.selection.selectionChange.removeListener(this._onSelectionChanged);
     // unsubscribe from user state changes
     SimpleViewerApp.oidcClient.onUserStateChanged.removeListener(this._onUserStateChanged);
-  }
-
-  private _onSelectionChanged = (evt: SelectionChangeEventArgs, selectionProvider: ISelectionProvider) => {
-    const selection = selectionProvider.getSelection(evt.imodel, evt.level);
-    if (selection.isEmpty) {
-      console.log("========== Selection cleared ==========");
-    } else {
-      console.log("========== Selection change ===========");
-      if (selection.instanceKeys.size !== 0) {
-        // log all selected ECInstance ids grouped by ECClass name
-        console.log("ECInstances:");
-        selection.instanceKeys.forEach((ids, ecclass) => {
-          console.log(`${ecclass}: [${[...ids].join(",")}]`);
-        });
-      }
-      if (selection.nodeKeys.size !== 0) {
-        // log all selected node keys
-        console.log("Nodes:");
-        selection.nodeKeys.forEach((key) => console.log(JSON.stringify(key)));
-      }
-      console.log("=======================================");
-    }
   }
 
   private _onRegister = () => {
@@ -151,19 +162,17 @@ export default class App extends React.Component<{}, AppState> {
       // if user doesn't have and access token, show sign in page
       console.log("Inside Sign in");
       ui = (<SignIn onSignIn={this._onStartSignin} onRegister={this._onRegister} onOffline={this._onOffline} />);
-    } else if (this.state.user.accessToken && this.state.displayColumns) {
+    } else if (this.state.user.accessToken && this.state.displayData && this.state.imodelConnection) {
       // if we don't have an imodel / view definition id - render a button that initiates imodel open
-        ui = (<Sidebar displayColumns={this.state.displayColumns} token={this.state.user.accessToken} />);
+        ui = (<Sidebar displayData={this.state.displayData} imodelConnection={this.state.imodelConnection} />);
+    }else {
+      ui = (<span className="open-imodel"><Spinner size={SpinnerSize.Large} /></span>);
     }
     if (this.state.user.accessToken)
       console.log(this.state.user.accessToken);
     // render the app
     return (
-      <>
         <>{ui}</>
-
-      </>
-
     );
   }
 }

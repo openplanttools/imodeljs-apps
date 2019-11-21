@@ -44,16 +44,25 @@ export class SqlConnection {
     this.connect(path);
   }
 
-  public connect(path: any): boolean | Error {
+  public connect(path: string): boolean | Error {
     const db = new sqlite3.Database(
-      path,
-      sqlite3.OPEN_READONLY
+      path
+
     );
     if (!db) {
       return (new Error(`Unable to connect to ${path}`));
     }
     this.db = db;
     return true;
+  }
+
+  public insert(values: string) {
+
+    this.db.run("INSERT OR IGNORE INTO Vendor_Components( ComponentId, VendorId ) VALUES " + values, (err: any) => {
+      if (err) {
+        return console.log(err.message);
+      }
+    });
   }
 
   public execute(sql: any) {
@@ -137,6 +146,20 @@ export class SqlConnection {
     });
 
     return schema;
+  }
+
+  public createVendorComponentTable(){
+    const createTable = `
+                        CREATE TABLE IF NOT EXISTS "Vendor_Components" (
+                          "VendorId"	INTEGER,
+                          "ComponentId"	INTEGER,
+                          PRIMARY KEY("VendorId","ComponentId")
+                        );`
+    this.db.run(createTable, (err: any) => {
+      if (err) {
+        return console.log(err.message);
+      }
+    });
   }
 
   public async GetColNames(tableName: any) {

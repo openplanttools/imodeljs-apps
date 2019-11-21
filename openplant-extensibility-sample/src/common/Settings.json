@@ -1,0 +1,5 @@
+{
+  "classNames":["EQUIPMENT","PIPING_NETWORK_SYSTEM", "VALVE", "INSTRUMENT"],
+  "schemaName":"ProcessFunctional",
+  "vendorTableName":"Manufacturer"
+}

@@ -1,4 +1,4 @@
-# OpenPlant Extensibility Sample
+# PlantSight Data Linker
 
 Copyright © 2019 Bentley Systems, Incorporated. All rights reserved.
 
