@@ -28,11 +28,7 @@
     "test:e2e:start-app": "env-cmd ./lib/webresources/config.json run-p \"start:webserver\" \"start:backend\"",
     "test:e2e:test-app": "mocha --opts ./test/end-to-end/mocha.opts \"test/end-to-end/**/*.test.ts*\"",
     "test:electron": "mocha --opts ./test/electron/mocha.opts \"test/electron/**/*.test.ts*\"",
-    "package": "electron-packager . PlantSight DataLinker --platform=win32 --arch=x64 --overwrite",
-    "installAll": "npm install fsevents -f --save && npm install  && electron-rebuild -m=./node_modules/sqlite3",
-    "rb": "electron-rebuild -m=./node_modules/sqlite3",
-    "postinstall": "electron-builder install-app-deps",
-    "dist": "electron-builder"
+    "installAll": "npm install fsevents -f --save && npm install  && electron-rebuild -m=./node_modules/sqlite3"
   },
   "iModelJs": {
     "buildModule": {
@@ -156,9 +152,7 @@
     "chai": "^4.2.0",
     "chromedriver": "^2.34.1",
     "electron": "^4.2.10",
-    "electron-builder": "^21.2.0",
     "electron-chromedriver": "^3.0.0",
-    "electron-packager": "^14.0.4",
     "electron-rebuild": "^1.8.8",
     "env-cmd": "^8.0.2",
     "ignore-styles": "^5.0.1",
@@ -176,7 +170,6 @@
     "start-server-and-test": "^1.7.11",
     "strip-json-comments-cli": "^1.0.1",
     "ts-node": "^7.0.1",
-    "tsc": "^1.20150623.0",
     "typemoq": "^2.1.0",
     "typescript": "^3.7.2",
     "webpack": "^4.20.2",
