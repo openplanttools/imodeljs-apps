@@ -22,29 +22,42 @@ export const enum UseBackend {
  * - App: `src/common/config.json`
  * - Tests: `test/end-to-end/config.json`
  */
-export default function setupEnv() {
+// export default function setupEnv() {
+//   Config.App.merge({
+//     // -----------------------------------------------------------------------------------------------------------
+//     // Client registration (RECOMMENDED but OPTIONAL)
+//     // Must set these variables before deployment, but the supplied defaults can be used for testing on localhost.
+//     // Create a client registration using the procedure here - https://git.io/fx8YP (Developer registration). For the purpose
+//     // of running this sample on localhost, ensure your registration includes http://localhost:3000/signin-callback as a
+//     // valid redirect URI.
+//     // -----------------------------------------------------------------------------------------------------------
+//     //imjs_buddi_resolve_url_using_region: "103",
+//     imjs_browser_test_client_id: "spa-TndE76P2OLOLZMumh7nx5yHjR",
+
+
+
+//     // Set this to the registered clientId
+//     // Note: "imodeljs-spa-test-2686" is setup to work with the (default) localhost redirect URI below
+
+//     imjs_browser_test_redirect_uri: "electron://frontend/signin-callback",
+//     // Set this to be the registered redirect URI
+//     // Note: "http://localhost:3000/signin-callback" is setup to work with the (default) clientId above
+
+//     imjs_browser_test_scope: "openid email profile organization imodelhub context-registry-service reality-data:read imodeljs-router",
+//     // Set this to be the scopes of services the application needs to access
+//     // Note: The default value set above ensures the minimal working of the application
+//   });
+// };
+
+export default function setupEnvTwo() {
   Config.App.merge({
-    // -----------------------------------------------------------------------------------------------------------
-    // Client registration (RECOMMENDED but OPTIONAL)
-    // Must set these variables before deployment, but the supplied defaults can be used for testing on localhost.
-    // Create a client registration using the procedure here - https://git.io/fx8YP (Developer registration). For the purpose
-    // of running this sample on localhost, ensure your registration includes http://localhost:3000/signin-callback as a
-    // valid redirect URI.
-    // -----------------------------------------------------------------------------------------------------------
-    //imjs_buddi_resolve_url_using_region: "103",
-    imjs_browser_test_client_id: "spa-TndE76P2OLOLZMumh7nx5yHjR",
 
-
-
-    // Set this to the registered clientId
-    // Note: "imodeljs-spa-test-2686" is setup to work with the (default) localhost redirect URI below
-
+    //imjs_buddi_resolve_url_using_region: "4",
+    imjs_scope: "openid email profile organization imodelhub context-registry-service reality-data:read imodeljs-router",
+    imjs_client_id: "spa-TndE76P2OLOLZMumh7nx5yHjR",//"spa-6QKbO7OVSoiLdpb7zEwnkSbgQ",
     imjs_browser_test_redirect_uri: "electron://frontend/signin-callback",
-    // Set this to be the registered redirect URI
-    // Note: "http://localhost:3000/signin-callback" is setup to work with the (default) clientId above
-
-    imjs_browser_test_scope: "openid email profile organization imodelhub context-registry-service reality-data:read imodeljs-router",
-    // Set this to be the scopes of services the application needs to access
-    // Note: The default value set above ensures the minimal working of the application
+    //imjs_response_type: "code",
+    imjs_select_project: true,
+    imjs_only_signin:false
   });
 }
