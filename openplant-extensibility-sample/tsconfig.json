@@ -7,7 +7,10 @@
     "outDir": "./lib",
     "strict": false,
     "moduleResolution": "node",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "types": [
+      "@bentley/webpack-tools"
+    ]
   },
   "include": [
     "./**/*.ts",
@@ -17,8 +20,15 @@
     "lib",
     "node_modules",
     "test",
-    "SampleApp-win32-x64",
-    "LockReleaser-win32-x64",
-    "src_workingState1"
+    "src/frontend/indexOld.tsx"
+
+
   ]
 }
+
+/**
+"src/frontend/frontstages",
+    "src/frontend/imodelopen",
+    "src/frontend/projectselect",
+    "src/frontend/AppUi.tsx"
+*/

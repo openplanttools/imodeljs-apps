@@ -42,8 +42,11 @@ export class Table extends React.Component<TableProps, TableState> {
   public componentDidMount() {
     [...document.getElementsByClassName("ManufacturerColumn")].map((i:any) => {
       i.parentNode.bgColor="#ecf0f1";
-
-    })
+    });
+    const div = document.getElementById("uifw-configurableui-wrapper");
+    if (div){
+      div.style.overflow = "auto";
+    }
     this.insertDataToDb();
 
   }

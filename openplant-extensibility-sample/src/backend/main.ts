@@ -7,9 +7,11 @@ import { Logger } from "@bentley/bentleyjs-core";
 import { IModelHost } from "@bentley/imodeljs-backend";
 import getSupportedRpcs from "../common/rpcs";
 import { RpcInterfaceDefinition } from "@bentley/imodeljs-common";
-import setupEnv from "../common/configuration";
-import {readSettings, readData, readEquipmentCols} from "./electron/main";
+import { readSettings } from "./electron/main";
 import { SqlConnection } from "./Database";
+import { IModelJsConfig } from "@bentley/config-loader/lib/IModelJsConfig";
+import { Config } from "@bentley/imodeljs-clients";
+import setupEnvTwo from "../common/configuration";
 
 const globals:any = global;
 
@@ -20,19 +22,13 @@ ipcMain.on("readSettings", (event: Event, arg: any) => {
   readSettings(event, arg);
 });
 
-ipcMain.on("readConfig", (event: Event, arg: any) => {
-    if (event) {
-      console.log(arg);
-    }
-    readData(event, arg);
+ipcMain.on("onReadiModelInfo", (event: Event, arg: any) => {
+  if (event) {
+    console.log(arg);
+  }
+  globals["imodelInfo"] = arg;
 });
 
-ipcMain.on("readEquipmentCols", (event: Event, arg: any) => {
-    if (event) {
-      console.log(arg);
-    }
-    readEquipmentCols(event);
-});
 
 ipcMain.on("insertIntoTable", async (event: Event, arg: any) => {
   if (event) {
@@ -59,32 +55,26 @@ ipcMain.on("insertIntoTable", async (event: Event, arg: any) => {
   }
 });
 
-
-// setup environment
-setupEnv();
-
+setupEnvTwo();
+IModelJsConfig.init(true /*suppress error*/, true /* suppress message */, Config.App);
 // initialize logging
 Logger.initializeToConsole();
 
 // initialize imodeljs-backend
 IModelHost.startup();
 
-// invoke platform-specific initialization
-// tslint:disable-next-line:no-floating-promises
 (async () => {
   // get platform-specific initialization function
   let init: (rpcs: RpcInterfaceDefinition[]) => void;
   if (electron) {
     init = (await import("./electron/main")).default;
-  } else {
-    init = (await import("./web/BackendServer")).default;
+    // get RPCs supported by this backend
+    const rpcs = getSupportedRpcs();
+    // do initialize
+    init(rpcs);
   }
-  // get RPCs supported by this backend
-  const rpcs = getSupportedRpcs();
-  // do initialize
-  init(rpcs);
 
-  ipcMain.on("executeQuery", async (event: Event, arg: any) => {
+  ipcMain.on("executeQuery", async (event: any, arg: any) => {
     console.log(event);
     var connection = globals["vendorDbSqliteConnection"];
     console.log(connection);
@@ -103,7 +93,7 @@ IModelHost.startup();
       globals["vendorDbSqliteConnection"].close();
       console.log( globals["vendorDbSqliteConnection"] );
     }
-    if ( globals["vendorDbSqliteConnection"] ) {
+    if ( globals["newSqliteConnection"] ) {
       globals["newSqliteConnection"].close();
       console.log( globals["newSqliteConnection"] );
     }
