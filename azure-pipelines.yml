@@ -17,8 +17,6 @@ steps:
 
 - script: |
     cd openplant-extensibility-sample
-    npm install -g vsts-npm-auth --registry https://registry.npmjs.com --always-auth false 
-    vsts-npm-auth -config .npmrc 
     npm run installAll
     npm run build
   displayName: 'npm install and build'
