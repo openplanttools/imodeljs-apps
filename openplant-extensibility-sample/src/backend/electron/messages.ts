@@ -1,4 +1,7 @@
-
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) 2020 Bentley Systems, Incorporated. All rights reserved.
+* Licensed under the MIT License. See LICENSE.md in the project root for license terms.
+*--------------------------------------------------------------------------------------------*/
 export const currentProject = "Current Project: ";
 export const initialTitle = "OpenPlant Extensibility Sample";
 export const configurationTitle = "Current Configuration";

@@ -1,6 +1,6 @@
 # PlantSight Data Linker
 
-Copyright © 2019 Bentley Systems, Incorporated. All rights reserved.
+Copyright © 2020 Bentley Systems, Incorporated. All rights reserved.
 
 ## Purpose
 * Show PlantSight components and their properties.
