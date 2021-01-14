@@ -4,15 +4,15 @@ Copyright © 2021 Bentley Systems, Incorporated. All rights reserved.
 
 
 ## Purpose
-* 2-way Sync (Synchronize the iTwin data with the local Dtabase and vice versa).
+* 2-way Sync (Synchronize the digital iTwin data with the local Dtabase and vice versa).
 * It also supports data synchronization from multiple data sources to multiple iModels and runs in the background mode without any UI to interact with.
 Multiple tasks or configs can be defined for that purpose.
 
 ## Goals
 
-1. Connect to a iTwin project and Query the components.
+1. Connect to a digital iTwin and Query the components.
 2. Connect to local database and Query the records.
-3. Compare the data in iTwin and local database and perform the update based on configuration defined.
+3. Compare the data in digital iTwin and local database and perform the update based on configuration defined.
 
 ## Prerequisites
 
