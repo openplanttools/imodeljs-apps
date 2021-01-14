@@ -44,7 +44,7 @@ This command will install, build and create the installer as well.
 4. Now run the app. It can be searched in the windows search by typing "OPDataSynchronizer".
 5. After the app finishes it will create a log file for each config or task at this path `C:\Users\{User.Name}\AppData\Local\OPDataSynchronizer\logs`
 
-## Ho do I configure it?
+## How do I configure it?
 
 In order to configure the App we need to set the following properties so lets have a look what these properties are.
 
@@ -64,18 +64,23 @@ Name and id of the imodel.
 Name and id of the project.
 
 **Property Mappings**
+
 ![alt text](../../media/ecClassmap.PNG)
 
 **For Connecting with Sqlite**
+
 ![alt text](../../media/sqliteConfig.PNG)
-	 
+
 **For Connecting with SqlServer (Sql Server Authentication Method)**
+
 ![alt text](../../media/sqlServer1.PNG)
 
 **For Connecting with SqlServer (Windows Authentication Method)**
+
 ![alt text](../../media/sqlServer2.PNG)
 
 **For Connecting with Access Database**
+
 ![alt text](../../media/accessDb.PNG)
 
 ## References
