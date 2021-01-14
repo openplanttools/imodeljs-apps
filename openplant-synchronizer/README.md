@@ -66,7 +66,7 @@ Name and id of the project.
 **Property Mappings**
 ![alt text](../../media/ecClassmap.PNG)
 
-**For Connecting with Sqlite** 
+**For Connecting with Sqlite**
 ![alt text](../../media/sqliteConfig.PNG)
 	 
 **For Connecting with SqlServer (Sql Server Authentication Method)**
