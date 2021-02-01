@@ -23,18 +23,18 @@ Multiple tasks or configs can be defined for that purpose.
    - Enable the SQL Server Browser Service
    - Restart these two services: a) Sql Server (Instance Name) b) Sql Server Browser
 
-## Installation
+## Install required packages
 1. Run this command on terminal: `npm run installAll`
 
-## Build and Execute
-1. Run this command on terminal: `npm run go`
+## Build
+1. Run this command on terminal: `npm run build`
+
+## Execute
+1. Run this command on terminal: `npm run electron`
 
 ## Create Installer
 1. Run this command on terminal: `npm run dist`
 
-## Install, buid, package and Installer
-This command will install, build and create the installer as well.
-`npm run doAll`
 
 ## How do I Install it?
 1. Install OPDataSynchronizer App from this [path](https://autoupdatecdn.bentley.com/opide/OPDataSynchronizer.exe).
