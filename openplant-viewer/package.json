@@ -108,7 +108,7 @@
     "react-icons": "^3.7.0",
     "react-redux": "^5.0.7",
     "redux": "^4.0.0",
-    "set-value": "^3.0.1",
+    "set-value": "^4.0.1",
     "styled": "^1.0.0",
     "styled-components": "^4.3.2"
   },
