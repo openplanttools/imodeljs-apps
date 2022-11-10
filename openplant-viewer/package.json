@@ -127,7 +127,7 @@
     "@types/react-dom": "^16.0.7",
     "chai": "^4.2.0",
     "chromedriver": "^2.34.1",
-    "electron": "^4.0.1",
+    "electron": "^18.3.7",
     "electron-chromedriver": "^3.0.0",
     "env-cmd": "^8.0.2",
     "ignore-styles": "^5.0.1",
